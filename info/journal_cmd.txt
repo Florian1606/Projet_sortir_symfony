@@ -14,17 +14,16 @@ php bin/console doctrine:database:create
 ########################################################################
 composer require twig
 php bin/console make:auth <-- a besoin de twig
+symfony console make:controller
+
+
+
+
+
+
 
 
 
 php bin/console cache:clear --> très utile !!!!!!!!
-
-
-
-
-
-
-
-symfony console make:controller
 php bin/console make:migration
 php bin/console doctrine:migrations:migrate
