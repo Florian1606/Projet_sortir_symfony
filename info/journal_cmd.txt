@@ -1,0 +1,2 @@
+-- Journal des commandes --
+composer create-project symfony/skeleton my_project_namegit
