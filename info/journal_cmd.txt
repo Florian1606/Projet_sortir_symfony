@@ -3,21 +3,26 @@
 composer create-project symfony/skeleton Projet_sortir_symfony --> Création du projet
 composer require symfony/orm-pack --> Installation de doctrine
 composer require --dev symfony/maker-bundle --> Installation du composant maker
+symfony composer req annotations --> à faire avant de créer un controller
+symfony composer req asset
+composer require security
+php bin/console make:user
+
+
+
+
 
 php bin/console doctrine:database:create
 -------> Pour créer la database ! Ne pas oublier de mettre le fichier env.local à jour & vérifier que vos .env.local est présent dans le gitignore
 
-
-
-
-
-
-
-
-
 php bin/console cache:clear --> très utile !!!!!!!!
 ########################################################################
-symfony composer req annotations --> à faire avant de créer un controller
+
+
+
+
+
+
 symfony console make:controller
 php bin/console make:entity
 php bin/console make:migration
