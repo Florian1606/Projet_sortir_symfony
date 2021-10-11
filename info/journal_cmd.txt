@@ -15,6 +15,8 @@ php bin/console doctrine:database:create
 composer require twig
 php bin/console make:auth <-- a besoin de twig
 symfony console make:controller
+composer require form validator
+php bin/console make:registration-form
 
 
 
@@ -24,6 +26,9 @@ symfony console make:controller
 
 
 
+
+
+symfony server:start
 php bin/console cache:clear --> très utile !!!!!!!!
 php bin/console make:migration
 php bin/console doctrine:migrations:migrate
