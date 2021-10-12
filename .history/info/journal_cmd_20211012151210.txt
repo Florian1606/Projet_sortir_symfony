@@ -20,7 +20,7 @@ composer require form validator
 php bin/console make:registration-form
 
 composer require symfonycasts/reset-password-bundle
-composer require debug
+composer require symfony/debug
 
 
 

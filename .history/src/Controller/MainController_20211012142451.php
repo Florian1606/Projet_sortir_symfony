@@ -4,31 +4,28 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Form\MonProfilType;
-use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class MainController extends AbstractController
 {
     /**
      * @Route("/main", name="main")
      */
-    public function index(SortieRepository $sortieRepo): Response
+    public function index(): Response
     {
-        $sorties = $sortieRepo->findAll();
         return $this->render('main/index.html.twig', [
-            'sorties' => $sorties,
+            'controller_name' => 'MainController',
         ]);
     }
 
     /**
      * @Route("/main/monProfil", name="app_monProfil")
      */
-    public function addForm(EntityManagerInterface $em, Request $request, UserPasswordHasherInterface $userPasswordHasherInterface): Response //entity manager ..... des données
+    public function addForm(EntityManagerInterface $em, Request $request): Response //entity manager ..... des données
     {
         // instanciation de la classe produit
         $profil = new Participant();
@@ -42,13 +39,7 @@ class MainController extends AbstractController
 
             $profil ->setIsAdmin(false);
             $profil ->setIsActif(false);
-            $profil->setPassword(
-                $userPasswordHasherInterface->hashPassword(
-                        $profil,
-                        $form->get('plainPassword')->getData()
-                    )
-                );
-    
+
             $em->persist($profil);
             // appliquer insert into dans la bdd
             $em->flush();

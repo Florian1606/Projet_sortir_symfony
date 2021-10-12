@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Form\MonProfilType;
-use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +20,7 @@ class MainController extends AbstractController
     {
         $sorties = $sortieRepo->findAll();
         return $this->render('main/index.html.twig', [
-            'sorties' => $sorties,
+            'sorties' => 'MainController',
         ]);
     }
 

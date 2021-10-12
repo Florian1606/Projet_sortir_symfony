@@ -38,7 +38,7 @@
 									{# {% for site in site %} #}
 									<option class="dropdown-item text-white" value="NANTES{# {{ site.id }} #}">NANTES
 										{# {{
-																																																																																																																																																																																				                                    site.nom }} #}
+																																																																																																																																																																										                                    site.nom }} #}
 									</option>
 									{# {% endfor %} #}
 								</ul>
@@ -108,7 +108,7 @@
 					<h3 class="text-center mt-5">
 						Aucun souhait trouvé !</h3>
 				{% else %}
-					<div class="row mt-5">
+					<div class="row">
 						<div class="col-md-12">
 							<table class="table table-striped">
 								<thead>
@@ -132,25 +132,22 @@
 										{% if app.user %}
 											<tr>
 												<td>{{ sortie.nom }}</td>
-												<td>{{ sortie.dateDebut |date('d/m/Y H:m') }}</td>
+												<td>{{ sortie.dateDebut |date('d/m/Y H:S') }}</td>
 												<td>{{ sortie.dateLimiteInscription |date('d/m/Y') }}</td>
 												<td>{{ sortie.participants | length}}
 													/
 													{{ sortie.nbIncriptionMax }}</td>
 												<td>{{ sortie.etat.libelle }}</td>
-												{% if sortie.participants | length == 0 %}
-													<td></td>
-													{% else %}
-														{% for participant in sortie.participants %}
-															{% if app.user.id == participant.id %}
-																<td>
-																	X
-																</td>
-															{% else %}
-																<td></td>
-															{% endif %}
-														{% endfor %}
-												{% endif %}
+													{% for participant in sortie.participants %}
+														<h1> OOOOOO </h1>
+														{% if app.user.id == participant.id %}
+															<td>
+																X
+															</td>
+														{% else %}
+															<td>aaa</td>
+														{% endif %}
+													{% endfor %}
 												<td>
 													<a href="#{#{{ path('profil/detail', {'id': sortie.organisateur.id} ) }}#}">{{ sortie.organisateur.pseudo }}</a>
 												</td>
@@ -164,12 +161,12 @@
 														{% endif %}
 													{% endfor %}
 													{# SI L'USER CURRENT EST L'ORGANISATEUR DE LA SORTIE #}
-													{% if sortie.organisateur.id == app.user.id and (sortie.etat.id == 2 or sortie.etat.id == 3) %}
+													{% if sortie.organisateur.id == app.user.id %}
 														<a href="#{#{{ path('sortie/delete', {'id': sortie.id}) }}#}" class="btn btn-danger">Annuler</a>
 													{% endif %}
 													{# SI L'USER CURRENT N'AS PAS PUBLIER SA SORTIE #}
 													{% if sortie.etat.id == 1 and app.user.id == sortie.organisateur.id %}
-														<a href="#{#{{ path('sortie/delete', {'id': sortie.id}) }}#}" class="btn btn-success">Publier</a>
+														<a href="#{#{{ path('sortie/delete', {'id': sortie.id}) }}#}" class="btn btn-succes">Publier</a>
 													{% endif %}
 												</td>
 											</tr>
@@ -177,18 +174,20 @@
 											{# LISTE DE TOUTES LES SORTIES SANS USER CURRENT#}
 											<tr>
 												<td>{{ sortie.nom }}</td>
-												<td>{{ sortie.dateDebut |date('d/m/Y - H:i') }}</td>
+												<td>{{ sortie.dateDebut |date('d/m/Y H:S') }}</td>
 												<td>{{ sortie.dateLimiteInscription |date('d/m/Y') }}</td>
-												<td>{{ sortie.participants | length}}
+												<td>{{ sortie.nbInscriptionMax | length}}
 													/
-													{{ sortie.nbIncriptionMax }}</td>
+													{{ sortie.nbInscriptionMax }}</td>
 												<td>{{ sortie.etat.libelle }}
 												</td>
 												<td>
 													<a href="#{#{{ path('sortie/detail', {'id': sortie.organisateur.id} ) }}#}">{{ sortie.organisateur.pseudo }}</a>
 												</td>
+
 												<td>
-													<a href="#{#{{ path('sortie/detail', {'id': sortie.id}) }}#}" class="btn btn-primary">Voir</a>
+													<a href="#{#{{ path('sortie/update', {'id': sortie.id}) }}#}" class="btn btn-warning">Modifier</a>
+													<a href="#{#{{ path('sortie/publish', {'id': sortie.id}) }}#}" class="btn btn-succes">Publier</a>
 												</td>
 											</tr>
 										{% endif %}
