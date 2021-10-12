@@ -1,0 +1,100 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+{% block stylesheet %}
+<link href="{{ asset('css/index.css') }}" rel="stylesheet">
+{% endblock %}
+{% block body %}
+<header class="bg-dark py-5">
+    <div class="container px-5">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-6">
+                <div class="text-center my-5">
+                    <h1 class="display-5 fw-bolder text-white mb-2">SORTEZ DE CHEZ VOUS !</h1>
+                    <p class="lead text-white-50 mb-4">Participer ou organiser des sorties pour vous et votre ville</p>
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                        <a class="btn btn-primary btn-lg px-4 me-sm-3" href="#">Ajouter une sortie</a>
+                        <a class="btn btn-outline-light btn-lg px-4" href="#!">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+{# Advanced SearchBar #}
+<div class="container mt-5">
+    <div class="row d-flex justify-content-center">
+        <div class="col-md-10">
+            <div class="card p-3 py-4">
+                <h5>An Easier way to find your Housing</h5>
+                <div class="row g-3 mt-2">
+                    <div class="col-md-3">
+
+                        <select class="btn btn-secondary dropdown-toggle" name="pets" id="pet-select">
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {# {% for site in site %} #}
+                                <option class="dropdown-item" value="NANTES">NANTES{# {{ site.nom }} #} </option>
+                                {# {% endfor %} #}
+                            </ul>
+                        </select>
+                    </div>
+                    <div class="col-md-6"> <input type="text" class="form-control"
+                            placeholder="Le nom de la sortie contient..."> </div>
+                    <div class="col-md-3"> <input type="submit" class="btn btn-secondary btn-block" value="Rechercher">
+                    </div>
+                </div>
+                <div class="mt-3"> <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
+                        aria-controls="collapseExample" class="advanced"> Recherche avancée <i
+                            class="fa fa-angle-down"></i> </a>
+                    {# RECHERCHE AVANCEE #}
+                    <div class="collapse" id="collapseExample">
+                        <div class="card card-body">
+                            <div class="column">
+                                <div class="input-group input--medium row">
+                                    <label class="label">Check-In</label>
+                                    <input class="input--style-1" type="text" name="checkin" placeholder="mm/dd/yyyy"
+                                        id="input-start">
+                                </div>
+                                <div class="input-group input--medium">
+                                    <label class="label">Check-Out</label>
+                                    <input class="input--style-1" type="text" name="checkout" placeholder="mm/dd/yyyy"
+                                        id="input-end">
+                                </div>
+                            </div>
+                            <div class="column">
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="isSortiesOrganisateur">
+                                    <label class="form-check-label" for="isSortiesOrganisateur">
+                                        Sorties dont je suis l'organisateur/trice
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="isSortiesInscrit">
+                                    <label class="form-check-label" for="isSortiesInscrit">
+                                        Sorties auxquelles je suis inscrit/e
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="isSortiesPasInscrit">
+                                    <label class="form-check-label" for="isSortiesPasInscrit">
+                                        Sorties auxquelles je ne suis pas inscrit/e
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="isSortiesPassees">
+                                    <label class="form-check-label" for="isSortiesPassees">
+                                        Sorties passées
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {# FIN RECHERCHE AVANCEE #}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
