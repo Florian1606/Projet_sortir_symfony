@@ -26,7 +26,7 @@ class MainController extends AbstractController
     /**
      * @Route("/main/monProfil", name="app_monProfil")
      */
-    public function addForm(EntityManagerInterface $em, Request $request, UserPasswordHasherInterface $userPasswordHasherInterface): Response //entity manager ..... des données
+    public function addForm(EntityManagerInterface $em, Request $request, User): Response //entity manager ..... des données
     {
         // instanciation de la classe produit
         $profil = new Participant();
@@ -42,7 +42,7 @@ class MainController extends AbstractController
             $profil ->setIsActif(false);
             $profil->setPassword(
                 $userPasswordHasherInterface->hashPassword(
-                        $profil,
+                        $user,
                         $form->get('plainPassword')->getData()
                     )
                 );

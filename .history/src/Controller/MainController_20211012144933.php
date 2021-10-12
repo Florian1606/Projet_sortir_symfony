@@ -42,7 +42,7 @@ class MainController extends AbstractController
             $profil ->setIsActif(false);
             $profil->setPassword(
                 $userPasswordHasherInterface->hashPassword(
-                        $profil,
+                        $user,
                         $form->get('plainPassword')->getData()
                     )
                 );

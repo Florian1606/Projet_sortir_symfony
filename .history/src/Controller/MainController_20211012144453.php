@@ -9,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class MainController extends AbstractController
 {
@@ -26,7 +25,7 @@ class MainController extends AbstractController
     /**
      * @Route("/main/monProfil", name="app_monProfil")
      */
-    public function addForm(EntityManagerInterface $em, Request $request, UserPasswordHasherInterface $userPasswordHasherInterface): Response //entity manager ..... des données
+    public function addForm(EntityManagerInterface $em, Request $request): Response //entity manager ..... des données
     {
         // instanciation de la classe produit
         $profil = new Participant();
@@ -42,7 +41,7 @@ class MainController extends AbstractController
             $profil ->setIsActif(false);
             $profil->setPassword(
                 $userPasswordHasherInterface->hashPassword(
-                        $profil,
+                        $user,
                         $form->get('plainPassword')->getData()
                     )
                 );
