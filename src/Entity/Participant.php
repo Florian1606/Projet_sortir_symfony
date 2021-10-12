@@ -79,6 +79,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $SortiesOrganisees;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $pseudo;
+
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
@@ -298,5 +303,29 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getPseudo(): ?string
+    {
+        return $this->pseudo;
+    }
+
+    public function setPseudo(string $pseudo): self
+    {
+        $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function setDateCreated(\DateTime $param)
+    {
+    }
+
+    public function setIsPublished(bool $true)
+    {
+    }
+
+    public function getMonprofil()
+    {
     }
 }
