@@ -13,9 +13,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 class MonProfilType extends AbstractType
 {
-    public function buildForm(FormBuilderInterface $builder, array $options): void
+    public function buildForm(FormBuilderInterface $builder, array $options, UserPasswordHasherInterface $userPasswordHasherInterface): void
     {
         $builder
             ->add('pseudo')
