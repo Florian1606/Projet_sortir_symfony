@@ -20,23 +20,20 @@ class SortieType extends AbstractType
     {
         $builder
             ->add('nom')
-            ->add('dateDebut',DateTimeType::class)
             ->add('duree')
-            ->add('dateLimiteInscription',DateTimeType::class)
             ->add('nbIncriptionMax')
             ->add('description')
 //            ->add('urlPhoto')
-//            ->add('participants')
 //            ->add('organisateur')
 //
-//            ->add('etat', EntityType::class, array(
-//                    'class'=> Etat::class,
-//                    'choice_label'=>'libelle',
-//                    'expanded'=>false,
-//                    'multiple'=>false,
-//
-//                )
-//            )
+            ->add('etat', EntityType::class, array(
+                    'class'=> Etat::class,
+                    'choice_label'=>'libelle',
+                    'expanded'=>false,
+                    'multiple'=>false,
+
+                )
+            )
             ->add('lieu', EntityType::class, array(
                     'class'=> Lieu::class,
                     'choice_label'=>'nomLieu',
@@ -45,14 +42,15 @@ class SortieType extends AbstractType
                     )
             )
 
-            ->add('add', SubmitType::class);
+            ->add('add', SubmitType::class)
+            ->add('save', SubmitType::class);
 
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Sortie::class, 'attr'=> ['class' => 'form-control']
+            'data_class' => Sortie::class
         ]);
     }
 }
