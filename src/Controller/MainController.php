@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Form\MonProfilType;
+use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
+use DateTime;
+use App\Repository\WishRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,15 +17,55 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class MainController extends AbstractController
 {
-    
+//    /**
+//     * @Route("/main/profil/{id}", name="profil", requirements={"id":"\d+"})
+//     */
+//    public function detail(ParticipantRepository $repo,$id=0): Response
+//    {
+//        $participant = $repo->find($id);
+//        $titre= "Sortir.com - Profil";
+//        $tab = compact("titre","participant");
+//        return $this->render('/main/profil.html.twig', $tab);
+//    }
+
+
     /**
      * @Route("/main", name="main")
      */
-    public function index(SortieRepository $sortieRepo): Response
+    public function index(SortieRepository $sortieRepo, SiteRepository $siteRepo): Response
     {
         $sorties = $sortieRepo->findAll();
+
+        /* 1/ Recuperer données de la barre de recherche */
+        $dateDebut = new DateTime('2016-02-01');
+        $dateLimiteInscription = new DateTime('2016-02-29');
+
+        /* 2/ Vérifier données vides ou non  et remplir un tableau en conséquence*/
+        //  Retourne un tableau de sorties selon la recherche effectuée dans la searchbar et le site indiquée
+        //$sorties = $sortieRepo->findBySearchAndSite("", 1); // NE RIEN METTRE = findAll()
+        
+        // Retourne un tableau selon les dates rentrées et le site et site
+        //$sorties = $sortieRepo->findByDates($dateDebut, $dateLimiteInscription, 1);
+
+        // Retourne un tableau selon si l'user current est l'organisateur/trice et le site
+        //$sorties = $sortieRepo->findByIdOrganisateur(1,1);
+
+        // Retourne un tableau selon l'inscription de l'user current et le site
+        //$sorties = $sortieRepo->findByIdParticipantInscrit(1,1);
+        
+        // Retourne un tableau selon la non inscription de l'user current et le site
+        //$sorties = $sortieRepo->findByIdParticipantNonInscrit(2,1);
+
+        // Retourne un tableau des sorties passées
+        //$sorties = $sortieRepo->findByEtatPassees(1);
+
+        //dd($sorties);
+        /* 3/ Supprimer les doublons du tableau de sorties */
+
+        $sites = $siteRepo->findAll();
         return $this->render('main/index.html.twig', [
             'sorties' => $sorties,
+            'sites' => $sites,
         ]);
     }
 
