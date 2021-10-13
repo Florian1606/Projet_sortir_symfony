@@ -28,8 +28,7 @@ class Sortie
 
     /**
      *
-     * @Assert\GreaterThanOrEqual(value="today",
-     * message = "No No No No No")
+   
      *
      * @ORM\Column(type="datetime")
      *
@@ -75,7 +74,7 @@ class Sortie
 
     /**
      * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="sorties")
-     * @Assert\NotNull(message ="Ne peut pas être nul aussi")
+     *
      *
      */
     private $site;
