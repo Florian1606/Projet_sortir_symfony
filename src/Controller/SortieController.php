@@ -71,5 +71,40 @@ class SortieController extends AbstractController
 
     }
 
+    /**
+     *@Route("/afficherSortie",name="app_afficherSortie")
+     */
+    public function afficherSortie(Request $request):Response{
+        $titre= "Sortir.com - afficher une sortie";
+        $tab = compact("titre");
+        return $this->render("sortie/afficherUneSortie.html.twig",$tab);
+    }
 
+    /**
+     *@Route("/annulerUneSortie",name="app_annulerUneSortie")
+     */
+    public function annulerUneSortie(Request $request):Response{
+        $titre= "Sortir.com - annuler une sortie";
+        $tab = compact("titre");
+        return $this->render("sortie/annulerUneSortie.html.twig",$tab);
+    }
+
+    /**
+     *@Route("/gererLesSites",name="gererLesSites")
+     */
+    public function legal(Request $request):Response{
+        $titre= "Sortir.com - gérer les différents sites";
+        $tab = compact("titre");
+        return $this->render("sortie/gererLesSites.html.twig",$tab);
+    }
+
+    /**
+     *@Route("/gererLesVilles",name="gererLesVilles")
+     */
+    public function contact(Request $request):Response{
+        $titre= "Sortir.com - gérer les différents villes";
+        $tab = compact("titre");
+        return $this->render("sortie/gererLesVilles.html.twig",$tab);
+    }
+    
 }
