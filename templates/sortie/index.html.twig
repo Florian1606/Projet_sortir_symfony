@@ -69,6 +69,10 @@
                     <label class="form-label">Ville Organisatrice</label>
                     <input type="text" class="form-control" value="" name="site" disabled="disabled">
                 </div>
+
+{%  if app.user %}
+                    <input type="hidden" class="form-control" value="{{ app.user.id }}" name="test">
+{%  endif %}
                 <div class="mb-3">
                     <label class="form-label">Ville</label>
                     <input type="text" class="form-control" value="" name="">
@@ -108,7 +112,7 @@
                     </button>
                 </div>
                 <div class="col">
-                    <button type="submit" name="" value="ok" class="btn btn-primary">Annuler</button>
+                    <button type="submit" id="{{ field_name(formSortie.cancel) }}" value="cancel" class="btn btn-primary">Annuler</button>
                 </div>
 
             </div>
