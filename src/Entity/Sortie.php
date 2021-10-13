@@ -6,6 +6,7 @@ use App\Repository\SortieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=SortieRepository::class)
@@ -26,7 +27,12 @@ class Sortie
     private $nom;
 
     /**
+     *
+     * @Assert\GreaterThanOrEqual(value="today",
+     * message = "No No No No No")
+     *
      * @ORM\Column(type="datetime")
+     *
      */
     private $dateDebut;
 
@@ -41,7 +47,9 @@ class Sortie
     private $dateLimiteInscription;
 
     /**
+     * @Assert\NotNull(message ="Ne peut pas être nul")
      * @ORM\Column(type="integer")
+     *
      */
     private $nbIncriptionMax;
 
@@ -67,6 +75,8 @@ class Sortie
 
     /**
      * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="sorties")
+     * @Assert\NotNull(message ="Ne peut pas être nul aussi")
+     *
      */
     private $site;
 

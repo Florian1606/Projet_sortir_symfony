@@ -3,23 +3,21 @@
 {% block title %}Hello SortieController!{% endblock %}
 
 {% block body %}
-    {{ form_start(formSortie) }}
+
     <h2>Créer une sortie</h2>
 
     <div class="container">
         <div class="row">
 
+            {%  for item in errors %}
+            <div class="alert alert-danger mt-2" role="alert">
+                {{ item.message }}
+            </div>
+            {%  endfor %}
             <div class="row">
 
-                {{ form_errors(formSortie) }}
-
-                {% if error %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error }}
-                    </div>
-                {% endif %}</div>
             <div class="col">
-
+                {{ form_start(formSortie) }}
                 <form action="{{ path("app_sortie_ajouter") }}" method="post">
                     <div class="mb-3">
                         <label class="form-label" for="nom">Nom de la sortie :</label>
@@ -42,7 +40,7 @@
                                value=""
                                name="dateLimiteInscription">
                     </div>
-{#                    value="{{ formSortie.vars.value.dateLimiteInscription|date("Y-m-d\\TH:i") }}"#}
+
 
                     <div class="mb-3">
                         <label class="form-label">Nombre d'inscription Max</label>
@@ -102,7 +100,7 @@
 {#             Line 3 - Button#}
             <div class="row">
                 <div class="col">
-                    <button type="submit" name="save" value="ok" class="btn btn-primary">Enregistrer</button>
+                    <button type="submit" name="save" id="{{ field_name(formSortie.save) }}" class="btn btn-primary">Enregistrer</button>
                 </div>
                 <div class="col">
                     <button type="submit" name="publish" id="{{ field_name(formSortie.add) }}" class="btn btn-primary">Publier la

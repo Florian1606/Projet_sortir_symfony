@@ -26,25 +26,23 @@ class SortieType extends AbstractType
 //            ->add('urlPhoto')
 //            ->add('organisateur')
 //
-            ->add('etat', EntityType::class, array(
-                    'class'=> Etat::class,
-                    'choice_label'=>'libelle',
-                    'expanded'=>false,
-                    'multiple'=>false,
-
+//            ->add('etat', EntityType::class, array(
+//                    'class' => Etat::class,
+//                    'choice_label' => 'libelle',
+//                    'expanded' => false,
+//                    'multiple' => false,
+//                )
+//            )
+            ->add('lieu', EntityType::class, array(
+                    'class' => Lieu::class,
+                    'choice_label' => 'nomLieu',
+                    'expanded' => false,
+                    'multiple' => false,
+                    'attr' => ['class' =>'form-control']
                 )
             )
-            ->add('lieu', EntityType::class, array(
-                    'class'=> Lieu::class,
-                    'choice_label'=>'nomLieu',
-                    'expanded'=>false,
-                    'multiple'=>false,
-                    )
-            )
-
             ->add('add', SubmitType::class)
             ->add('save', SubmitType::class);
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void
