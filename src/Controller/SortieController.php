@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Sortie;
 use App\Form\SortieType;
+use App\Repository\EtatRepository;
 use App\Repository\SortieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -26,7 +27,7 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/add", name="app_sortie_ajouter")
      */
-    public function ajouterSortie(EntityManagerInterface $em, Request $request): Response
+    public function ajouterSortie(EntityManagerInterface $em, Request $request, EtatRepository $etat): Response
     {
 
         $sortie = new Sortie;
