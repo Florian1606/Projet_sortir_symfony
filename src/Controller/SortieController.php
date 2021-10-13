@@ -35,7 +35,7 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/add", name="app_sortie_ajouter")
      */
-    public function ajouterSortie(EntityManagerInterface $em, Request $request,ValidatorInterface $validator): Response
+    public function ajouterSortie(EntityManagerInterface $em, Request $request, EtatRepository $etat): Response
     {
 
 //       $request->request->set("dateDebut",new \DateTime($request->request->get("dateDebut")));
