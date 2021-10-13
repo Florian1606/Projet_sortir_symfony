@@ -3,19 +3,21 @@
 {% block title %}Hello SortieController!{% endblock %}
 
 {% block body %}
-    {{ form_start(formSortie) }}
+
     <h2>Créer une sortie</h2>
+
     <div class="container">
         <div class="row">
 
-            <div class="row">   </form>
-                {% if error %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error }}
-                    </div>
-                {% endif %}</div>
-            <div class="col">
+            {%  for item in errors %}
+            <div class="alert alert-danger mt-2" role="alert">
+                {{ item.message }}
+            </div>
+            {%  endfor %}
+            <div class="row">
 
+            <div class="col">
+                {{ form_start(formSortie) }}
                 <form action="{{ path("app_sortie_ajouter") }}" method="post">
                     <div class="mb-3">
                         <label class="form-label" for="nom">Nom de la sortie :</label>
@@ -27,15 +29,16 @@
                     <div class="mb-3">
                         <label class="form-label">Date et heure de la sortie :</label>
                         <input type="datetime-local" class="form-control"
-                               value="{{ formSortie.vars.value.dateDebut|date("Y-m-d\\TH:i") }}"
-                               name="{{ field_name(formSortie.dateDebut) }}">
+                               value=""
+
+                               name="dateDebut">
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label">Date limlite d'inscription</label>
                         <input type="datetime-local" class="form-control"
-                               value="{{ formSortie.vars.value.dateLimiteInscription|date("Y-m-d\\TH:i") }}"
-                               name="{{ field_name(formSortie.dateLimiteInscription) }}">
+                               value=""
+                               name="dateLimiteInscription">
                     </div>
 
 
@@ -60,7 +63,7 @@
                     </div>
             </div>
 
-            {# Col 2 #}
+{#             Col 2#}
             <div class="col">
                 <div class="mb-3">
                     <label class="form-label">Ville Organisatrice</label>
@@ -94,13 +97,13 @@
 
 
             </div>
-            {# Line 3 - Button #}
+{#             Line 3 - Button#}
             <div class="row">
                 <div class="col">
-                    <button type="submit" name="" value="ok" class="btn btn-primary">Enregistrer</button>
+                    <button type="submit" name="save" id="{{ field_name(formSortie.save) }}" class="btn btn-primary">Enregistrer</button>
                 </div>
                 <div class="col">
-                    <button type="submit" id="{{ field_name(formSortie.add) }}" class="btn btn-primary">Publier la
+                    <button type="submit" name="publish" id="{{ field_name(formSortie.add) }}" class="btn btn-primary">Publier la
                         sortie
                     </button>
                 </div>
@@ -112,8 +115,9 @@
         </div>
 
     </div>
-{#    {{ path('app_add',{'id':sortie.id}) }}#}
-
+    {# {{ path('app_add',{'id':sortie.id}) }} #}
+{#    {{ form_widget(formSortie._token) }}#}
     </div>
+    {{ form_rest(formSortie) }}
     {{ form_end(formSortie) }}
 {% endblock %}
