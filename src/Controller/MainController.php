@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Participant;
 use App\Form\MonProfilType;
 use App\Repository\SortieRepository;
+use App\Repository\WishRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +15,18 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class MainController extends AbstractController
 {
-    
+//    /**
+//     * @Route("/main/profil/{id}", name="profil", requirements={"id":"\d+"})
+//     */
+//    public function detail(ParticipantRepository $repo,$id=0): Response
+//    {
+//        $participant = $repo->find($id);
+//        $titre= "Sortir.com - Profil";
+//        $tab = compact("titre","participant");
+//        return $this->render('/main/profil.html.twig', $tab);
+//    }
+
+
     /**
      * @Route("/main", name="main")
      */

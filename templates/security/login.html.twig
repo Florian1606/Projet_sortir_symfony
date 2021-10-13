@@ -1,62 +1,91 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}Connexion{% endblock %}
-
+{% block stylesheet %}
+    <link href="{{ asset('css/login.css') }}" rel="stylesheet">
+{% endblock %}
 {% block body %}
     <form method="post">
-        {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-        {% endif %}
+    {% if error %}
+        <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
 
-        {% if app.user %}
-            <div class="mb-3">
-                Vous êtes connectée en tant que {{ app.user.username }}, <a
-                        href="{{ path('app_logout') }}">Déconnexion</a>
-            </div>
-        {% endif %}
+    {% if app.user %}
+        <div class="mb-3">
+            Vous êtes connectée en tant que {{ app.user.username }}, <a
+                    href="{{ path('app_logout') }}">Déconnexion</a>
+        </div>
+    {% endif %}
+
 
         <div class="container">
             <div class="row">
-                <div class="col">
-                </div>
-                <div class="col">
-                    <div class="row text-center mt-4">
-                        <h1><span class="badge bg-secondary">Connectez-vous</span></h1>
+                <div class="col-md-5 mx-auto">
+                    <div id="first">
+                        <div class="myform form ">
+                            <div class="logo mb-3">
+                                <div class="col-md-12 text-center">
+                                    <h1>Alors bande de petits ........., toujours pas en sortie ?</h1>
+                                </div>
+                            </div>
+                            <form action="" method="post" name="login">
+                                <div class="form-group">
+                                   <h3><span class="badge bg-secondary ">Identifiez-vous</span></h3>
+                                    <input type="email" value="{{ last_username }}" name="email" id="inputEmail"
+                                           class="form-control" autocomplete="email" required autofocus>
+                                </div>
+                                <div class="form-group">
+                                    <h3><span class="badge bg-secondary">Mot de passe</span></h3>
+                                    <input type="password" name="password" id="inputPassword" class="form-control"
+                                           autocomplete="current-password" required>
+                                </div>
+                                <input type="hidden" name="_csrf_token"
+                                       value="{{ csrf_token('authenticate') }}">
 
 
-                        <div></div>
-                        <div></div>
-                        <h3><span class="badge bg-secondary">Identifiez-vous</span></h3>
-                        <input type="email" value="{{ last_username }}" name="email" id="inputEmail"
-                               class="form-control" autocomplete="email" required autofocus>
+                                    <div class="checkbox mb-3">
+                                        <label>
+                                            <input type="checkbox" name="_remember_me"> Se souvenir de moi
+                                        </label>
 
+                                    <a href="{{ path('main') }}">mot de passe oublié</a>
 
-                        <h3><span class="badge bg-secondary">Mot de passe</span></h3>
-                        <input type="password" name="password" id="inputPassword" class="form-control"
-                               autocomplete="current-password" required>
+                                    </div>
+                                <button class="btn btn-lg btn-primary" type="submit">
+                                    Connexion
+                                </button>
+                                <div class="form-group">
+                                    <p class="text-center">By signing up you accept our <a href="#">Terms Of Use</a></p>
+                                </div>
 
+                                <div class="col-md-12 ">
+                                    <div class="login-or">
+                                        <hr class="hr-or">
+                                        <span class="span-or">or</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <p class="text-center">
+                                        <a href="javascript:void();" class="google btn mybtn"><i
+                                                    class="fa fa-google-plus">
+                                            </i> Signup using Google
+                                        </a>
+                                    </p>
+                                </div>
+                                <div class="form-group">
+                                    <p class="text-center">Vous n'avez pas de compte ? <a href="#" id="signup">Enregistrez vous</a>
+                                    </p>
+                                </div>
+                            </form>
 
-                        <input type="hidden" name="_csrf_token"
-                               value="{{ csrf_token('authenticate') }}"
-                        >
-
-                        <div class="checkbox mb-3">
-                            <label>
-                                <input type="checkbox" name="_remember_me"> Remember me
-                            </label>
                         </div>
-
-
-                        <button class="btn btn-lg btn-primary" type="submit">
-                            Connexion
-                        </button>
                     </div>
+
+
                 </div>
-                <div class="col">
-                </div>
-
-
-
-
+            </div>
+            <div class="col">
+            </div>
+        </div>
     </form>
 {% endblock %}
