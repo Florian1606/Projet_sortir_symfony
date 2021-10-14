@@ -168,33 +168,33 @@
                                     <a href="{{ path('profil', {'id': sortie.organisateur.id} ) }}">{{ sortie.organisateur.pseudo }}</a>
                                 </td>
                                 {# BOUTON ACTIONS EN FONCTIONS DE CONDITIONS #}
-                                <td class="d-flex">
+                                <td class="inline-block">
                                     {# SI != DE USER CURRENT CREATEUR DE SORTIE #}
                                     {% if sortie.organisateur.id == app.user.id and sortie.etat.id == 1 %}
                                         <a href="{{ path('app_sortie_update',{'id':sortie.id}) }}"
-                                           class="btn btn-warning mx-2">Modifier</a>
+                                           class="btn btn-warning">Modifier</a>
                                     {% else %}
 
                                         <a href="{{ path('app_sortie_display',{'id':sortie.id}) }}"
-                                           class="btn btn-primary mx-2">Voir</a>
+                                           class="btn btn-primary">Voir</a>
 
                                     {% endif %}
                                     {# SI L'USER CURRENT EST INSCRIT A LA SORTIE #}
 
                                     {% if (app.user in sortie.participants ) %}
                                         <a href="#{# {{ path('sortie/desubscribe', {'idUser': app.user.id}, {'idSortie': sortie.id}) }} #}"
-                                           class="btn btn-danger mx-2">Se désister</a>
+                                           class="btn btn-danger">Se désister</a>
                                     {% endif %}
                                     {# SI L'USER CURRENT EST L'ORGANISATEUR DE LA SORTIE #}
                                     {% if sortie.organisateur.id == app.user.id and (sortie.etat.id == 2 or sortie.etat.id == 3) %}
                                         <a href="{{ path('app_sortie_cancel',{'id':sortie.id}) }}"
-                                           class="btn btn-danger mx-2">Annuler</a>
+                                           class="btn btn-danger">Annuler</a>
 
                                     {% endif %}
                                     {# SI L'USER CURRENT N'AS PAS PUBLIER SA SORTIE #}
                                     {% if sortie.etat.id == 1 and app.user.id == sortie.organisateur.id %}
                                         <a href="#{# {{ path('sortie/delete', {'id': sortie.id}) }} #}"
-                                           class="btn btn-success mx-2">Publier</a>
+                                           class="btn btn-success">Publier</a>
                                     {% endif %}
                                 </td>
                             </tr>
