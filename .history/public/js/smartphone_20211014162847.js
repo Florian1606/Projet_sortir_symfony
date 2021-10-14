@@ -1,0 +1,2 @@
+
+var largeur = window.innerWidth;
