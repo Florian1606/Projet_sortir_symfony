@@ -40,105 +40,98 @@
                         <div class="row g-3 mt-2">
                             <div class="col-md-3">
 
-                                <select class="btn btn-secondary dropdown-toggle btn-lg w-100" name="site"
-                                        id="site-select">
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        {% for site in sites %}
-                                            <option class="dropdown-item text-white" name="site" value="{{ site.id }}">
-                                                {{ site.nom | upper }}
-                                            </option>
-                                        {% endfor %}
-                                    </ul>
-                                </select>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="text" name="search" class="btn-lg form-control w-100"
-                                       placeholder="Le nom de la sortie contient...">
-                            </div>
-                            <div class="col-md-3">
-                                <input type="submit" class="btn btn-lg btn-secondary btn-block" value="Rechercher">
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false"
-                               aria-controls="collapseExample" class="advanced">
-                                Recherche avancée
-                                <i class="fa fa-angle-down"></i>
-                            </a>
-                            {# RECHERCHE AVANCEE #}
-                            <div class="collapse" id="collapseExample">
-                                <div class="d-flex justify-content-evenly m-4 flex-wrap">
-                                    <div class="d-flex flex-column flex-wrap">
-                                        <div class="row">
-                                            <label for="dateDebut">Commence le :</label>
-                                            <input type="date" name="dateDebut" id="dateDebut">
-                                        </div>
-                                        <div class="row">
-                                            <label for="dateFin">Termine le :
-                                            </label>
-                                            <input type="date" name="dateFin" id="dateFin">
-                                        </div>
-                                    </div>
-                                    <div class="">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="isSortiesOrganisateur"
-                                                   id="isSortiesOrganisateur">
-                                            <label class="form-check-label" for="isSortiesOrganisateur">
-                                                Sorties dont je suis l'organisateur/trice
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="isSortiesInscrit"
-                                                   id="isSortiesInscrit">
-                                            <label class="form-check-label" for="isSortiesInscrit">
-                                                Sorties auxquelles je suis inscrit/e
-                                            </label>
-                                        </div>
-                                        <div class="form-check ">
-                                            <input class="form-check-input" type="checkbox" name="isSortiesPasInscrit"
-                                                   id="isSortiesPasInscrit">
-                                            <label class="form-check-label" for="isSortiesPasInscrit">
-                                                Sorties auxquelles je ne suis pas inscrit/e
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="isSortiesPassees"
-                                                   id="isSortiesPassees">
-                                            <label class="form-check-label" for="isSortiesPassees">
-                                                Sorties passées
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-    </form>
-    {# FIN RECHERCHE AVANCEE #}
-    </div>
-    </div>
-    </div>
-    {# FIN SEARCHBAR #}
-    {# LISTE DES SORTIES #}
-    <div class="row">
-        {% if sorties | length == 0 %}
-        <h3 class="text-center mt-5">
-            Aucun souhait trouvé !</h3>
-        {% else %}
-    </div>
-    <div class="row mt-5">
-        <div class="col-md-12">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Nom de la sortie</th>
-                    <th>Date de sortie</th>
-                    <th>Clôture</th>
-                    <th>Inscrits/places</th>
-                    <th>Etat</th>
-                    {% if app.user %}
-                        <th>Inscrit</th>
-                    {% endif %}
-                    <th>Organisateur</th>
-                    <th>Actions</th>
+									<select class="btn btn-secondary dropdown-toggle btn-lg w-100" name="site" id="site-select">
+										<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+											{% for site in sites %}
+												<option class="dropdown-item text-white" name="site" value="{{ site.id }}">
+													{{ site.nom | upper }}
+												</option>
+											{% endfor %}
+										</ul>
+									</select>
+								</div>
+								<div class="col-md-6">
+									<input type="text" name="search" class="btn-lg form-control w-100" placeholder="Le nom de la sortie contient...">
+								</div>
+								<div class="col-md-3">
+									<input type="submit" class="btn btn-lg btn-secondary btn-block" value="Rechercher">
+								</div>
+							</div>
+							<div class="mt-3">
+								<a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" class="advanced">
+									Recherche avancée
+									<i class="fa fa-angle-down"></i>
+								</a>
+								{# RECHERCHE AVANCEE #}
+								<div class="collapse" id="collapseExample">
+									<div class="d-flex justify-content-evenly m-4 flex-wrap">
+										<div class="d-flex flex-column flex-wrap">
+											<div class="row">
+												<label for="dateDebut">Commence le :</label>
+												<input type="date" name="dateDebut" id="dateDebut">
+											</div>
+											<div class="row">
+												<label for="dateFin">Termine le :
+												</label>
+												<input type="date" name="dateFin" id="dateFin">
+											</div>
+										</div>
+										<div class="">
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" name="isSortiesOrganisateur" id="isSortiesOrganisateur">
+												<label class="form-check-label" for="isSortiesOrganisateur">
+													Sorties dont je suis l'organisateur/trice
+												</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" name="isSortiesInscrit" id="isSortiesInscrit">
+												<label class="form-check-label" for="isSortiesInscrit">
+													Sorties auxquelles je suis inscrit/e
+												</label>
+											</div>
+											<div class="form-check ">
+												<input class="form-check-input" type="checkbox" name="isSortiesPasInscrit" id="isSortiesPasInscrit">
+												<label class="form-check-label" for="isSortiesPasInscrit">
+													Sorties auxquelles je ne suis pas inscrit/e
+												</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" name="isSortiesPassees" id="isSortiesPassees">
+												<label class="form-check-label" for="isSortiesPassees">
+													Sorties passées
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+							{# FIN RECHERCHE AVANCEE #}
+						</div>
+					</div>
+				</div>
+				{# FIN SEARCHBAR #}
+				{# LISTE DES SORTIES #}
+				<div class="row">
+					{% if sorties | length == 0 %}
+						<h3 class="text-center mt-5">
+							Aucun souhait trouvé !</h3>
+					{% else %}
+						<div class="row mt-5">
+							<div class="col-md-12 table-responsive">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>Nom de la sortie</th>
+											<th>Date de sortie</th>
+											<th>Clôture</th>
+											<th>Inscrits/places</th>
+											<th>Etat</th>
+											{% if app.user %}
+												<th>Inscrit</th>
+											{% endif %}
+											<th>Organisateur</th>
+											<th>Actions</th>
+
 
                 </tr>
                 </thead>
