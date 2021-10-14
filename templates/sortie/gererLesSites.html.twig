@@ -1,32 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block fanch2 %}
-<div class="row text-center mt-4">
-    <h2> Gérer les Sites</h2>
-</div>
+{% block body %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
 
-<div class="container">
-    <h2>Filtrer les sites</h2>
-    <p>Proposer le nom du site de votre recherche</p>
-    <input class="form-control" id="myInput" type="text" placeholder="Search..">
-    <br>
-    <ul class="list-group" id="myList">
-        {% for site in sites %}
-            <li class="list-group-item">{{ site.nom | upper }}</li>
-        {% endfor %}
-    </ul>
-</div>
+    <div class="row text-center mt-4">
+        <h2> Gérer les Sites</h2>
+    </div>
+
+    <li class="container">
+        <h2>Filtrer les sites</h2>
+        <p>Proposer le nom du site de votre recherche</p>
+        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+        <br>
+        <ul class="list-group" id="myList">
+            {% for site in sites %}
+                <li class="list-group-item">{{ site.nom | upper }}&emsp; &emsp; &emsp;&emsp;&emsp;&emsp;<a
+                            href="{{ path('main') }}" class="text-reset">modifier</a> &emsp; <a
+                            href="{{ path('main') }}" class="text-reset">supprimer</a></li>
+            {% endfor %}
+              </ul>
+    <div class="row">
+        <div class="col">
+        </div>
+        <div class="col">
+            <div class="row mt-4">
+                <div>
+                    {{ form(formsite2) }}
+                </div>
+            </div>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+    <div class="input-group">
+        <input type="text" aria-label="First name" class="form-control">
 
 
+    </div>
+    </div>
 
-<script>
-    $(document).ready(function(){
-        $("#myInput").on("keyup", function() {
-            var value = $(this).val().toLowerCase();
-            $("#myList li").filter(function() {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+
+    <script>
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myList li").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
             });
         });
-    });
-</script>
+    </script>
 {% endblock %}
