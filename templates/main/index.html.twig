@@ -28,9 +28,9 @@
 
 	{# SEARCHBAR #}
 	{% if app.user %}
-		<form action="{{ path('app_search', {'id': app.user.id}) }}" method="post" class="form-inline">
+		<form action="{{ path('app_search', {'id': app.user.id}) }}" method="post" >
 		{% else %}
-			<form action="{{ path('app_search', {'id': 0}) }}" method="post" class="form-inline">
+			<form action="{{ path('app_search', {'id': 0}) }}" method="post" >
 			{% endif %}
 			<div class="container mt-5">
 				<div class="row d-flex justify-content-center flex-wrap">

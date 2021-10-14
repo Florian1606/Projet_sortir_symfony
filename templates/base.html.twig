@@ -56,16 +56,13 @@
                         Bienvenue {{ app.user.pseudo}}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item" href="{{ path('profil', {'id': app.user.id})}}">Mon profil</a>
+                        <a class="dropdown-item" href="{{ path('app_modifier', {'id': app.user.id})}}">Mon profil</a>
                         <a class="dropdown-item" href="{{ path('app_logout')}}">Déconnexion</a>
                     </div>
                 </li>
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
-                        </li>
-                        <li class="nav-item active">
-                            <a class="nav-link" href="{{ path('main') }}">Enregistrement</a>
                         </li>
                 {% endif %}
             </ul>
