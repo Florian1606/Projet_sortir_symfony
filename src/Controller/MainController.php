@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Participant;
 use App\Form\MonProfilType;
+use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
 use DateTime;
@@ -154,4 +155,25 @@ class MainController extends AbstractController
             'sites' => $sites,
         ]);
     }
+
+     /**
+     * @Route("/modifier/{id}",name="app_modifier")
+     */
+    public function modifier(EntityManagerInterface $em, ParticipantRepository $repo, $id): Response {
+
+        $participant = $repo->find($id);
+        // TODO : attribuer les élements de l'update
+        /*$participant ->setPseudo();
+        $participant->setPrenom();
+        $participant->setNom();
+        $participant->setTelephone();
+        $participant->setEmail();
+        $participant->setPassword();*/
+        // TODO : faire verif password
+        //$participant->setIdSite();
+
+        $em -> flush();
+        return $this->render("main/base.html.twig");
+    }
+
 }
