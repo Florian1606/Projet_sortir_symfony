@@ -8,9 +8,8 @@
 {% block body %}
 
 
-
 	<header class="bg-dark py-5">
-				<div class="container px-5">
+		<div class="container px-5">
 			<div class="row gx-5 justify-content-center">
 				<div class="col-lg-6">
 					<div class="text-center my-5">
@@ -24,13 +23,13 @@
 				</div>
 			</div>
 		</div>
-			</header>
+	</header>
 
 	{# SEARCHBAR #}
 	{% if app.user %}
-		<form action="{{ path('app_search', {'id': app.user.id}) }}" method="post" class="form-inline">
+		<form action="{{ path('app_search', {'id': app.user.id}) }}" method="post">
 		{% else %}
-			<form action="{{ path('app_search', {'id': 0}) }}" method="post" class="form-inline">
+			<form action="{{ path('app_search', {'id': 0}) }}" method="post">
 			{% endif %}
 			<div class="container mt-5">
 				<div class="row d-flex justify-content-center flex-wrap">
@@ -135,10 +134,9 @@
 										</tr>
 									</thead>
 									<tbody>
-
 										{% for sortie in sorties %}
 											{% if app.user %}
-												{% if sortie.etat.id == 1 and sortie.organisateur.id != app.user.id %}
+												{% if (sortie.etat.id == 7) or (sortie.etat.id == 1 and sortie.organisateur.id != app.user.id) or (sortie.etat.id == 5 and sortie.dateLimiteInscription|date_modify("+1 month")|date("U") < "now"|date("U") ) %}
 													{% else %}
 														<tr>
 															<td>{{ sortie.nom }}</td>
@@ -168,7 +166,7 @@
 															<td>
 																{# SI != DE USER CURRENT CREATEUR DE SORTIE #}
 																{% if sortie.organisateur.id == app.user.id and sortie.etat.id == 1 %}
-																	<a href="#{#{{ path('sortie/update', {'id': sortie.id}) }}#}" class="btn btn-warning">Modifier</a>
+																	<a href="{{ path('app_sortie_update',{'id':sortie.id}) }}" class="btn btn-warning">Modifier</a>
 																{% else %}
 
 																	<a href="{{ path('app_sortie_display',{'id':sortie.id}) }}" class="btn btn-primary">Voir</a>
@@ -193,25 +191,28 @@
 												{% endif %}
 											{% else %}
 												{# LISTE DE TOUTES LES SORTIES SANS USER CURRENT#}
-												{% if sortie.etat.id != 1  %}
-													<tr>
-														<td>{{ sortie.nom }}</td>
-														<td>{{ sortie.dateDebut |date('d/m/Y - H:i') }}</td>
-														<td>{{ sortie.dateLimiteInscription |date('d/m/Y') }}</td>
-														<td>{{ sortie.participants | length}}
-															/
-															{{ sortie.nbIncriptionMax }}</td>
-														<td>{{ sortie.etat.libelle }}
-														</td>
-														<td>
-															<a href="{{ path('profil', {'id': sortie.organisateur.id} ) }}">{{ sortie.organisateur.pseudo }}</a>
-														</td>
-														<td>
+												{% if (sortie.etat.id == 7) or  (sortie.etat.id == 5 and sortie.dateLimiteInscription|date_modify("+1 month")|date("U") < "now"|date("U"))  %}
+													{% else %}
+														{% if sortie.etat.id != 1 %}
+															<tr>
+																<td>{{ sortie.nom }}</td>
+																<td>{{ sortie.dateDebut |date('d/m/Y - H:i') }}</td>
+																<td>{{ sortie.dateLimiteInscription |date('d/m/Y') }}</td>
+																<td>{{ sortie.participants | length}}
+																	/
+																	{{ sortie.nbIncriptionMax }}</td>
+																<td>{{ sortie.etat.libelle }}
+																</td>
+																<td>
+																	<a href="{{ path('profil', {'id': sortie.organisateur.id} ) }}">{{ sortie.organisateur.pseudo }}</a>
+																</td>
+																<td>
 
-															<a href="{{ path('app_sortie_display',{'id':sortie.id}) }}" class="btn btn-primary">Voir</a>
+																	<a href="{{ path('app_sortie_display',{'id':sortie.id}) }}" class="btn btn-primary">Voir</a>
 
-														</td>
-													</tr>
+																</td>
+															</tr>
+														{% endif %}
 												{% endif %}
 											{% endif %}
 										{% endfor %}

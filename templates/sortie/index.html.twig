@@ -80,43 +80,49 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Lieu</label>
-                        {{ form_widget(formSortie.lieu) }}<img src="{{ asset('img/add-point.svg') }}"
+                        {{ form_widget(formSortie.lieu, {'id': 'test'}) }}<img src="{{ asset('img/add-point.svg') }}"
                                                                style="width: 30px;height: 30px;" alt=""></a>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Rue</label>
-                        <input type="text" class="form-control" value="" name="" disabled="disabled">
+                        <input type="text"id="rue" class="form-control" value="" name="" disabled="disabled">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Code Postal</label>
-                        <input type="text" class="form-control" value="" name="" disabled="disabled">
+                        <input type="text" id="cp" class="form-control" value="" name="" disabled="disabled">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Latitude</label>
-                        <input type="text" class="form-control" value="" name="" disabled="disabled">
+                        <input type="text" id="latitude" class="form-control" value="" name="" disabled="disabled">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Longitude</label>
-                        <input type="text" class="form-control" value="" name="" disabled="disabled">
+                        <input type="text" id="longitude" class="form-control" value="" name="" disabled="disabled">
                     </div>
-                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
                     <script>
-                        $(document).ready(function () {
-                            $("#sortie_lieu").change(function () {
-                                //alert("coucou");
+                        $(document).ready(function(){
+                            console.log('test');
+                            $("#test").change(function(){
                                 var id = $(this).val();
+                                jQuery.get("/sortie/getLieu/"+id, function(data, status){
 
-                                $.get("/get-code-p/" + id, function (data, status) {
+                                    var res=JSON.parse(data);
+                                    $("#rue").val(res.rue);
+                                    $("#longitude").val(res.long);
+                                    $("#cp").val(res.cp);
 
-                                    var res = JSON.parse(data);
-                                    $("#latitude").val(res);
+                                    $("#latitude").val(res.lat);
+
+
                                 });
                             });
                         });
                     </script>
-                    <input type="text" class="form-control" readonly value="" id="latitude">
+
 
                 </div>
+
                 {# Line 3 - Button #}
                 <div class="row">
                     <div class="col">

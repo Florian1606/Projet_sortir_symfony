@@ -6,12 +6,16 @@ use App\Repository\SiteRepository;
 use App\Entity\Sortie;
 use App\Entity\Participant;
 use App\Entity\Etat;
+use App\Entity\Ville;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
+use App\Repository\LieuRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
+use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -103,15 +107,75 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/update/{id}",name="app_sortie_update")
      */
-    public function updateSortie(SortieRepository $repo, Request $request, $id = 0): Response
+    public function updateSortie(SortieRepository $repo, Request $request,EntityManagerInterface $em, $id = 0): Response
     {
         $sortie = $repo->find($id);
         $form = $this->createForm(SortieType::class, $sortie);
+        $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
+
+
+        // Annuler -> Retour home page
+        if ($request->request->get("cancel")) {
+            return $this->redirectToRoute("main");
+        }
+
+        // Supprimer
+        if ($request->request->get("supprimer")) {
+            $sortie->setEtat($repoEtat->find(7));
+            $em->flush();
+            $this->addFlash('warning', 'Sortie supprimée !');
+            return $this->redirectToRoute("main");
+        }
+
+        // Enregistrer
+        if ($request->request->get("save")) {
+            $this->addFlash('sucess', 'ON A FAIT UN SAVE !');
+            return $this->redirectToRoute("main");
+        }
+        dump($request->request->get("add"));
+        // Publier
+        if ($request->request->get("add")) {
+            $sortie->setEtat($repoEtat->find(2));
+            $em->flush();
+            $this->addFlash('sucess', 'Sortie publiée !');
+            return $this->redirectToRoute("main");
+        }
+
+
+
+
+
+
         $titre = "Sortir.com - " . $sortie->getNom()." - Modification";
         $tab = compact("titre", "sortie");
         $tab["formSortie"] = $form->createView();
         return $this->render("sortie/modifierSortie.html.twig", $tab);
     }
+
+
+    /**
+     * @Route("/sortie/getLieu/{id}",name="app_sortie_get_lieu")
+     */
+    public function getLieu(LieuRepository $repo, EntityManagerInterface $em, $id): Response
+    {
+
+       $lieu =$repo->find($id);
+
+
+        $repoV = $this->getDoctrine()->getRepository(Ville::class);
+        $idVille = $lieu->getVille()->getId();
+
+       $ville = $repoV->findOneBy(array('id' => $lieu->getVille()->getId()));
+
+
+
+
+
+        return $this->json('{"cp":"'.$ville->getCodePostal().'","ville":"'.$ville->getNomVille().'","rue":"'.$lieu->getRue().'","lat":"'.$lieu->getLatitude().'","long":"'.$lieu->getLongitude().'"}');
+    }
+
+
+
 
 
 

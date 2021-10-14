@@ -1,0 +1,221 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil
+{% endblock %}
+{% block stylesheet %}
+	<link href="{{ asset('css/index.css') }}" rel="stylesheet">
+{% endblock %}
+{% block body %}
+	<header class="bg-dark py-5">
+		<div class="container px-5">
+			<div class="row gx-5 justify-content-center">
+				<div class="col-lg-6">
+					<div class="text-center my-5">
+						<h1 class="display-5 fw-bolder text-white mb-2">SORTEZ DE CHEZ VOUS !</h1>
+						<p class="lead text-white-50 mb-4">Participer ou organiser des sorties pour vous et votre ville</p>
+						<div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+							<a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('app_sortie_ajouter') }}">Ajouter une sortie</a>
+							<a class="btn btn-outline-light btn-lg px-4" href="#!">Learn More</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	{# SEARCHBAR #}
+	{% if app.user %}
+	<form action="{{ path('app_search', {'id': app.user.id}) }}" method="post" class="form-inline">
+	{% else %}
+		<form action="{{ path('app_search', {'id': 0}) }}" method="post" class="form-inline">
+
+		<div class="container mt-5">
+			<div class="row d-flex justify-content-center flex-wrap">
+				<div class="col ">
+					<div class="card p-3 py-4">
+						<h5>Démerde toi à chercher une sortie</h5>
+						<div class="row g-3 mt-2">
+							<div class="col-md-3">
+
+								<select class="btn btn-secondary dropdown-toggle btn-lg w-100" name="site" id="site-select">
+									<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+										{% for site in sites %}
+											<option class="dropdown-item text-white" name="site" value="{{ site.id }}">
+												{{ site.nom | upper }}
+											</option>
+										{% endfor %}
+									</ul>
+								</select>
+							</div>
+							<div class="col-md-6">
+								<input type="text" name="search" class="btn-lg form-control w-100" placeholder="Le nom de la sortie contient...">
+							</div>
+							<div class="col-md-3">
+								<input type="submit" class="btn btn-lg btn-secondary btn-block" value="Rechercher">
+							</div>
+						</div>
+						<div class="mt-3">
+							<a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" class="advanced">
+								Recherche avancée
+								<i class="fa fa-angle-down"></i>
+							</a>
+							{# RECHERCHE AVANCEE #}
+							<div class="collapse" id="collapseExample">
+								<div class="d-flex justify-content-evenly m-4 flex-wrap">
+									<div class="d-flex flex-column flex-wrap">
+										<div class="row">
+											<label for="dateDebut">Commence le :</label>
+											<input type="date" name="dateDebut" id="dateDebut">
+										</div>
+										<div class="row">
+											<label for="dateFin">Termine le :
+											</label>
+											<input type="date" name="dateFin" id="dateFin">
+										</div>
+									</div>
+									<div class="">
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" name="isSortiesOrganisateur" id="isSortiesOrganisateur">
+											<label class="form-check-label" for="isSortiesOrganisateur">
+												Sorties dont je suis l'organisateur/trice
+											</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" name="isSortiesInscrit" id="isSortiesInscrit">
+											<label class="form-check-label" for="isSortiesInscrit">
+												Sorties auxquelles je suis inscrit/e
+											</label>
+										</div>
+										<div class="form-check ">
+											<input class="form-check-input" type="checkbox"  name="isSortiesPasInscrit" id="isSortiesPasInscrit">
+											<label class="form-check-label" for="isSortiesPasInscrit">
+												Sorties auxquelles je ne suis pas inscrit/e
+											</label>
+										</div>
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" name="isSortiesPassees"  id="isSortiesPassees">
+											<label class="form-check-label" for="isSortiesPassees">
+												Sorties passées
+											</label>
+										</div>
+									</div>
+								</div>
+							</div>
+							</form>
+								{# FIN RECHERCHE AVANCEE #}
+							</div>
+						</div>
+					</div>
+					{# FIN SEARCHBAR #}
+					{# LISTE DES SORTIES #}
+					<div class="row">
+						{% if sorties | length == 0 %}
+							<h3 class="text-center mt-5">
+								Aucun souhait trouvé !</h3>
+						{% else %}
+							<div class="row mt-5">
+								<div class="col-md-12">
+									<table class="table table-striped">
+										<thead>
+											<tr>
+												<th>Nom de la sortie</th>
+												<th>Date de sortie</th>
+												<th>Clôture</th>
+												<th>Inscrits/places</th>
+												<th>Etat</th>
+												{% if app.user %}
+													<th>Inscrit</th>
+												{% endif %}
+												<th>Organisateur</th>
+												<th>Actions</th>
+
+											</tr>
+										</thead>
+										<tbody>
+
+											{% for sortie in sorties %}
+												{% if app.user %}
+													{% if sortie.etat.id == 1 and sortie.organisateur.id != app.user.id %}
+														{% else %}
+															<tr>
+																<td>{{ sortie.nom }}</td>
+																<td>{{ sortie.dateDebut |date('d/m/Y H:m') }}</td>
+																<td>{{ sortie.dateLimiteInscription |date('d/m/Y') }}</td>
+																<td>{{ sortie.participants | length}}
+																	/
+																	{{ sortie.nbIncriptionMax }}</td>
+																<td>{{ sortie.etat.libelle }}</td>
+																{% if sortie.participants | length == 0 %}
+																	<td></td>
+																{% else %}
+																	{% for participant in sortie.participants %}
+																		{% if app.user.id == participant.id %}
+																			<td>
+																				X
+																			</td>
+																		{% else %}
+																			<td></td>
+																		{% endif %}
+																	{% endfor %}
+																{% endif %}
+																<td>
+																	<a href="#{#{{ path('profil/detail', {'id': sortie.organisateur.id} ) }}#}">{{ sortie.organisateur.pseudo }}</a>
+																</td>
+																{# BOUTON ACTIONS EN FONCTIONS DE CONDITIONS #}
+																<td>
+																	{# SI != DE USER CURRENT CREATEUR DE SORTIE #}
+																	{% if sortie.organisateur.id == app.user.id and sortie.etat.id == 1 %}
+																		<a href="#{#{{ path('sortie/update', {'id': sortie.id}) }}#}" class="btn btn-warning">Modifier</a>
+																	{% else %}
+																		<a href="#{#{{ path('sortie/detail', {'id': sortie.id}) }}#}" class="btn btn-primary">Voir</a>
+																	{% endif %}
+																	{# SI L'USER CURRENT EST INSCRIT A LA SORTIE #}
+																	{% for participant in sortie.participants %}
+																		{% if participant.id == app.user.id %}
+																			<a href="#{#{{ path('sortie/desubscribe', {'idUser': app.user.id}, {'idSortie': sortie.id}) }}#}" class="btn btn-danger">Se désister</a>
+																		{% endif %}
+																	{% endfor %}
+																	{# SI L'USER CURRENT EST L'ORGANISATEUR DE LA SORTIE #}
+																	{% if sortie.organisateur.id == app.user.id and (sortie.etat.id == 2 or sortie.etat.id == 3) %}
+																		<a href="#{#{{ path('sortie/delete', {'id': sortie.id}) }}#}" class="btn btn-danger">Annuler</a>
+																	{% endif %}
+																	{# SI L'USER CURRENT N'AS PAS PUBLIER SA SORTIE #}
+																	{% if sortie.etat.id == 1 and app.user.id == sortie.organisateur.id %}
+																		<a href="#{#{{ path('sortie/delete', {'id': sortie.id}) }}#}" class="btn btn-success">Publier</a>
+																	{% endif %}
+																</td>
+															</tr>
+													{% endif %}
+												{% else %}
+													{# LISTE DE TOUTES LES SORTIES SANS USER CURRENT#}
+													{% if sortie.etat.id != 1  %}
+														<tr>
+															<td>{{ sortie.nom }}</td>
+															<td>{{ sortie.dateDebut |date('d/m/Y - H:i') }}</td>
+															<td>{{ sortie.dateLimiteInscription |date('d/m/Y') }}</td>
+															<td>{{ sortie.participants | length}}
+																/
+																{{ sortie.nbIncriptionMax }}</td>
+															<td>{{ sortie.etat.libelle }}
+															</td>
+															<td>
+																<a href="#{#{{ path('sortie/detail', {'id': sortie.organisateur.id} ) }}#}">{{ sortie.organisateur.pseudo }}</a>
+															</td>
+															<td>
+																<a href="#{#{{ path('sortie/detail', {'id': sortie.id}) }}#}" class="btn btn-primary">Voir</a>
+															</td>
+														</tr>
+													{% endif %}
+												{% endif %}
+											{% endfor %}
+										</tbody>
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endblock %}

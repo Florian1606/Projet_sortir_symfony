@@ -25,15 +25,17 @@ use App\Form\AjoutVilleType;
 use App\Entity\Ville;
 use App\Entity\Site;
 use App\Form\AjoutSiteType;
-
+use App\Service\FileUploader;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 class MainController extends AbstractController
 {
 
     /**
      * @Route("/main/profil/{id}", name="profil", requirements={"id":"\d+"})
      */
-    public function profil(ParticipantRepository $repo,$id=0): Response
+    public function profil(ParticipantRepository $repo, $id = 0): Response
     {
         $participant = $repo->find($id);
         return $this->render('main/profil.html.twig', [
@@ -93,8 +95,8 @@ class MainController extends AbstractController
         $formProfil = $form->createView();
         $tab = compact("titre", "formProfil");
 
-        return $this->render('main/creationProfil.html.twig',$tab);
-                }
+        return $this->render('main/creationProfil.html.twig', $tab);
+    }
 
     /**
      *@Route("/main/annuler",name="app_Annuler")
@@ -121,6 +123,7 @@ class MainController extends AbstractController
         $idCurrentUser = $id;
         $idSite = $request->request->get('site');
 
+        // Tableau des sorties à rentrer (doublon supprimée après)
         $sorties = [];
 
         /* 2/ Vérifier données vides ou non  et remplir un tableau en conséquence*/
@@ -170,25 +173,7 @@ class MainController extends AbstractController
         ]);
     }
 
-     /**
-     * @Route("/modifier/{id}",name="app_modifier")
-     */
-    public function modifier(EntityManagerInterface $em, ParticipantRepository $repo, $id): Response {
 
-        $participant = $repo->find($id);
-        // TODO : attribuer les élements de l'update
-        /*$participant ->setPseudo();
-        $participant->setPrenom();
-        $participant->setNom();
-        $participant->setTelephone();
-        $participant->setEmail();
-        $participant->setPassword();*/
-        // TODO : faire verif password
-        //$participant->setIdSite();
-
-        $em -> flush();
-        return $this->render("main/base.html.twig");
-    }
 
     /**
      *@Route("/main/gererLesVilles",name="app_gerer_les_villes")
@@ -199,10 +184,13 @@ class MainController extends AbstractController
         $formville = new Ville();
         // la creation du formulaire
         $form = $this->createForm(AjoutVilleType::class, $formville);
+
+
         // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
         $form->handleRequest($request);
         // verifier si on a soumis le form et si les donnes valide
         if ($form->isSubmitted() && $form->isValid()) {
+
             // génerer sql insert into et ajouter dans queue
 
             $em->persist($formville);
@@ -260,7 +248,43 @@ class MainController extends AbstractController
 
     }
 
-
-
+        /**
+         * @Route("/monProfil/{id}",name="app_modifier")
+         */
+        public function modifier( FileUploader $fileUploader, Request $request, EntityManagerInterface $em, ParticipantRepository $repo, UserPasswordHasherInterface $userPasswordHasherInterface, $id): Response
+    {
+        // instanciation de la classe produit
+        $participant = $repo->find($id);
+        $form = $this->createForm(MonProfilType::class, $participant);
+        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
+        $form->handleRequest($request);
+        // verifier si on a soumis le form et si les donnes valide
+        if ($form->isSubmitted() && $form->isValid()) {
+            $photoFile = $form->get('photo')->getData();
+            if ($photoFile) {
+                $photoFileName = $fileUploader->upload($photoFile);
+                $participant->setAvatarFilename($photoFileName);
+            }
+            // génerer sql insert into et ajouter dans queue
+            $participant->setIsAdmin(false);
+            $participant->setIsActif(false);
+            $participant->setPassword(
+                $userPasswordHasherInterface->hashPassword(
+                    $participant,
+                    $form->get('password')->getData()
+                )
+            );
+            // appliquer insert into dans la bdd
+            $em->persist($participant);
+            $em->flush();
+            //création de message de succes qui sera affiché sur la prochaine page
+            $this->addFlash('success', 'Votre profil   ' . $participant->getMonprofil() . ' a été modifié');
+            return $this->redirectToRoute("app_modifier", array('id' => $id));
+        }
+        $em->flush();
+        return $this->render('main/modifProfil.html.twig', [
+            'formProfil' => $form->createView(),
+        ]);
+    }
 
 }
