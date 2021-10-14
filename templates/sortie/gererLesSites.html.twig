@@ -1,24 +1,23 @@
 {% extends 'base.html.twig' %}
 
-
+{% block fanch2 %}
 <div class="row text-center mt-4">
-    <h2> Gérer les villes</h2>
+    <h2> Gérer les Sites</h2>
 </div>
 
-<h3> Filtrer les villes</h3>
-
 <div class="container">
-    <h2>Filterable List</h2>
-    <p>Proposer le nom de la ville de votre recherche</p>
+    <h2>Filtrer les sites</h2>
+    <p>Proposer le nom du site de votre recherche</p>
     <input class="form-control" id="myInput" type="text" placeholder="Search..">
     <br>
     <ul class="list-group" id="myList">
-        <li class="list-group-item">Nantes</li>
-        <li class="list-group-item">Saint Herblain</li>
-        <li class="list-group-item">Carquefou</li>
-        <li class="list-group-item">Orvault</li>
+        {% for site in sites %}
+            <li class="list-group-item">{{ site.nom | upper }}</li>
+        {% endfor %}
     </ul>
 </div>
+
+
 
 <script>
     $(document).ready(function(){
@@ -30,3 +29,4 @@
         });
     });
 </script>
+{% endblock %}
