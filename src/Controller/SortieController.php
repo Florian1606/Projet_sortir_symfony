@@ -22,45 +22,33 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class SortieController extends AbstractController
 {
-    /**
-     * @Route("/sortie", name="app_sortie")
-     */
-    public function index(): Response
-    {
-        return $this->render('sortie/index.html.twig', [
-            'controller_name' => 'SortieController',
-        ]);
-    }
 
     /**
-     * @Route("/sortie/add", name="app_sortie_ajouter")
+     * @Route("/sortie/add", name="app_sortie_add")
      */
-    public function ajouterSortie(EntityManagerInterface $em, Request $request, EtatRepository $etat, ValidatorInterface $validator): Response
+    public function addSortie(EntityManagerInterface $em, Request $request, EtatRepository $etat, ValidatorInterface $validator): Response
     {
-
-//       $request->request->set("dateDebut",new \DateTime($request->request->get("dateDebut")));
         // Instance de la class Sortie
         $sortie = new Sortie();
-        
-      
-
         // Création du formulaire depuis l'entité Sortie
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
-
+        // Si button cancel is clicked -> retour vers la home page
         if ($form->get('cancel')->isClicked()) {
             return $this->redirectToRoute("main");
         }
         // Contrôle si les données sont valides et si le formulaire est soumis.
         if ($form->isSubmitted() && $form->isValid()) {
-          
+            $repoPart = $this->getDoctrine()->getRepository(Participant::class);
+            // app current user -> organisateur
+            $sortie->setOrganisateur($repoPart->find($request->request->get("idCurrentUser")));
 
             //!\\ Backslash pour indiquer une fonction PHP //!\\
-            $repoPart = $this->getDoctrine()->getRepository(Participant::class);
-            $sortie->setOrganisateur($repoPart->find($request->request->get("test")));
-            $repo = $this->getDoctrine()->getRepository(Etat::class);
             $sortie->setDateDebut(new \DateTime($request->request->get("dateDebut")));
             $sortie->setDateLimiteInscription(new \DateTime($request->request->get("dateLimiteInscription")));
+            
+            // Set etat suivant event
+            $repo = $this->getDoctrine()->getRepository(Etat::class);
             if ($form->get('add')->isClicked()) {
                 $sortie->setEtat($repo->find(1));
                 $this->addFlash('success', 'Sortie publiée !');
@@ -74,7 +62,6 @@ class SortieController extends AbstractController
             return $this->redirectToRoute("main");
         }
         $errors = $validator->validate($sortie);
-dump($errors);
         $titre = "Création d'une sortie";
 
         $tab = compact("titre", "errors");
@@ -83,56 +70,51 @@ dump($errors);
         return $this->render('sortie/index.html.twig', $tab);
     }
 
-
     /**
-     *@Route("/afficherSortie",name="app_afficherSortie")
+     * @Route("/sortie/display/{id}",name="app_sortie_display")
      */
-    public function afficherSortie(Request $request):Response{
-        $titre= "Sortir.com - afficher une sortie";
-        $tab = compact("titre");
-        return $this->render("sortie/afficherUneSortie.html.twig",$tab);
+    public function displaySortie(SortieRepository $repo, Request $request, $id = 0): Response
+    {
+        $sortie = $repo->find($id);
+        $titre = "Sortir.com - " . $sortie->getNom();
+        $tab = compact("titre", "sortie");
+        return $this->render("sortie/afficherUneSortie.html.twig", $tab);
     }
 
     /**
-     *@Route("/annulerUneSortie/{id}",name="app_annulerUneSortie")
+     * @Route("/sortie/cancel/{id}",name="app_sortie_cancel")
      */
-    public function annulerUneSortie(SortieRepository $repo, EntityManagerInterface $em, $id):Response{
+    public function cancelSortie(SortieRepository $repo, EntityManagerInterface $em, $id): Response
+    {
         $sortie = $repo->find($id);
         $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
         $datenow = new \DateTime("now");
-        if ($sortie->getDateDebut() > $datenow ) {
-        $sortie->setEtat($repoEtat->find(6));
-        $this->addFlash('success', 'Sortie Annulée !');
+        if ($sortie->getDateDebut() > $datenow) {
+            $sortie->setEtat($repoEtat->find(6));
+            $em->flush();
+            $this->addFlash('success', 'Sortie Annulée !');
             return $this->redirectToRoute("main");
-        }
-        $titre= "Sortir.com - annuler une sortie";
-        $tab = compact("titre");
-        return $this->render("sortie/annulerUneSortie.html.twig",$tab);
+       }
+        $this->addFlash('warning', 'Vous ne pouvez pas annuler la sortie !');
+        return $this->render("main");
     }
-
 
 
     /**
-     *@Route("/gererLesVilles",name="app_gererLesVilles")
+     * @Route("/sortie/update/{id}",name="app_sortie_update")
      */
-    public function gererLesVilles(SiteRepository $siteRepo): Response
+    public function updateSortie(SortieRepository $repo, Request $request, $id = 0): Response
     {
-        $sites = $siteRepo->findAll();
-        return $this->render('sortie/gererLesVilles.html.twig', [
-            'sites' => $sites,
-        ]);
+        $sortie = $repo->find($id);
+        $form = $this->createForm(SortieType::class, $sortie);
+        $titre = "Sortir.com - " . $sortie->getNom()." - Modification";
+        $tab = compact("titre", "sortie");
+        $tab["formSortie"] = $form->createView();
+        return $this->render("sortie/modifierSortie.html.twig", $tab);
     }
-    
-    
-    /**
-     * @Route("/gererLesSites", name="app_gererLesSites")
-     */
-    public function gererLesSites(SiteRepository $siteRepo): Response
-    {
-               $sites = $siteRepo->findAll();
-        return $this->render('sortie/gererLesSites.html.twig', [
-            'sites' => $sites,
-        ]);
-    }
+
+
+
+
 
 }

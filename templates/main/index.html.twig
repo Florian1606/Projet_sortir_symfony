@@ -17,7 +17,7 @@
 						<h1 class="display-5 fw-bolder text-white mb-2">SORTEZ DE CHEZ VOUS !</h1>
 						<p class="lead text-white-50 mb-4">Participer ou organiser des sorties pour vous et votre ville</p>
 						<div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
-							<a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('app_sortie_ajouter') }}">Ajouter une sortie</a>
+							<a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('app_sortie_add') }}">Ajouter une sortie</a>
 							<a class="btn btn-outline-light btn-lg px-4" href="#!">Learn More</a>
 						</div>
 					</div>
@@ -170,7 +170,9 @@
 																{% if sortie.organisateur.id == app.user.id and sortie.etat.id == 1 %}
 																	<a href="#{#{{ path('sortie/update', {'id': sortie.id}) }}#}" class="btn btn-warning">Modifier</a>
 																{% else %}
-																	<a href="{{ path('app_afficherSortie', {'id': sortie.id}) }}" class="btn btn-primary">Voir</a>
+
+																	<a href="{{ path('app_sortie_display',{'id':sortie.id}) }}" class="btn btn-primary">Voir</a>
+
 																{% endif %}
 																{# SI L'USER CURRENT EST INSCRIT A LA SORTIE #}
 																{% for participant in sortie.participants %}
@@ -180,7 +182,7 @@
 																{% endfor %}
 																{# SI L'USER CURRENT EST L'ORGANISATEUR DE LA SORTIE #}
 																{% if sortie.organisateur.id == app.user.id and (sortie.etat.id == 2 or sortie.etat.id == 3) %}
-																	<a href="#{#{{ path('sortie/delete', {'id': sortie.id}) }}#}" class="btn btn-danger">Annuler</a>
+																	<a href="{{ path('app_sortie_cancel',{'id':sortie.id}) }}" class="btn btn-danger">Annuler</a>
 																{% endif %}
 																{# SI L'USER CURRENT N'AS PAS PUBLIER SA SORTIE #}
 																{% if sortie.etat.id == 1 and app.user.id == sortie.organisateur.id %}
@@ -205,7 +207,9 @@
 															<a href="{{ path('profil', {'id': sortie.organisateur.id} ) }}">{{ sortie.organisateur.pseudo }}</a>
 														</td>
 														<td>
-															<a href="{{ path('app_afficherSortie', {'id': sortie.id}) }}" class="btn btn-primary">Voir</a>
+
+															<a href="{{ path('app_sortie_display',{'id':sortie.id}) }}" class="btn btn-primary">Voir</a>
+
 														</td>
 													</tr>
 												{% endif %}
