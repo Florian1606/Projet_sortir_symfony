@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-
+use App\Repository\SiteRepository;
 use App\Entity\Sortie;
 use App\Entity\Participant;
 use App\Entity\Etat;
@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class SortieController extends AbstractController
 {
     /**
-     * @Route("/sortie", name="sortie")
+     * @Route("/sortie", name="app_sortie")
      */
     public function index(): Response
     {
@@ -53,10 +53,7 @@ class SortieController extends AbstractController
         }
         // Contrôle si les données sont valides et si le formulaire est soumis.
         if ($form->isSubmitted() && $form->isValid()) {
-            
-
-
-
+          
 
             //!\\ Backslash pour indiquer une fonction PHP //!\\
             $repoPart = $this->getDoctrine()->getRepository(Participant::class);
@@ -113,23 +110,29 @@ dump($errors);
         return $this->render("sortie/annulerUneSortie.html.twig",$tab);
     }
 
-    /**
-     *@Route("/gererLesSites",name="gererLesSites")
-     */
-    public function legal(Request $request):Response{
-        $titre= "Sortir.com - gérer les différents sites";
-        $tab = compact("titre");
-        return $this->render("sortie/gererLesSites.html.twig",$tab);
-    }
+
 
     /**
-     *@Route("/gererLesVilles",name="gererLesVilles")
+     *@Route("/gererLesVilles",name="app_gererLesVilles")
      */
-    public function contact(Request $request):Response{
-        $titre= "Sortir.com - gérer les différents villes";
-        $tab = compact("titre");
-        return $this->render("sortie/gererLesVilles.html.twig",$tab);
+    public function gererLesVilles(SiteRepository $siteRepo): Response
+    {
+        $sites = $siteRepo->findAll();
+        return $this->render('sortie/gererLesVilles.html.twig', [
+            'sites' => $sites,
+        ]);
     }
     
+    
+    /**
+     * @Route("/gererLesSites", name="app_gererLesSites")
+     */
+    public function gererLesSites(SiteRepository $siteRepo): Response
+    {
+               $sites = $siteRepo->findAll();
+        return $this->render('sortie/gererLesSites.html.twig', [
+            'sites' => $sites,
+        ]);
+    }
 
 }

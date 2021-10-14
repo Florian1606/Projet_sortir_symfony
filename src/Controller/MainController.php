@@ -15,19 +15,27 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Entity\Sortie;
+use App\Entity\Etat;
+use App\Form\SortieType;
+use App\Repository\EtatRepository;
 
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 class MainController extends AbstractController
 {
-    //    /**
-    //     * @Route("/main/profil/{id}", name="profil", requirements={"id":"\d+"})
-    //     */
-    //    public function detail(ParticipantRepository $repo,$id=0): Response
-    //    {
-    //        $participant = $repo->find($id);
-    //        $titre= "Sortir.com - Profil";
-    //        $tab = compact("titre","participant");
-    //        return $this->render('/main/profil.html.twig', $tab);
-    //    }
+
+    /**
+     * @Route("/main/profil/{id}", name="profil", requirements={"id":"\d+"})
+     */
+    public function profil(ParticipantRepository $repo,$id=0): Response
+    {
+        $participant = $repo->find($id);
+        return $this->render('main/profil.html.twig', [
+            'participant' => $participant,
+        ]);
+    }
 
 
     /**
@@ -44,7 +52,7 @@ class MainController extends AbstractController
     }
 
     /**
-     * @Route("/main/monProfil", name="app_monProfil")
+     * @Route("/main/creationProfil", name="app_creationProfil")
      */
     public function addForm(EntityManagerInterface $em, Request $request, UserPasswordHasherInterface $userPasswordHasherInterface): Response //entity manager ..... des données
     {
@@ -80,10 +88,12 @@ class MainController extends AbstractController
         $titre = "Sortir.com - Mon Profil";
         $formProfil = $form->createView();
         $tab = compact("titre", "formProfil");
-        return $this->render('main/monProfil.html.twig', $tab);
-    }
+
+        return $this->render('main/creationProfil.html.twig',$tab);
+                }
+
     /**
-     *@Route("/main",name="app_Annuler")
+     *@Route("/main/annuler",name="app_Annuler")
      */
     public function Annuler(Request $request): Response
     {

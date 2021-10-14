@@ -1,43 +1,90 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    <title>Pseudo</title>
+{% block stylesheet %}
+    <link href="{{ asset('css/login.css') }}" rel="stylesheet">
 {% endblock %}
 
-{% block body %}
+{% block fanch2 %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3></h3>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="row">
             <div class="col">
             </div>
             <div class="col">
-                <div class="row text-center mt-4">
-                    <h3>Prénom : </h3>
-                    <h3>Nom : </h3>
-                    <h3>Téléphone : </h3>
-                    <h3>Email : </h3>
-                    <h3>Ville de rattachement : </h3>
-                </div>
+            </div>
+            <div class="col">
+                <h3> {{ participant.pseudo }}</h3>
+            </div>
+            <div class="col">
             </div>
             <div class="col">
             </div>
         </div>
     </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3></h3>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col">
+                <h3>Prenom :</h3>
+                <h3>Nom : </h3>
+                <h3>Telephone : </h3>
+                <h3>Email : </h3>
+                <h3>Ville de Rattachement : </h3>
+            </div>
+            <div class="col">
+                <h3> {{ participant.prenom }}</h3>
+                <h3> {{ participant.nom }}</h3>
+                <h3> {{ participant.telephone }}</h3>
+                <h3> {{ participant.email }}</h3>
+                <h3> {{ participant.idSite.nom }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-success">Retour</button>
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3></h3>
+            </div>
+        </div>
+    </div>
+
+
+
 {% endblock %}
-
-{#{% block profil %}#}
-{#    <div class="row text-center mt-4">#}
-{#        <h2>Mon profil</h2>#}
-{#    </div>#}
-{#    <div class="row mt-5">#}
-{#        <ul>#}
-{#            {% for profil in participant %}#}
-{#                <li>#}
-{#                    <a href="{{path('profil',{'id':profil.id})}}">#}
-{#                        {{profil.title}} {{ wish.dateCreated|date("d/m/y") }}#}
-{#                    </a>#}
-{#                </li>#}
-{#            {% endfor %}#}
-{#        </ul>#}
-{#    </div>#}
-
-{#{% endblock %}#}
