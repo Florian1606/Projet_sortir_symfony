@@ -14,6 +14,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Length;
+use App\Entity\Product;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 
 class MonProfilType extends AbstractType
 {
@@ -57,7 +60,30 @@ class MonProfilType extends AbstractType
                     'attr' => ['class' => 'form-control']
                 )
             )
-            //  ->add('maPhoto')
+            ->add('photo', FileType::class, [
+                'label' => 'Ma photo',
+
+                // unmapped means that this field is not associated to any entity property
+                'mapped' => false,
+
+                // make it optional so you don't have to re-upload the PDF file
+                // every time you edit the Product details
+                'required' => false,
+
+                // unmapped fields can't define their validation using annotations
+                // in the associated entity, so you can use the PHP constraint classes
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2048k',
+                        'mimeTypes' => [
+                            'image/png',
+                            'image/jpeg',
+                            
+                        ],
+                        'mimeTypesMessage' => 'Veuillez mettre une photo valide ! (.jpg / .jpeg / .png )',
+                    ])
+                ],
+            ])
             ->add('Enregistrer', SubmitType::class);
     }
 

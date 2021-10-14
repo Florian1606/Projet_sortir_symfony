@@ -85,6 +85,11 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $pseudo;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $avatarFilename;
+
     public function __construct()
     {
         $this->sorties = new ArrayCollection();
@@ -328,5 +333,17 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getMonprofil()
     {
+    }
+
+    public function getAvatarFilename(): ?string
+    {
+        return $this->avatarFilename;
+    }
+
+    public function setAvatarFilename(?string $avatarFilename): self
+    {
+        $this->avatarFilename = $avatarFilename;
+
+        return $this;
     }
 }

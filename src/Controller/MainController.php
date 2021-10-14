@@ -19,7 +19,8 @@ use App\Entity\Sortie;
 use App\Entity\Etat;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
-
+use App\Repository\VilleRepository;
+use App\Service\FileUploader;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -171,9 +172,8 @@ class MainController extends AbstractController
     /**
      * @Route("/monProfil/{id}",name="app_modifier")
      */
-    public function modifier(Request $request, EntityManagerInterface $em, ParticipantRepository $repo, UserPasswordHasherInterface $userPasswordHasherInterface, $id): Response
+    public function modifier( FileUploader $fileUploader, Request $request, EntityManagerInterface $em, ParticipantRepository $repo, UserPasswordHasherInterface $userPasswordHasherInterface, $id): Response
     {
-
         // instanciation de la classe produit
         $participant = $repo->find($id);
 
@@ -182,7 +182,11 @@ class MainController extends AbstractController
         $form->handleRequest($request);
         // verifier si on a soumis le form et si les donnes valide
         if ($form->isSubmitted() && $form->isValid()) {
-            
+            $photoFile = $form->get('photo')->getData();
+            if ($photoFile) {
+                $photoFileName = $fileUploader->upload($photoFile);
+                $participant->setAvatarFilename($photoFileName);
+            }
             // génerer sql insert into et ajouter dans queue
             $participant->setIsAdmin(false);
             $participant->setIsActif(false);

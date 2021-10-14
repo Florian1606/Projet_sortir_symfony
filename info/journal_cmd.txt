@@ -24,7 +24,7 @@ composer require debug
 
 composer require symfony/translation
 
-
+Mettre à jour la bdd -> php bin/console doctrine:schema:update -f
 
 
 
