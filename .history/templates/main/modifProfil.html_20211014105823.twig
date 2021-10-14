@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	<title>Mon Profil</title>
+{% endblock %}
+
+
+{% block body %}
+	{%  if message %}
+		<div class="alert alert-{{ label }}" role="alert">
+			{{ message }}</div>
+    {% endfor %}
+		<div class="row text-center mt-4">
+			<h2>Mon profil</h2>
+		</div>
+
+		<div class="container">
+			<div class="row">
+				<div class="col">
+					<div class="row mt-4">
+						<div>
+							{% form_theme formProfil 'bootstrap_5_horizontal_layout.html.twig' %}
+							{{ form_start(formProfil) }}
+							{{ form_widget(formProfil) }}
+							<a href="" class="btn-lg btn-primary">
+								Annuler
+							</a>
+							{{ form_end(formProfil) }}
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	<title>Mon Profil</title>
+{% endblock %}
+
+
+{% block body %}
+	{% for message in app.flashes('success') %}
+		<div class="alert alert-success">
+			{{ message }}
+		</div>
+	{% endfor %}
+	<div class="row text-center mt-4">
+		<h2>Mon profil</h2>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col w-8">
+				<img src="{{ asset('uploads/avatars/' ~ app.user.avatarFilename)}}" class="img-thumbnail img-fluid" alt="..." max-width="200" max-height="100">
+			</div>
+			<div class="col">
+				<div class="row mt-4">
+					<div>
+						{% form_theme formProfil 'bootstrap_5_horizontal_layout.html.twig' %}
+						{{ form_start(formProfil) }}
+						{{ form_widget(formProfil) }}
+						<a href="{{ path('main') }}" class="btn-lg btn-primary">
+							Annuler
+						</a>
+						{{ form_end(formProfil) }}
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

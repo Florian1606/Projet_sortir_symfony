@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+    <title>Mon Profil</title>
+{% endblock %}
+{% set menu = [
+    ["Annuler","app_annuler"],
+] %}
+{% block body %}
+    <div class="row text-center mt-4">
+        <h2>Mon profil</h2>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+            </div>
+            <div class="col">
+                <div class="row mt-4">
+                    <div>
+                        {{ form(formProfil) }}
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+
+
+
