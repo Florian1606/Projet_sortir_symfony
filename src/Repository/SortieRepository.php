@@ -26,6 +26,8 @@ class SortieRepository extends ServiceEntityRepository
             ->andWhere('s.nom LIKE :search')
             ->innerJoin('s.site', 'si')
             ->andWhere('si.id =  :site')
+            ->andWhere('s.nom LIKE :search')
+            ->setParameter('search', '%'.$search.'%')
             ->setParameter('site', $idSite)
             ->setParameter('search', '%' . $search . '%')
             ->getQuery()
@@ -33,13 +35,15 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     // Retourne un tableau selon les dates rentrées et le site et site
-    public function findByDates($dateDebut, $dateFin, $idSite)
+    public function findByDates($dateDebut, $dateFin, $idSite, $search)
     {
         return $this->createQueryBuilder('s')
             ->innerJoin('s.site', 'si')
             ->andWhere('s.dateDebut >= :dateDebut')
             ->andWhere('s.dateLimiteInscription <= :dateFin')
             ->andWhere('si.id =  :site')
+            ->andWhere('s.nom LIKE :search')
+            ->setParameter('search', '%'.$search.'%')
             ->setParameter('site', $idSite)
             ->setParameter('dateDebut', $dateDebut)
             ->setParameter('dateFin', $dateFin)
@@ -48,12 +52,14 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     // Retourne un tableau selon si l'user current est l'organisateur/trice et le site
-    public function findByIdOrganisateur($idUserCurrent, $idSite)
+    public function findByIdOrganisateur($idUserCurrent, $idSite, $search)
     {
         return $this->createQueryBuilder('s')
             ->innerJoin('s.site', 'si')
             ->andWhere('s.organisateur  =  :id')
             ->andWhere('si.id =  :site')
+            ->andWhere('s.nom LIKE :search')
+            ->setParameter('search', '%'.$search.'%')
             ->setParameter('site', $idSite)
             ->setParameter('id', $idUserCurrent)
             ->getQuery()
@@ -61,13 +67,15 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     // Retourne un tableau selon l'inscription de l'user current et le site
-    public function findByIdParticipantInscrit($idUserCurrent, $idSite)
+    public function findByIdParticipantInscrit($idUserCurrent, $idSite, $search)
     {
         return $this->createQueryBuilder('s')
             ->leftJoin('s.participants', 'p')
             ->innerJoin('s.site', 'si')
             ->andWhere('p.id =  :id')
             ->andWhere('si.id =  :site')
+            ->andWhere('s.nom LIKE :search')
+            ->setParameter('search', '%'.$search.'%')
             ->setParameter('site', $idSite)
             ->setParameter('id', $idUserCurrent)
             ->getQuery()
@@ -75,29 +83,34 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     // Retourne un tableau selon la non inscription de l'user current et le site
-    public function findByIdParticipantNonInscrit($idUserCurrent, $idSite)
+    public function findByIdParticipantNonInscrit($sorties,$idUserCurrent, $idSite)
     {
-        return $this->createQueryBuilder('s')
-            ->leftJoin('s.participants', 'p')
-            ->innerJoin('s.site', 'si')
-            ->andWhere('p.id !=  :id')
-            ->andWhere('si.id =  :site')
-            ->setParameter('site', $idSite)
-            ->setParameter('id', $idUserCurrent)
-            ->getQuery()
-            ->getResult();
+
+        foreach ($sorties as $sortie) {
+             foreach ($sortie->getParticipants() as $participant) {
+                 if ($participant->getId() == $idUserCurrent || $idSite != $sortie->getSite()->getId()) {
+                     $id = array_search($sortie,$sorties);
+                     unset($sorties[$id]);
+                 }
+             }
+         }
+         return $sorties;
     }
 
     // Retourne un tableau des sorties passées
-    public function findByEtatPassees($idSite)
+    public function findByEtatPassees($idSite, $search)
     {
         return $this->createQueryBuilder('s')
             ->leftJoin('s.etat', 'e')
             ->innerJoin('s.site', 'si')
             ->andWhere('e.id =  5')
             ->andWhere('si.id =  :site')
+            ->andWhere('s.nom LIKE :search')
+            ->setParameter('search', '%'.$search.'%')
             ->setParameter('site', $idSite)
             ->getQuery()
             ->getResult();
     }
+
+
 }
