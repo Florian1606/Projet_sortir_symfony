@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Etat;
 use App\Entity\Lieu;
 use App\Entity\Site;
+use App\Entity\Ville;
 use App\Entity\Sortie;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -33,6 +34,7 @@ class SortieType extends AbstractType
                     'attr' => ['class' =>'form-control']
                 )
             )
+
             ->add('add', SubmitType::class)
             ->add('save', SubmitType::class)
             ->add('cancel', SubmitType::class);

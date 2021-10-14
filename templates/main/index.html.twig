@@ -168,7 +168,7 @@
 															<td>
 																{# SI != DE USER CURRENT CREATEUR DE SORTIE #}
 																{% if sortie.organisateur.id == app.user.id and sortie.etat.id == 1 %}
-																	<a href="#{#{{ path('sortie/update', {'id': sortie.id}) }}#}" class="btn btn-warning">Modifier</a>
+																	<a href="{{ path('app_sortie_update',{'id':sortie.id}) }}" class="btn btn-warning">Modifier</a>
 																{% else %}
 																	<a href="{{ path('app_sortie_display',{'id':sortie.id}) }}" class="btn btn-primary">Voir</a>
 																{% endif %}

@@ -24,9 +24,8 @@
 
                         <div class="mb-3">
                             <label class="form-label">Date et heure de la sortie :</label>
-                            <input type="datetime-local" class="form-control" value="{{ sortie.dateDebut | date("YYYY-MM-DDThh:mm") }}"
-{#                                   value="{{ sortie.dateDebut | date('d-m-Y') }}//T#}
-{#{{ sortie.dateDebut | date('H:i') }}"#}
+                            <input type="datetime-local" class="form-control" value="{{ sortie.dateDebut | date("Y-m-d") }}T{{ sortie.dateDebut | date("h:m") }}"
+
 
                                    name="dateDebut">
                         </div>
@@ -34,7 +33,7 @@
                         <div class="mb-3">
                             <label class="form-label">Date limlite d'inscription</label>
                             <input type="datetime-local" class="form-control"
-                                   value=""
+                                   value="{{ sortie.dateLimiteInscription | date("Y-m-d") }}T{{ sortie.dateLimiteInscription | date("h:m") }}"
                                    name="dateLimiteInscription">
                         </div>
 
@@ -112,24 +111,24 @@
                         <button type="submit" name="save" id="{{ field_name(formSortie.save) }}" class="btn btn-primary">Enregistrer</button>
                     </div>
                     <div class="col">
-                        <button type="submit" name="publish" id="{{ field_name(formSortie.add) }}" class="btn btn-primary">Publier la
+                        <button type="submit" id="{{ field_name(formSortie.add) }}" name="add" value="add" class="btn btn-primary">Publier la
                             sortie
                         </button>
                     </div>
                     <div class="col">
-                        <button type="submit" id="{{ field_name(formSortie.cancel) }}" value="cancel" class="btn btn-primary">Supprimer la sortie</button>
+                        <button type="submit" name="supprimer" value="cancel" class="btn btn-primary">Supprimer la sortie</button>
                     </div>
 
                     <div class="col">
-                        <button type="submit" id="{{ field_name(formSortie.cancel) }}" value="cancel" class="btn btn-primary">Annuler</button>
+                        <button type="submit" name="cancel" id="{{ field_name(formSortie.cancel) }}" value="cancel" class="btn btn-primary">Annuler</button>
                     </div>
+
 
                 </div>
             </div>
 
         </div>
-        {# {{ path('app_add',{'id':sortie.id}) }} #}
-        {#    {{ form_widget(formSortie._token) }}#}
+
     </div>
     {{ form_rest(formSortie) }}
     {{ form_end(formSortie) }}
