@@ -98,7 +98,22 @@
                     <label class="form-label">Longitude</label>
                     <input type="text" class="form-control" value="" name="" disabled="disabled">
                 </div>
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                <script>
+                    $(document).ready(function(){
+                        $("#sortie_lieu").change(function(){
+                            //alert("coucou");
+                            var id = $(this).val();
 
+                            $.get("/get-code-p/"+id, function(data, status){
+
+                                var res=JSON.parse(data);
+                                $("#latitude").val(res);
+                            });
+                        });
+                    });
+                </script>
+                <input type="text" class="form-control" readonly value="" id="latitude">
 
             </div>
 {#             Line 3 - Button#}

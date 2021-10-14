@@ -10,6 +10,7 @@ use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\ParticipantRepository;
 use App\Repository\SortieRepository;
+use App\Repository\WishRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,23 +42,14 @@ class SortieController extends AbstractController
 //       $request->request->set("dateDebut",new \DateTime($request->request->get("dateDebut")));
         // Instance de la class Sortie
         $sortie = new Sortie();
-        
-      
-
         // Création du formulaire depuis l'entité Sortie
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
-
         if ($form->get('cancel')->isClicked()) {
             return $this->redirectToRoute("main");
         }
         // Contrôle si les données sont valides et si le formulaire est soumis.
         if ($form->isSubmitted() && $form->isValid()) {
-            
-
-
-
-
             //!\\ Backslash pour indiquer une fonction PHP //!\\
             $repoPart = $this->getDoctrine()->getRepository(Participant::class);
             $sortie->setOrganisateur($repoPart->find($request->request->get("test")));
@@ -88,11 +80,13 @@ dump($errors);
 
 
     /**
-     *@Route("/afficherSortie",name="app_afficherSortie")
+     *@Route("/afficherSortie/{id}",name="app_afficherSortie")
      */
-    public function afficherSortie(Request $request):Response{
+    public function afficherSortie(SortieRepository $repo,Request $request, $id = 0):Response{
+
+        $sortie = $repo->find($id);
         $titre= "Sortir.com - afficher une sortie";
-        $tab = compact("titre");
+        $tab = compact("titre",'sortie');
         return $this->render("sortie/afficherUneSortie.html.twig",$tab);
     }
 
@@ -129,6 +123,21 @@ dump($errors);
         $titre= "Sortir.com - gérer les différents villes";
         $tab = compact("titre");
         return $this->render("sortie/gererLesVilles.html.twig",$tab);
+    }
+
+    /**
+     *@Route("/get-code-p/{id}",name="getCode")
+     */
+    public function getCodeP(Request $request, SortieRepository $repo,$id =0):Response{
+
+//        $tab = $repo->find($id);
+        $tab=[
+            "0"=>"error",
+            "1"=>"44500",
+            "3"=>"75222",
+            "2"=>"35500"
+        ];
+        return  $this->json('{"code": '.$tab[$id].'}');
     }
     
 
