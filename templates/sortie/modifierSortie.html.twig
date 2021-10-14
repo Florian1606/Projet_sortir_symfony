@@ -14,7 +14,7 @@
 
                 <div class="col">
                     {{ form_start(formSortie) }}
-                    <form action="{{ path("app_sortie_ajouter") }}" method="post">
+
                         <div class="mb-3">
                             <label class="form-label" for="nom">Nom de la sortie :</label>
                             <input type="text" name="{{ field_name(formSortie.nom) }}"
@@ -24,9 +24,9 @@
 
                         <div class="mb-3">
                             <label class="form-label">Date et heure de la sortie :</label>
-                            <input type="datetime-local" class="form-control"
-                                   value="{{ sortie.dateDebut | date('d-m-Y') }}//T
-{{ sortie.dateDebut | date('H:i') }}"
+                            <input type="datetime-local" class="form-control" value="{{ sortie.dateDebut | date("YYYY-MM-DDThh:mm") }}"
+{#                                   value="{{ sortie.dateDebut | date('d-m-Y') }}//T#}
+{#{{ sortie.dateDebut | date('H:i') }}"#}
 
                                    name="dateDebut">
                         </div>
@@ -62,22 +62,15 @@
 
                 {#             Col 2#}
                 <div class="col">
-                    <div class="mb-3">
-                        <label class="form-label">Ville Organisatrice</label>
-                        <input type="text" class="form-control" value="" name="site" disabled="disabled">
-                    </div>
 
-                    {%  if app.user %}
-                        <input type="hidden" class="form-control" value="{{ app.user.id }}" name="test">
-                    {%  endif %}
-                    <div class="mb-3">
-                        <label class="form-label">Ville</label>
-                        <input type="text" class="form-control" value="" name="">
-                    </div>
+
                     <div class="mb-3">
                         <label class="form-label">Lieu</label>
-                        {{ form_widget(formSortie.lieu) }}<img src="{{ asset('img/add-point.svg') }}"
-                                                               style="width: 30px;height: 30px;" alt=""></a>
+                        {{ form_widget(formSortie.lieu) }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ville</label>
+                        <input type="text" class="form-control" value="" name="" disabled="disabled">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Rue</label>
