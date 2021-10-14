@@ -139,6 +139,35 @@ dump($errors);
         ];
         return  $this->json('{"code": '.$tab[$id].'}');
     }
+
+    /**
+     *@Route("/sortie/update/{id}",name="app_update_sortie")
+     */
+    public function updateSortie(SortieRepository $repo,  EntityManagerInterface $em, $id,Request $request):Response{
+        $sortie = $repo->find($id);
+        
+        $form = $this->createForm(SortieType::class, $sortie);
+
+        if (!$sortie) {
+            throw $this->createNotFoundException(
+                'No product found for id '.$id
+            );
+        }
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $repoPart = $this->getDoctrine()->getRepository(Participant::class);
+            $sortie->setDateDebut(new \DateTime($request->request->get("dateDebut")));
+            $sortie->setDateLimiteInscription(new \DateTime($request->request->get("dateLimiteInscription")));
+
+            $em->flush();
+        }
+        $titre= "Sortir.com - Modifier une sortie";
+
+        $tab = compact("titre","sortie");
+        $tab["formSortie"] = $form->createView();
+        return $this->render("sortie/modifierSortie.html.twig",$tab);
+    }
     
 
 }
