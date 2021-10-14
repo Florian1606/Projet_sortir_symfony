@@ -19,8 +19,12 @@ use App\Entity\Sortie;
 use App\Entity\Etat;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
-
+use App\Repository\VilleRepository;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use App\Form\AjoutVilleType;
+use App\Entity\Ville;
+use App\Entity\Site;
+use App\Form\AjoutSiteType;
 
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 class MainController extends AbstractController
@@ -83,7 +87,7 @@ class MainController extends AbstractController
             $this->addFlash('success', 'le titre   ' . $profil->getMonprofil() . ' a été ajoute');
             //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
             $id = $profil->getId();
-            return $this->redirectToRoute("app_monProfil", array('id' => $id = $profil->getId()));
+            return $this->redirectToRoute("app_creationProfil", array('id' => $id = $profil->getId()));
         }
         $titre = "Sortir.com - Mon Profil";
         $formProfil = $form->createView();
@@ -185,5 +189,78 @@ class MainController extends AbstractController
         $em -> flush();
         return $this->render("main/base.html.twig");
     }
+
+    /**
+     *@Route("/main/gererLesVilles",name="app_gerer_les_villes")
+     */
+    public function gererLesVilles(Request $request,VilleRepository $villeRepo,EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
+    {
+        // instanciation de la classe produit
+        $formville = new Ville();
+        // la creation du formulaire
+        $form = $this->createForm(AjoutVilleType::class, $formville);
+        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
+        $form->handleRequest($request);
+        // verifier si on a soumis le form et si les donnes valide
+        if ($form->isSubmitted() && $form->isValid()) {
+            // génerer sql insert into et ajouter dans queue
+
+            $em->persist($formville);
+            // appliquer insert into dans la bdd
+            $em->flush();
+            // redirect vers la liste wish
+            //création de message de succes qui sera affiché sur la prochaine page
+            $this->addFlash('success', 'la ville   '  . ' a été ajoute');
+            //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
+            $id = $formville->getId();
+            return $this->redirectToRoute("app_gerer_les_villes", array('id' => $id = $formville->getId()));
+        }
+        $titre = "Sortir.com - gererville";
+
+            $villes = $villeRepo->findAll();
+            return $this->render('sortie/gererLesVilles.html.twig', [
+                'villes' => $villes,
+                'formville2'=> $form->createView(),
+            ]);
+            }
+
+    /**
+     *@Route("/main/gererLesSites",name="app_gerer_les_sites")
+     */
+    public function gererLesSites(Request $request,SiteRepository $siteRepo,EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
+    {
+        // instanciation de la classe produit
+        $formsite = new Site();
+        // la creation du formulaire
+        $form = $this->createForm(AjoutSiteType::class, $formsite);
+        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
+        $form->handleRequest($request);
+        // verifier si on a soumis le form et si les donnes valide
+        if ($form->isSubmitted() && $form->isValid()) {
+            // génerer sql insert into et ajouter dans queue
+
+            $em->persist($formsite);
+            // appliquer insert into dans la bdd
+            $em->flush();
+            // redirect vers la liste wish
+            //création de message de succes qui sera affiché sur la prochaine page
+            $this->addFlash('success', 'le site   '  . ' a été ajoute');
+            //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
+            $id = $formsite->getId();
+            return $this->redirectToRoute("app_gerer_les_sites", array('id' => $id = $formsite->getId()));
+        }
+        $titre = "Sortir.com - gererville";
+
+        $sites = $siteRepo->findAll();
+        return $this->render('sortie/gererLesSites.html.twig', [
+            'sites' => $sites,
+            'formsite2'=> $form->createView(),
+            ]);
+
+
+    }
+
+
+
 
 }
