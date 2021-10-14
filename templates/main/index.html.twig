@@ -162,7 +162,7 @@
 																{% endfor %}
 															{% endif %}
 															<td>
-																<a href="#{#{{ path('profil/detail', {'id': sortie.organisateur.id} ) }}#}">{{ sortie.organisateur.pseudo }}</a>
+																<a href="{{ path('profil', {'id': sortie.organisateur.id} ) }}">{{ sortie.organisateur.pseudo }}</a>
 															</td>
 															{# BOUTON ACTIONS EN FONCTIONS DE CONDITIONS #}
 															<td>
@@ -170,7 +170,7 @@
 																{% if sortie.organisateur.id == app.user.id and sortie.etat.id == 1 %}
 																	<a href="#{#{{ path('sortie/update', {'id': sortie.id}) }}#}" class="btn btn-warning">Modifier</a>
 																{% else %}
-																	<a href="#{#{{ path('sortie/detail', {'id': sortie.id}) }}#}" class="btn btn-primary">Voir</a>
+																	<a href="{{ path('app_afficherSortie', {'id': sortie.id}) }}" class="btn btn-primary">Voir</a>
 																{% endif %}
 																{# SI L'USER CURRENT EST INSCRIT A LA SORTIE #}
 																{% for participant in sortie.participants %}
@@ -202,10 +202,10 @@
 														<td>{{ sortie.etat.libelle }}
 														</td>
 														<td>
-															<a href="#{#{{ path('sortie/detail', {'id': sortie.organisateur.id} ) }}#}">{{ sortie.organisateur.pseudo }}</a>
+															<a href="{{ path('profil', {'id': sortie.organisateur.id} ) }}">{{ sortie.organisateur.pseudo }}</a>
 														</td>
 														<td>
-															<a href="#{#{{ path('sortie/detail', {'id': sortie.id}) }}#}" class="btn btn-primary">Voir</a>
+															<a href="{{ path('app_afficherSortie', {'id': sortie.id}) }}" class="btn btn-primary">Voir</a>
 														</td>
 													</tr>
 												{% endif %}
