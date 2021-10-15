@@ -142,10 +142,6 @@ class SortieController extends AbstractController
         }
 
 
-
-
-
-
         $titre = "Sortir.com - " . $sortie->getNom()." - Modification";
         $tab = compact("titre", "sortie");
         $tab["formSortie"] = $form->createView();
@@ -161,15 +157,10 @@ class SortieController extends AbstractController
 
        $lieu =$repo->find($id);
 
-
         $repoV = $this->getDoctrine()->getRepository(Ville::class);
         $idVille = $lieu->getVille()->getId();
 
        $ville = $repoV->findOneBy(array('id' => $lieu->getVille()->getId()));
-
-
-
-
 
         return $this->json('{"cp":"'.$ville->getCodePostal().'","ville":"'.$ville->getNomVille().'","rue":"'.$lieu->getRue().'","lat":"'.$lieu->getLatitude().'","long":"'.$lieu->getLongitude().'"}');
     }
