@@ -46,8 +46,24 @@
         <ul class="navbar-nav ml-auto topnav">
 
 
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ path('app_gerer_les_villes') }}">Villes</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ path('app_gerer_les_sites') }}">Sites</a>
+            </li>
+
+
 
             <ul class="nav navbar-nav navbar-right align-items-center">
+
+                <ul class="navbar-nav ml-auto topnav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ path('main') }}">Accueil</a>
+                </li>
+                </ul>
+
+
             {% if app.user %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
