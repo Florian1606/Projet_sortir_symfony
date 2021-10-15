@@ -1,169 +1,155 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello SortieController!{% endblock %}
+{% block title %}Sortir.com - Créer une sortie{% endblock %}
 
 {% block body %}
 
-    <h2>Créer une sortie</h2>
 
-    <div class="container">
+<div class="container">
+    <div class="row mt-3"><h1>Créer une sortie</h1></div>
+
+
+    <div class="row mt-3">
+
+        {% for item in errors %}
+            <div class="alert alert-danger mt-2" role="alert">
+                {{ item.message }}
+            </div>
+        {% endfor %}
         <div class="row">
 
-            {% for item in errors %}
-                <div class="alert alert-danger mt-2" role="alert">
-                    {{ item.message }}
-                </div>
-            {% endfor %}
-            <div class="row">
-
-                <div class="col">
-                    {{ form_start(formSortie) }}
-                    <form action="{{ path("app_sortie_add") }}" method="post">
-                        <div class="mb-3">
-                            <label class="form-label" for="nom">Nom de la sortie :</label>
-                            <input type="text" name="{{ field_name(formSortie.nom) }}"
-                                   value="{{ field_value(formSortie.nom) }}" class="form-control"
-                                   id="exampleFormControlInput1">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Date et heure de la sortie :</label>
-                            <input type="datetime-local" class="form-control"
-                                   value=""
-
-                                   name="dateDebut">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Date limite d'inscription</label>
-                            <input type="datetime-local" class="form-control"
-                                   value=""
-                                   name="dateLimiteInscription">
-                        </div>
-
-
-                        <div class="mb-3">
-                            <label class="form-label">Nombre d'inscription Max</label>
-                            <input type="number" class="form-control"
-                                   value="{{ field_value(formSortie.nbIncriptionMax) }}"
-                                   name="{{ field_name(formSortie.nbIncriptionMax) }}">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Durée ?</label>
-                            <input type="number" class="form-control" value="{{ field_value(formSortie.duree) }}"
-                                   name="{{ field_name(formSortie.duree) }}" step=15> minutes
-                        </div>
-
-
-                        <div class="mb-3">
-                            <label class="form-label">Description et infos</label>
-                            <textarea class="form-control" id="{{ field_name(formSortie.description) }}"
-                                      name="{{ field_name(formSortie.description) }}"
-                                      rows="3">{{ field_value(formSortie.description) }}</textarea>
-                        </div>
-                </div>
-
-                {# Col 2 #}
-                <div class="col">
+            <div class="col">
+                {{ form_start(formSortie) }}
+                <form action="{{ path("app_sortie_add") }}" method="post">
                     <div class="mb-3">
-                        <label class="form-label">Ville Organisatrice</label>
-                        <input type="text" class="form-control" value="" name="site" disabled="disabled">
+                        <label class="form-label" for="nom">Nom de la sortie :</label>
+                        <input type="text" name="{{ field_name(formSortie.nom) }}"
+                               value="{{ field_value(formSortie.nom) }}" class="form-control"
+                               id="exampleFormControlInput1">
                     </div>
 
-                    {% if app.user %}
-                        <input type="hidden" class="form-control" value="{{ app.user.id }}" name="idCurrentUser">
-                    {% endif %}
                     <div class="mb-3">
-                        <label class="form-label">Ville</label>
-                        <input type="text" class="form-control" value="" name="">
+                        <label class="form-label">Date et heure de la sortie :</label>
+                        <input type="datetime-local" class="form-control"
+                               value=""
+
+                               name="dateDebut">
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label">Lieu</label>
-                        {{ form_widget(formSortie.lieu, {'id': 'test'}) }}<img src="{{ asset('img/add-point.svg') }}"
-                                                               style="width: 30px;height: 30px;" alt=""></a>
+                        <label class="form-label">Date limite d'inscription</label>
+                        <input type="datetime-local" class="form-control"
+                               value=""
+                               name="dateLimiteInscription">
                     </div>
+
+
                     <div class="mb-3">
-                        <label class="form-label">Rue</label>
-                        <input type="text"id="rue" class="form-control" value="" name="" disabled="disabled">
+                        <label class="form-label">Nombre d'inscription Max</label>
+                        <input type="number" class="form-control"
+                               value="{{ field_value(formSortie.nbIncriptionMax) }}"
+                               name="{{ field_name(formSortie.nbIncriptionMax) }}">
                     </div>
+
                     <div class="mb-3">
-                        <label class="form-label">Code Postal</label>
-                        <input type="text" id="cp" class="form-control" value="" name="" disabled="disabled">
+                        <label class="form-label">Durée ?</label>
+                        <div class="d-flex align-items-center"><input type="number" class="form-control mr-1"
+                                                                      value="{{ field_value(formSortie.duree) }}"
+                                                                      name="{{ field_name(formSortie.duree) }}" step=15>
+                            <span>minutes</span></div>
                     </div>
+
+
                     <div class="mb-3">
-                        <label class="form-label">Latitude</label>
-                        <input type="text" id="latitude" class="form-control" value="" name="" disabled="disabled">
+                        <label class="form-label">Description et infos</label>
+                        <textarea class="form-control" id="{{ field_name(formSortie.description) }}"
+                                  name="{{ field_name(formSortie.description) }}"
+                                  rows="3">{{ field_value(formSortie.description) }}</textarea>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Longitude</label>
-                        <input type="text" id="longitude" class="form-control" value="" name="" disabled="disabled">
-                    </div>
-
-                    <script>
-                        $(document).ready(function(){
-                            console.log('test');
-                            $("#test").change(function(){
-                                var id = $(this).val();
-                                jQuery.get("/sortie/getLieu/"+id, function(data, status){
-
-                                    var res=JSON.parse(data);
-                                    $("#rue").val(res.rue);
-                                    $("#longitude").val(res.long);
-                                    $("#cp").val(res.cp);
-
-                                    $("#latitude").val(res.lat);
-
-
-                                });
-                            });
-                        });
-                    </script>
-
-
-                </div>
-
-                {# Line 3 - Button #}
-                <div class="row">
-                    <div class="col">
-                        <button type="submit" name="save" id="{{ field_name(formSortie.save) }}"
-                                class="btn btn-primary">Enregistrer
-                        </button>
-                    </div>
-                    <div class="col">
-                        <button type="submit" name="publish" id="{{ field_name(formSortie.add) }}"
-                                class="btn btn-primary">Publier la
-                            sortie
-                        </button>
-                    </div>
-                    <div class="col">
-                        <button type="submit" id="{{ field_name(formSortie.cancel) }}" value="cancel"
-                                class="btn btn-primary">Annuler
-                        </button>
-                    </div>
-
-                </div>
             </div>
 
-{#             Line 3 - Button#}
-            <div class="row">
-                <div class="col">
-                    <button type="submit" name="save" id="{{ field_name(formSortie.save) }}" class="btn btn-primary">Enregistrer</button>
+            {# Col 2 #}
+            <div class="col">
+                <div class="mb-3">
+                    <label class="form-label">Ville Organisatrice</label>
+                    <input type="text" class="form-control" value="" name="site" disabled="disabled">
                 </div>
-                <div class="col">
-                    <button type="submit" name="publish" id="{{ field_name(formSortie.add) }}" class="btn btn-primary">Publier la
+
+                {% if app.user %}
+                    <input type="hidden" class="form-control" value="{{ app.user.id }}" name="idCurrentUser">
+                {% endif %}
+                <div class="mb-3">
+                    <label class="form-label">Ville</label>
+                    <input type="text" id="ville" class="form-control" value="" name="">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Lieu</label>
+                    {{ form_widget(formSortie.lieu, {'id': 'lieu-widget'}) }}
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Rue</label>
+                    <input type="text" id="rue" class="form-control" value="" name="" disabled="disabled">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Code Postal</label>
+                    <input type="text" id="cp" class="form-control" value="" name="" disabled="disabled">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Latitude</label>
+                    <input type="text" id="latitude" class="form-control" value="" name="" disabled="disabled">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Longitude</label>
+                    <input type="text" id="longitude" class="form-control" value="" name="" disabled="disabled">
+                </div>
+
+                <script>
+                    $(document).ready(function () {
+                        console.log('test');
+                        $("#lieu-widget").change(function () {
+                            var id = $(this).val();
+                            jQuery.get("/sortie/getLieu/" + id, function (data, status) {
+
+                                var res = JSON.parse(data);
+                                $("#rue").val(res.rue);
+                                $("#longitude").val(res.long);
+                                $("#cp").val(res.cp);
+                                $("#ville").val(res.ville);
+                                $("#latitude").val(res.lat);
+
+
+                            });
+                        });
+                    });
+                </script>
+
+
+            </div>
+
+            {# Line 3 - Button #}
+            <div class="row my-2">
+
+                <div class="d-flex">
+                    <button type="submit" name="save" id="{{ field_name(formSortie.save) }}"
+                            class="btn btn-success mx-2 ">Enregistrer
+                    </button>
+
+
+                    <button type="submit" name="publish" id="{{ field_name(formSortie.add) }}"
+                            class="btn btn-success mx-2 ">Publier la
                         sortie
                     </button>
-                </div>
-                <div class="col">
-                  <a href="{{ path('main') }}" class="btn btn-primary">Annuler</a>
-                </div>
 
 
+                    <button type="submit" id="{{ field_name(formSortie.cancel) }}" value="cancel"
+                            class="btn btn-warning ml-auto">Annuler
+                    </button>
+                </div>
+
+            </div>
         </div>
-        {# {{ path('app_add',{'id':sortie.id}) }} #}
-        {# {{ form_widget(formSortie._token) }} #}
+
     </div>
     {{ form_rest(formSortie) }}
     {{ form_end(formSortie) }}
-{% endblock %}
+    {% endblock %}

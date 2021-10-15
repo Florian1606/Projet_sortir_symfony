@@ -1,16 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello SortieController!{% endblock %}
+{% block title %}Sortie.com{% endblock %}
 
 {% block body %}
 
-    <h2>Modifier une sortie</h2>
+
 
     <div class="container mt-5">
-        <div class="row">
+        <div class="row mt-3">
+            <h2>Modifier une sortie <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"/>
+                </svg></h2>
 
-
-            <div class="row">
+            <div class="row mt-3">
 
                 <div class="col">
                     {{ form_start(formSortie) }}
@@ -46,8 +48,8 @@
 
                         <div class="mb-3">
                             <label class="form-label">Durée ?</label>
-                            <input type="number" class="form-control" value="{{ field_value(formSortie.duree) }}"
-                                   name="{{ field_name(formSortie.duree) }}" step=15> minutes
+                            <div class="d-flex align-items-center">  <input type="number" class="form-control mr-1" value="{{ field_value(formSortie.duree) }}"
+                                   name="{{ field_name(formSortie.duree) }}" step=15> <span> minutes</span></div>
                         </div>
 
 
@@ -65,64 +67,88 @@
 
                     <div class="mb-3">
                         <label class="form-label">Lieu</label>
-                        {{ form_widget(formSortie.lieu) }}
+                        {{ form_widget(formSortie.lieu, {'id': 'lieu-widget'}) }}
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Ville</label>
-                        <input type="text" class="form-control" value="" name="" disabled="disabled">
+                        <input type="text" id="ville" class="form-control" value="" name="" disabled="disabled">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Rue</label>
-                        <input type="text" class="form-control" value="" name="" disabled="disabled">
+                        <input type="text" class="form-control" id="rue" value="" name="" disabled="disabled">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Code Postal</label>
-                        <input type="text" class="form-control" value="" name="" disabled="disabled">
+                        <input type="text" class="form-control" value="" id="cp" name="" disabled="disabled">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Latitude</label>
-                        <input type="text" class="form-control" value="" name="" disabled="disabled">
+                        <input type="text" class="form-control" value="" id="latitude" name="" disabled="disabled">
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Longitude</label>
-                        <input type="text" class="form-control" value="" name="" disabled="disabled">
+                        <input type="text" class="form-control" value="" id="longitude" name="" disabled="disabled">
                     </div>
-                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
                     <script>
-                        $(document).ready(function(){
-                            $("#sortie_lieu").change(function(){
-                                //alert("coucou");
+                        $(document).ready(function () {
+                            console.log('test');
+                            $("#lieu-widget").change(function () {
                                 var id = $(this).val();
+                                jQuery.get("/sortie/getLieu/" + id, function (data, status) {
 
-                                $.get("/get-code-p/"+id, function(data, status){
+                                    var res = JSON.parse(data);
+                                    $("#rue").val(res.rue);
+                                    $("#longitude").val(res.long);
+                                    $("#cp").val(res.cp);
+                                    $("#ville").val(res.ville);
+                                    $("#latitude").val(res.lat);
 
-                                    var res=JSON.parse(data);
-                                    $("#latitude").val(res);
+
                                 });
                             });
                         });
                     </script>
-                    <input type="text" class="form-control" readonly value="" id="latitude">
+
+
 
                 </div>
                 {#             Line 3 - Button#}
-                <div class="row mt-3">
-                    <div class="col">
-                        <button type="submit" name="save" id="{{ field_name(formSortie.save) }}" class="btn btn-primary">Enregistrer</button>
-                    </div>
-                    <div class="col">
-                        <button type="submit" id="{{ field_name(formSortie.add) }}" name="add" value="add" class="btn btn-primary">Publier la
+                <div class="row my-2">
+                    <div class="d-flex">
+                        <button type="submit" name="save" id="{{ field_name(formSortie.save) }}" class="btn btn-primary mx-2">Enregistrer</button>
+
+
+                        <button type="submit" id="{{ field_name(formSortie.add) }}" name="add" value="add" class="btn btn-success mr-2">Publier la
                             sortie
                         </button>
-                    </div>
-                    <div class="col">
-                        <button type="submit" name="supprimer" value="cancel" class="btn btn-primary">Supprimer la sortie</button>
-                    </div>
 
-                    <div class="col">
                         <button type="submit" name="cancel" id="{{ field_name(formSortie.cancel) }}" value="cancel" class="btn btn-primary">Annuler</button>
-                    </div>
-
+                        <button type="button" data-toggle="modal" data-target="#confirmation" class="btn btn-danger ml-auto">Supprimer la sortie</button>
+{#Fenetre pop up : confirmation supprimer#}
+                        <div class="modal fade" id="confirmation" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Confirmation</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                        </svg><span> Etes-vous sûr de vouloir supprimer cette sortie ? </span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill" viewBox="0 0 16 16">
+                                            <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                        <button type="submit" name="supprimer" value="cancel" class="btn btn-danger">Supprimer !</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                 </div>
             </div>
