@@ -43,11 +43,16 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto topnav">
+
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ path('app_gerer_les_villes') }}">Villes</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ path('app_gerer_les_sites') }}">Sites</a>
+            </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{{ path('main') }}">Accueil</a>
             </li>
-
-
             {% if app.user %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
