@@ -108,12 +108,12 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/unsubscribe/{idUser}/{idSortie}",name="app_sortie_unsubscribe")
      */
-    public function unsubscribeSortie(SortieRepository $repo, EntityManagerInterface $em, $idUser,$idSortie): Response
+    public function unsubscribeSortie(SortieRepository $repo, EntityManagerInterface $em, $idUser, $idSortie): Response
     {
 
         $sortie = $repo->find($idSortie);
         $repoParticipant = $this->getDoctrine()->getRepository(Participant::class);
-        $user =$repoParticipant->find($idUser);
+        $user = $repoParticipant->find($idUser);
         $sortie->removeParticipant($user);
         $em->flush();
         $this->addFlash('success', 'Sortie Annulée !');
@@ -123,25 +123,59 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/subscribe/{idUser}/{idSortie}",name="app_sortie_subscribe")
      */
-    public function subscribeSortie(SortieRepository $repo, EntityManagerInterface $em, $idUser,$idSortie): Response
+    public function subscribeSortie(SortieRepository $repo, EntityManagerInterface $em, $idUser, $idSortie): Response
     {
 
         $sortie = $repo->find($idSortie);
         $repoParticipant = $this->getDoctrine()->getRepository(Participant::class);
-        $user =$repoParticipant->find($idUser);
+        $user = $repoParticipant->find($idUser);
         $sortie->addParticipant($user);
         $em->flush();
         $this->addFlash('success', 'Sortie Annulée !');
         return $this->redirectToRoute("main");
     }
 
+    /**
+     * @Route("/sortie/delete/{id}",name="app_sortie_delete")
+     * @param SortieRepository $repo
+     * @param EntityManagerInterface $em
+     * @param $id
+     * @return Response
+     */
+    public function deleteSortie(SortieRepository $repo, EntityManagerInterface $em, $id): Response
+    {
+        // Récupère le current user.
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        // Récupère la sortie suivant l'id passé en paramètre.
+        $sortie = $repo->find($id);
+        $idEtat = $sortie->getEtat()->getId();
+
+        // Vérification des droits
+        // Doit être l'organisateur ou un admin.
+        if ($user == $sortie->getOrganisateur() || $user->getIsAdmin()) {
+
+            if($idEtat != 1 || !$user->getIsAdmin()) {
+                $this->addFlash('warning', "Il n'est plus possible de supprimer cette sortie");
+                return $this->redirectToRoute("main");
+            } else {
+                $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
+                $sortie->setEtat($repoEtat->find(7));
+                $em->flush();
+                $this->addFlash('success', 'Sortie supprimée !');
+                return $this->redirectToRoute("main");
+            }
+        } else {
+                $this->addFlash('warning', "Vous n'avez pas les droits pour supprimer cette sortie");
+                return $this->redirectToRoute("main");
+            }
+    }
 
     /**
      * @Route("/sortie/update/{id}",name="app_sortie_update")
      */
     public function updateSortie(SortieRepository $repo, Request $request, EntityManagerInterface $em, $id = 0): Response
     {
-        echo "coucou";
+
         $sortie = $repo->find($id);
         $form = $this->createForm(SortieType::class, $sortie);
         $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
@@ -152,12 +186,9 @@ class SortieController extends AbstractController
             return $this->redirectToRoute("main");
         }
 
-        // Supprimer
+        // IsClicked sur bouton "supprimer"
         if ($request->request->get("supprimer")) {
-            $sortie->setEtat($repoEtat->find(7));
-            $em->flush();
-            $this->addFlash('warning', 'Sortie supprimée !');
-            return $this->redirectToRoute("main");
+            $this->deleteSortie($id);
         }
 
         // Enregistrer
@@ -183,18 +214,18 @@ class SortieController extends AbstractController
                 $this->addFlash('success', 'Votre sortie   ' . $sortie->getNom() . ' a été modifié');
 
 //            ############################################################################################
-            $this->addFlash('sucess', 'ON A FAIT UN SAVE !');
-            return $this->redirectToRoute("main");
-        }}
+                $this->addFlash('success', 'ON A FAIT UN SAVE !');
+                return $this->redirectToRoute("main");
+            }
+        }
 
         // Publier
         if ($request->request->get("add")) {
             $sortie->setEtat($repoEtat->find(2));
             $em->flush();
-            $this->addFlash('sucess', 'Sortie publiée !');
+            $this->addFlash('success', 'Sortie publiée !');
             return $this->redirectToRoute("main");
         }
-
 
 
         $titre = "Sortir.com - " . $sortie->getNom() . " - Modification";
@@ -204,26 +235,18 @@ class SortieController extends AbstractController
         return $this->render("sortie/modifierSortie.html.twig", $tab);
     }
 
-
     /**
      * @Route("/sortie/getLieu/{id}",name="app_sortie_get_lieu")
      */
     public function getLieu(LieuRepository $repo, EntityManagerInterface $em, $id): Response
     {
-
         $lieu = $repo->find($id);
-
         $repoV = $this->getDoctrine()->getRepository(Ville::class);
-        $idVille = $lieu->getVille()->getId();
-
         $ville = $repoV->findOneBy(array('id' => $lieu->getVille()->getId()));
 
-
-
-        return $this->json('{"cp":"' . $ville->getCodePostal() . '","ville":"' . $ville->getNomVille() . '","rue":"' . $lieu->getRue() . '","lat":"' . $lieu->getLatitude() . '","long":"' . $lieu->getLongitude() . '"}');
-
+        return $this->json('{"cp":"' . $ville->getCodePostal() . '","ville":"' .
+            $ville->getNomVille() . '","rue":"' . $lieu->getRue() . '","lat":"' . $lieu->getLatitude() . '","long":"' . $lieu->getLongitude() . '"}');
     }
-
 
 
 }
