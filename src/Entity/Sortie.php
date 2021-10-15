@@ -46,7 +46,7 @@ class Sortie
     private $dateLimiteInscription;
 
     /**
-     * @Assert\NotNull(message ="Ne peut pas être nul")
+     *
      * @ORM\Column(type="integer")
      *
      */

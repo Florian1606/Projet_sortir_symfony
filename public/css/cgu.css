@@ -1,0 +1,65 @@
+.titre{
+    font-size: 18pt;
+    text-align: center;
+}
+
+.main{
+    max-width:1100px;
+    margin:auto;
+}
+
+/* responsive tablette*/
+@media screen and (max-width: 560px)
+{
+    .main
+    {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 800px;
+    }
+    .menu{
+        display:none;
+    }
+}
+
+.menu{
+    position:fixed;
+    display:inline-block;
+    width:400px;
+    padding:0;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-right: 1px solid #1EA896;
+    margin-top:-10px;
+}
+
+.texte{
+    display:inline-block;
+    width:600px;
+    margin-left: 450px;
+}
+
+.menu a{
+    color:black;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 8pt;
+}
+
+.menu a:hover{
+    text-decoration: underline;
+}
+
+#h3{
+    margin-left: 20px;
+    font-size: 12pt;
+}
+
+h2{
+    font-size: 16pt;
+}
+
+h3{
+    font-size: 14pt;
+}
