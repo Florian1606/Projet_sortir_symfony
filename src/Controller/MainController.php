@@ -52,6 +52,16 @@ class MainController extends AbstractController
         return $this->render('main/cgu.html.twig');
     }
 
+    /**
+     * @Route("/admin/home", name="app_admin-home",)
+     */
+    public function adminHomepage(ParticipantRepository $repo, $id = 0): Response
+    {
+
+        return $this->render('main/dashboard.html.twig');
+    }
+
+
 
     /**
      * @Route("/main", name="main")
@@ -67,7 +77,7 @@ class MainController extends AbstractController
     }
 
     /**
-     * @Route("/main/creationProfil", name="app_creationProfil")
+     * @Route("/admin/creationProfil", name="app_creationProfil")
      */
     public function addForm(EntityManagerInterface $em, Request $request, UserPasswordHasherInterface $userPasswordHasherInterface): Response //entity manager ..... des données
     {
@@ -86,7 +96,7 @@ class MainController extends AbstractController
             $profil->setPassword(
                 $userPasswordHasherInterface->hashPassword(
                     $profil,
-                    $form->get('plainPassword')->getData()
+                    $form->get('password')->getData()
                 )
             );
 
@@ -104,7 +114,7 @@ class MainController extends AbstractController
         $formProfil = $form->createView();
         $tab = compact("titre", "formProfil");
 
-        return $this->render('main/creationProfil.html.twig', $tab);
+        return $this->render('admin/creationProfil.html.twig', $tab);
     }
 
     /**
@@ -185,7 +195,7 @@ class MainController extends AbstractController
 
 
     /**
-     *@Route("/main/gererLesVilles",name="app_gerer_les_villes")
+     *@Route("/admin/gererLesVilles",name="app_gerer_les_villes")
      */
     public function gererLesVilles(Request $request,VilleRepository $villeRepo,EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
     {
@@ -215,14 +225,14 @@ class MainController extends AbstractController
         $titre = "Sortir.com - gererville";
 
             $villes = $villeRepo->findAll();
-            return $this->render('sortie/gererLesVilles.html.twig', [
+            return $this->render('admin/gererLesVilles.html.twig', [
                 'villes' => $villes,
                 'formville2'=> $form->createView(),
             ]);
             }
 
     /**
-     *@Route("/main/gererLesSites",name="app_gerer_les_sites")
+     *@Route("/admin/gererLesSites",name="app_gerer_les_sites")
      */
     public function gererLesSites(Request $request,SiteRepository $siteRepo,EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
     {
@@ -249,7 +259,7 @@ class MainController extends AbstractController
         $titre = "Sortir.com - gererville";
 
         $sites = $siteRepo->findAll();
-        return $this->render('sortie/gererLesSites.html.twig', [
+        return $this->render('admin/gererLesSites.html.twig', [
             'sites' => $sites,
             'formsite2'=> $form->createView(),
             ]);
