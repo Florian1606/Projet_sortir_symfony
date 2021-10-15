@@ -295,5 +295,12 @@ class MainController extends AbstractController
             'formProfil' => $form->createView(),
         ]);
     }
-
+    /**
+     * @Route("/admin/importation", name="incorporation" )
+     */
+    public function incorporation(ParticipantRepository $repo, $id = 0): Response
+    {
+        return $this->render('admin/importation.html.twig', [
+        ]);
+    }
 }
