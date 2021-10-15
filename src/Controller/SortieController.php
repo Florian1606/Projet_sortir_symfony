@@ -32,6 +32,7 @@ class SortieController extends AbstractController
      */
     public function addSortie(EntityManagerInterface $em, Request $request, EtatRepository $etat, ValidatorInterface $validator): Response
     {
+
         // Instance de la class Sortie
         $sortie = new Sortie();
         // Création du formulaire depuis l'entité Sortie
@@ -41,6 +42,7 @@ class SortieController extends AbstractController
         if ($form->get('cancel')->isClicked()) {
             return $this->redirectToRoute("main");
         }
+
         // Contrôle si les données sont valides et si le formulaire est soumis.
         if ($form->isSubmitted() && $form->isValid()) {
             $repoPart = $this->getDoctrine()->getRepository(Participant::class);
@@ -50,7 +52,7 @@ class SortieController extends AbstractController
             //!\\ Backslash pour indiquer une fonction PHP //!\\
             $sortie->setDateDebut(new \DateTime($request->request->get("dateDebut")));
             $sortie->setDateLimiteInscription(new \DateTime($request->request->get("dateLimiteInscription")));
-            
+
             // Set etat suivant event
             $repo = $this->getDoctrine()->getRepository(Etat::class);
             if ($form->get('add')->isClicked()) {
@@ -98,17 +100,48 @@ class SortieController extends AbstractController
             $em->flush();
             $this->addFlash('success', 'Sortie Annulée !');
             return $this->redirectToRoute("main");
-       }
+        }
         $this->addFlash('warning', 'Vous ne pouvez pas annuler la sortie !');
         return $this->render("main");
+    }
+
+    /**
+     * @Route("/sortie/unsubscribe/{idUser}/{idSortie}",name="app_sortie_unsubscribe")
+     */
+    public function unsubscribeSortie(SortieRepository $repo, EntityManagerInterface $em, $idUser,$idSortie): Response
+    {
+
+        $sortie = $repo->find($idSortie);
+        $repoParticipant = $this->getDoctrine()->getRepository(Participant::class);
+        $user =$repoParticipant->find($idUser);
+        $sortie->removeParticipant($user);
+        $em->flush();
+        $this->addFlash('success', 'Sortie Annulée !');
+        return $this->redirectToRoute("main");
+    }
+
+    /**
+     * @Route("/sortie/subscribe/{idUser}/{idSortie}",name="app_sortie_subscribe")
+     */
+    public function subscribeSortie(SortieRepository $repo, EntityManagerInterface $em, $idUser,$idSortie): Response
+    {
+
+        $sortie = $repo->find($idSortie);
+        $repoParticipant = $this->getDoctrine()->getRepository(Participant::class);
+        $user =$repoParticipant->find($idUser);
+        $sortie->addParticipant($user);
+        $em->flush();
+        $this->addFlash('success', 'Sortie Annulée !');
+        return $this->redirectToRoute("main");
     }
 
 
     /**
      * @Route("/sortie/update/{id}",name="app_sortie_update")
      */
-    public function updateSortie(SortieRepository $repo, Request $request,EntityManagerInterface $em, $id = 0): Response
+    public function updateSortie(SortieRepository $repo, Request $request, EntityManagerInterface $em, $id = 0): Response
     {
+        echo "coucou";
         $sortie = $repo->find($id);
         $form = $this->createForm(SortieType::class, $sortie);
         $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
@@ -128,11 +161,32 @@ class SortieController extends AbstractController
         }
 
         // Enregistrer
+
         if ($request->request->get("save")) {
+
+// #################################################################
+            $sortie = $repo->find($id);
+            $form = $this->createForm(SortieType::class, $sortie);
+            $form->handleRequest($request);
+            dump($form->isSubmitted());
+            dump($form->isValid());
+            // verifier si on a soumis le form et si les donnes valide
+            if ($form->isSubmitted() && $form->isValid()) {
+                // génerer sql insert into et ajouter dans queue
+                $sortie->setDateDebut(new \DateTime($request->request->get("dateDebut")));
+                $sortie->setDateLimiteInscription(new \DateTime($request->request->get("dateLimiteInscription")));
+
+                // appliquer insert into dans la bdd
+                $em->persist($sortie);
+                $em->flush();
+                //création de message de succes qui sera affiché sur la prochaine page
+                $this->addFlash('success', 'Votre sortie   ' . $sortie->getNom() . ' a été modifié');
+
+//            ############################################################################################
             $this->addFlash('sucess', 'ON A FAIT UN SAVE !');
             return $this->redirectToRoute("main");
-        }
-        dump($request->request->get("add"));
+        }}
+
         // Publier
         if ($request->request->get("add")) {
             $sortie->setEtat($repoEtat->find(2));
@@ -142,7 +196,9 @@ class SortieController extends AbstractController
         }
 
 
-        $titre = "Sortir.com - " . $sortie->getNom()." - Modification";
+
+        $titre = "Sortir.com - " . $sortie->getNom() . " - Modification";
+
         $tab = compact("titre", "sortie");
         $tab["formSortie"] = $form->createView();
         return $this->render("sortie/modifierSortie.html.twig", $tab);
@@ -155,20 +211,18 @@ class SortieController extends AbstractController
     public function getLieu(LieuRepository $repo, EntityManagerInterface $em, $id): Response
     {
 
-       $lieu =$repo->find($id);
+        $lieu = $repo->find($id);
 
         $repoV = $this->getDoctrine()->getRepository(Ville::class);
         $idVille = $lieu->getVille()->getId();
 
-       $ville = $repoV->findOneBy(array('id' => $lieu->getVille()->getId()));
+        $ville = $repoV->findOneBy(array('id' => $lieu->getVille()->getId()));
 
-        return $this->json('{"cp":"'.$ville->getCodePostal().'","ville":"'.$ville->getNomVille().'","rue":"'.$lieu->getRue().'","lat":"'.$lieu->getLatitude().'","long":"'.$lieu->getLongitude().'"}');
+
+
+        return $this->json('{"cp":"' . $ville->getCodePostal() . '","ville":"' . $ville->getNomVille() . '","rue":"' . $lieu->getRue() . '","lat":"' . $lieu->getLatitude() . '","long":"' . $lieu->getLongitude() . '"}');
+
     }
-
-
-
-
-
 
 
 

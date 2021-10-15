@@ -11,7 +11,10 @@
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/doctrine-migrations-bundle": "^3.1",
         "doctrine/orm": "^2.10",
+        "friendsofsymfony/jsrouting-bundle": "^2.7",
+        "mobiledetect/mobiledetectlib": "^2.8",
         "sensio/framework-extra-bundle": "^6.2",
+        "suncat/mobile-detect-bundle": "dev-master",
         "symfony/asset": "5.3.*",
         "symfony/console": "5.3.*",
         "symfony/dotenv": "5.3.*",
@@ -30,7 +33,7 @@
         "symfonycasts/reset-password-bundle": "^1.9",
         "twig/extra-bundle": "^3.3",
         "twig/intl-extra": "^3.3",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^3.3"
     },
     "config": {
         "optimize-autoloader": true,

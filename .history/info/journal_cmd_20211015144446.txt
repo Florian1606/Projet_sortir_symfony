@@ -1,0 +1,37 @@
+#### Journal des commandes ####
+
+composer create-project symfony/skeleton Projet_sortir_symfony --> Création du projet
+composer require symfony/orm-pack --> Installation de doctrine
+composer require --dev symfony/maker-bundle --> Installation du composant maker
+symfony composer req annotations --> à faire avant de créer un controller
+symfony composer req asset
+composer require security
+php bin/console make:user
+php bin/console make:entity
+########################################################################
+php bin/console doctrine:database:create
+-------> Pour créer la database ! Ne pas oublier de mettre le fichier env.local à jour & vérifier que vos .env.local est présent dans le gitignore
+########################################################################
+composer require twig
+php bin/console make:auth <-- a besoin de twig
+symfony console make:controller
+##################### Création du registration-form #####################
+composer require form validator
+php bin/console make:registration-form
+
+composer require symfonycasts/reset-password-bundle
+composer require debug
+
+composer require symfony/translation
+
+Mettre à jour la bdd -> php bin/console doctrine:schema:update -f
+
+
+
+
+
+
+symfony server:start
+php bin/console cache:clear --> très utile !!!!!!!!
+php bin/console make:migration
+php bin/console doctrine:migrations:migrate

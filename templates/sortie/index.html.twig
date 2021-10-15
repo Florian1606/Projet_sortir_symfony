@@ -83,9 +83,84 @@
                     <input type="text" id="ville" class="form-control" value="" name="">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label">Lieu</label>
+                    <label class="form-label">Lieu <a href="" data-toggle="modal" data-target="#exampleModalCenter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                            </svg>
+                        </a> </label>
                     {{ form_widget(formSortie.lieu, {'id': 'lieu-widget'}) }}
                 </div>
+                {# MODAL AJOUTER UN LIEU #}
+
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div  id="modalPop"class="modal-content   ">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Ajouter un lieu</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="form-group">
+                                            <label for="nomModal" class="col-form-label">Nom</label>
+                                            <input type="text" id="nomModal" class="form-control">
+
+                                            <label for="rueModal" class="col-form-label">Rue</label>
+                                            <input type="text" id="rueModal" class="form-control">
+
+                                            <label for="viModal" class="col-form-label">Ville</label>
+                                            <input type="text" id="viModal" class="form-control">
+
+                                            <label for="latModal" class="col-form-label">Latitude</label>
+                                            <input type="text" id="latModal" class="form-control">
+
+                                            <label for="longModal" class="col-form-label">Longitude</label>
+                                            <input type="text" id="longModal" class="form-control">
+                                        </div>
+
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                    <button type="button" onclick="clicktest()" data-dismiss="modal" class="btn btn-primary">Ajouter</button>
+                                </div>
+                            </div>
+                            {# #}
+                        </div>
+                    </div>
+                </div>
+                {# test JS ADD LIEU #}
+                <script>
+                    function clicktest() {
+                        var nom = document.getElementById("nomModal").value;
+                        var rue = document.getElementById("rueModal").value;
+                        var ville = document.getElementById("viModal").value;
+                        var longitude = document.getElementById("longModal").value;
+                        var latitude = document.getElementById("latModal").value;
+
+                        console.log(nom);
+                        console.log(rue);
+                        console.log(ville);
+                        console.log(longitude);
+                        console.log(latitude);
+
+                        jQuery.get("/lieu/add/" + nom + "/" + rue + "/" + ville + "/" + longitude + "/" + latitude  , function (data, status) {
+
+                        });
+
+
+                    }
+
+                </script>
+                {# FIN MODAL AJOUTER UN LIEU #}
                 <div class="mb-3">
                     <label class="form-label">Rue</label>
                     <input type="text" id="rue" class="form-control" value="" name="" disabled="disabled">
@@ -105,7 +180,6 @@
 
                 <script>
                     $(document).ready(function () {
-                        console.log('test');
                         $("#lieu-widget").change(function () {
                             var id = $(this).val();
                             jQuery.get("/sortie/getLieu/" + id, function (data, status) {

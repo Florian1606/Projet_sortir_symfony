@@ -52,6 +52,16 @@ class MainController extends AbstractController
         return $this->render('main/cgu.html.twig');
     }
 
+    /**
+     * @Route("/admin/home", name="app_admin-home",)
+     */
+    public function adminHomepage(ParticipantRepository $repo, $id = 0): Response
+    {
+
+        return $this->render('main/dashboard.html.twig');
+    }
+
+
 
     /**
      * @Route("/main", name="main")
