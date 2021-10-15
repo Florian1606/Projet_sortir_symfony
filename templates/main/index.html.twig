@@ -8,12 +8,19 @@
 {% block body %}
 
 
-<header class="bg-dark py-1">
+<header class="bg-dark py-1" id="bg">
     <div class="container px-5">
         <div class="row gx-5 justify-content-center">
             <div class="col-lg-6">
                 <div class="text-center my-5">
-                    <h1 class="display-5 fw-bolder text-white mb-2">SORTEZ DE CHEZ VOUS !</h1>
+                    <h1 class="display-5 fw-bolder text-white mb-2"style="background: #121FCF;
+background: -webkit-linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7B08 49%, #CF1512 100%);
+background: -moz-linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7B08 49%, #CF1512 100%);
+background: linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7B08 49%, #CF1512 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;">SORTEZ DE CHEZ VOUS !</h1>
+					<span>Date du jour : {{ "now"|date("m/d/Y") }}</span>
+
                     <p class="lead text-white-50 mb-4">Participer ou organiser des sorties pour vous et votre ville</p>
                     <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
                         <a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('app_sortie_add') }}">Ajouter une
@@ -181,11 +188,21 @@
                                     {# SI L'USER CURRENT EST INSCRIT A LA SORTIE #}
 
                                     {% if (app.user in sortie.participants ) %}
-                                        <a href="#{# {{ path('sortie/desubscribe', {'idUser': app.user.id}, {'idSortie': sortie.id}) }} #}"
+                                        <a href="{{ path('app_sortie_unsubscribe', {'idUser': app.user.id,'idSortie': sortie.id}) }}"
                                            class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-dash" viewBox="0 0 16 16">
 												<path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
 												<path fill-rule="evenodd" d="M11 7.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"></path>
 											</svg></a>
+									{% endif %}
+									{% if (app.user not in sortie.participants ) %}
+
+										<a href="{{ path('app_sortie_subscribe', {'idUser': app.user.id,'idSortie': sortie.id}) }}"
+										   class="btn btn-success"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-dash" viewBox="0 0 16 16">
+												<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+													<path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
+													<path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"></path>
+												</svg></a>
+
                                     {% endif %}
                                     {# SI L'USER CURRENT EST L'ORGANISATEUR DE LA SORTIE #}
                                     {% if sortie.organisateur.id == app.user.id and (sortie.etat.id == 2 or sortie.etat.id == 3) %}
@@ -230,6 +247,7 @@
                                            class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
 												<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
 											</svg></a>
+
 
                                     </td>
                                 </tr>

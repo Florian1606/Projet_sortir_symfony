@@ -36,8 +36,19 @@
 <body>
 
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
-    <a class="navbar-brand" href="{{ path('main') }}">SORTIR.COM</a>
+<nav  class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
+    <img src="{{ asset('img/daco.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
+    <a class="navbar-brand" href="{{ path('main') }}">
+        <span class="name pull-left">SORTIE.COM</span>
+
+
+
+
+
+
+
+
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -46,28 +57,31 @@
         <ul class="navbar-nav ml-auto topnav">
 
 
-            <li class="nav-item active">
-                <a class="nav-link" href="{{ path('app_gerer_les_villes') }}">Villes</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="{{ path('app_gerer_les_sites') }}">Sites</a>
-            </li>
 
 
 
-            <ul class="nav navbar-nav navbar-right align-items-center">
 
-                <ul class="navbar-nav ml-auto topnav">
-                <li class="nav-item active">
-                    <a class="nav-link" href="{{ path('main') }}">Accueil</a>
-                </li>
-                </ul>
+            <ul class="nav navbar-nav navbar-right align-items-center mr-3">
+
+{#                <ul class="navbar-nav ml-auto topnav">#}
+{#                    <li class="nav-item active">#}
+{#                        <a class="nav-link" href="{{ path('app_gerer_les_villes') }}">Villes</a>#}
+{#                    </li>#}
+
+{#                    <li class="nav-item active">#}
+{#                        <a class="nav-link" href="{{ path('app_gerer_les_sites') }}">Sites</a>#}
+{#                    </li>#}
+{#                <li class="nav-item active">#}
+{#                    <a class="nav-link" href="{{ path('main') }}">Accueil</a>#}
+{#                </li>#}
+{#                </ul>#}
 
 
             {% if app.user %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {%  if app.user.isAdmin %}<span class="badge badge-danger">admin</span>   {% endif %}
                         {{ app.user.pseudo | upper }}
                         {% if app.user.avatarFilename %}
                          <img src="{{ asset('uploads/avatars/' ~ app.user.avatarFilename)}}" class="avatar" alt=""/>
@@ -76,9 +90,15 @@
 
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{{ path('app_modifier', {'id': app.user.id} ) }}">Mon profil</a>
-                        <a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a>
+                        <a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a>{%  if app.user.isAdmin %}
+                        <div class="dropdown-divider"></div>
+                        <span class="dropdown-item font-weight-bold" >Administration</span>
+                        <a class="dropdown-item" href="#">Gestion des Sites</a>
+                        <a class="dropdown-item" href="#">Gestion des Villes</a>
                     </div>
                 </li>
+            {% endif %}
+                </a>
             {% else %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
@@ -108,7 +128,7 @@
 
 </body>
 <!-- Footer -->
-<footer class="text-center text-lg-start bg-light text-muted">
+<footer  class="text-center text-lg-start bg-light text-muted">
     <!-- Section: Social media -->
     <section class="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
 
@@ -122,13 +142,22 @@
             <!-- Grid row -->
             <div class="row mt-3">
                 <!-- Grid column -->
-                <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                <style>
+                    #bg {
+                        background-image:url({{ asset('img/together.png') }});
+                        background-repeat:no-repeat;
+                    }
+                </style>
+                <div  class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+
+
                     <!-- Content -->
                     <h6 class="text-uppercase fw-bold mb-4">
                         <i class="fas fa-gem me-3"></i>SORTIR.COM
                     </h6>
-                    <img style="z-index: 0;" src="{{ asset('img/together.png') }}" width="30px" height="30px" alt="">
-                    <p>
+
+
+                    <p >
                         Mais pourquoi attendre plus longtemps, inscrivez vous !
                         À bientôt sur Sortie.com !
                     </p>
