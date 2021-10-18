@@ -7,6 +7,7 @@ use App\Entity\Sortie;
 use App\Entity\Participant;
 use App\Entity\Etat;
 use App\Entity\Ville;
+use App\Entity\Lieu;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
@@ -32,6 +33,8 @@ class SortieController extends AbstractController
      */
     public function addSortie(EntityManagerInterface $em, Request $request, EtatRepository $etat, ValidatorInterface $validator): Response
     {
+        $repoVille = $this->getDoctrine()->getRepository(Ville::class);
+        $villes = $repoVille->findAll();
 
         // Instance de la class Sortie
         $sortie = new Sortie();
@@ -70,7 +73,7 @@ class SortieController extends AbstractController
         $errors = $validator->validate($sortie);
         $titre = "Création d'une sortie";
 
-        $tab = compact("titre", "errors");
+        $tab = compact("titre", "errors",'villes');
         $tab["formSortie"] = $form->createView();
 
         return $this->render('sortie/index.html.twig', $tab);
@@ -247,6 +250,8 @@ class SortieController extends AbstractController
         return $this->json('{"cp":"' . $ville->getCodePostal() . '","ville":"' .
             $ville->getNomVille() . '","rue":"' . $lieu->getRue() . '","lat":"' . $lieu->getLatitude() . '","long":"' . $lieu->getLongitude() . '"}');
     }
+
+
 
 
 }
