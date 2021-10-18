@@ -1,0 +1,439 @@
+{% extends is_mobile() ? "baseMobile.html.twig" : "base.html.twig" %}
+
+
+{% block title %}Accueil
+{% endblock %}
+{% block stylesheet %}
+	<link href="{{ asset('css/index.css') }}" rel="stylesheet">
+{% endblock %}
+{% block body %}
+
+
+<header class="bg-dark py-1" id="bg">
+    <div class="container px-5">
+        <div class="row gx-5 justify-content-center">
+            <div class="col-lg-6">
+                <div class="text-center my-5">
+                    <h1 class="display-5 fw-bolder text-white mb-2"style="background: #121FCF;
+background: -webkit-linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7B08 49%, #CF1512 100%);
+background: -moz-linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7B08 49%, #CF1512 100%);
+background: linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7B08 49%, #CF1512 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;">SORTEZ DE CHEZ VOUS !</h1>
+					<span>Date du jour : {{ "now"|date("m/d/Y") }}</span>
+
+                    <p class="lead text-white-50 mb-4">Participer ou organiser des sorties pour vous et votre ville</p>
+                    <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                        <a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('app_sortie_add') }}">Ajouter une
+                            sortie</a>
+                        <a class="btn btn-outline-light btn-lg px-4" href="#!">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+{# SEARCHBAR #}
+	{% if app.user %}
+		<form action="{{ path('app_search', {'id': app.user.id}) }}" method="post">
+		{% else %}
+			<form action="{{ path('app_search', {'id': 0}) }}" method="post">
+			{% endif %}
+			<div class="container mt-5">
+				<div class="row d-flex justify-content-center flex-wrap">
+					<div class="col ">
+						<div class="card p-3 py-4">
+							<h5>Démerde toi à chercher une sortie</h5>
+							<div class="row g-3 mt-2">
+								<div class="col-md-3">
+
+									<select class="btn btn-secondary dropdown-toggle btn-lg w-100" name="site" id="site-select">
+										<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+											{% for site in sites %}
+												<option class="dropdown-item text-white" name="site" value="{{ site.id }}">
+													{{ site.nom | upper }}
+												</option>
+											{% endfor %}
+										</ul>
+									</select>
+								</div>
+								<div class="col-md-6">
+									<input type="text" name="search" class="btn-lg form-control w-100" placeholder="Le nom de la sortie contient...">
+								</div>
+								<div class="col-md-3">
+									<input type="submit" class="btn btn-lg btn-secondary btn-block" value="Rechercher">
+								</div>
+							</div>
+							<div class="mt-3">
+								<a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" class="advanced">
+									Recherche avancée
+									<i class="fa fa-angle-down"></i>
+								</a>
+								{# RECHERCHE AVANCEE #}
+								<div class="collapse" id="collapseExample">
+									<div class="d-flex justify-content-evenly m-4 flex-wrap">
+										<div class="d-flex flex-column flex-wrap">
+											<div class="row">
+												<label for="dateDebut">Commence le :</label>
+												<input type="date" name="dateDebut" id="dateDebut">
+											</div>
+											<div class="row">
+												<label for="dateFin">Termine le :
+												</label>
+												<input type="date" name="dateFin" id="dateFin">
+											</div>
+										</div>
+										<div class="">
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" name="isSortiesOrganisateur" id="isSortiesOrganisateur">
+												<label class="form-check-label" for="isSortiesOrganisateur">
+													Sorties dont je suis l'organisateur/trice
+												</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" name="isSortiesInscrit" id="isSortiesInscrit">
+												<label class="form-check-label" for="isSortiesInscrit">
+													Sorties auxquelles je suis inscrit/e
+												</label>
+											</div>
+											<div class="form-check ">
+												<input class="form-check-input" type="checkbox" name="isSortiesPasInscrit" id="isSortiesPasInscrit">
+												<label class="form-check-label" for="isSortiesPasInscrit">
+													Sorties auxquelles je ne suis pas inscrit/e
+												</label>
+											</div>
+											<div class="form-check">
+												<input class="form-check-input" type="checkbox" name="isSortiesPassees" id="isSortiesPassees">
+												<label class="form-check-label" for="isSortiesPassees">
+													Sorties passées
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</form>
+							{# FIN RECHERCHE AVANCEE #}
+						</div>
+					</div>
+				</div>
+				{# FIN SEARCHBAR #}
+				{# LISTE DES SORTIES #}
+				<div class="row">
+
+					{% if sorties | length == 0 %}
+						<h3 class="text-center mt-5">
+							Aucun souhait trouvé !</h3>
+					{% else %}
+						<div class="row mt-5">
+							<div class="col-md-12 table-responsive">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>Nom de la sortie</th>
+											<th>Date de sortie</th>
+											<th>Clôture</th>
+											<th>Inscrits/places</th>
+											<th>Etat</th>
+											{% if app.user %}
+												<th>Inscrit</th>
+											{% endif %}
+											<th>Organisateur</th>
+											<th>Actions</th>
+
+
+<<<<<<< HEAD
+										</tr>
+									</thead>
+									<tbody>
+										{% for sortie in sorties %}
+											{% if app.user %}
+												{% if (sortie.etat.id == 7) or (sortie.etat.id == 1 and sortie.organisateur.id != app.user.id) or (sortie.etat.id == 5 and sortie.dateLimiteInscription|date_modify("+1 month")|date("U") < "now"|date("U") ) %}
+													{% else %}
+														<tr>
+															<td>{{ sortie.nom }}</td>
+															<td class="text-center">{{ sortie.dateDebut |date('d/m/Y H:m') }}</td>
+															<td class="text-center">{{ sortie.dateLimiteInscription |date('d/m/Y') }}</td>
+															<td>{{ sortie.participants | length }}
+																/
+																{{ sortie.nbIncriptionMax }}</td>
+															<td>{{ sortie.etat.libelle }}</td>
+															{% if sortie.participants | length == 0 %}
+																<td></td>
+															{% else %}
+																<td>
+																	{% if (app.user in sortie.participants ) %}
+																		X
+																	{% endif %}
+																</td>
+															{% endif %}
+															<td>
+																<a href="{{ path('profil', {'id': sortie.organisateur.id} ) }}">{{ sortie.organisateur.pseudo }}</a>
+															</td>
+															{# BOUTON ACTIONS EN FONCTIONS DE CONDITIONS #}
+															<td
+																class="inline-block">
+																{# SI != DE USER CURRENT CREATEUR DE SORTIE #}
+																{% if sortie.organisateur.id == app.user.id and sortie.etat.id == 1 %}
+																	<a href="{{ path('app_sortie_update',{'id':sortie.id}) }}" class="btn btn-warning">
+																		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewbox="0 0 16 16">
+																			<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"></path>
+																			<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"></path>
+																		</svg>
+																	</a>
+																{% else %}
+
+																	<a href="{{ path('app_sortie_display',{'id':sortie.id}) }}" class="btn btn-primary">
+																		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewbox="0 0 16 16">
+																			<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+																		</svg>
+																	</a>
+
+																{% endif %}
+																{# SI L'USER CURRENT EST INSCRIT A LA SORTIE #}
+
+																{% if (app.user in sortie.participants ) %}
+																	<a href="#{# {{ path('sortie/desubscribe', {'idUser': app.user.id}, {'idSortie': sortie.id}) }} #}" class="btn btn-danger">
+																		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-dash" viewbox="0 0 16 16">
+																			<path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
+																			<path fill-rule="evenodd" d="M11 7.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"></path>
+																		</svg>
+																	</a>
+																{% endif %}
+																{# SI L'USER CURRENT EST L'ORGANISATEUR DE LA SORTIE #}
+																{% if sortie.organisateur.id == app.user.id and (sortie.etat.id == 2 or sortie.etat.id == 3) %}
+																	<a href="{{ path('app_sortie_cancel',{'id':sortie.id}) }}" class="btn btn-danger">
+																		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewbox="0 0 16 16">
+																			<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+																			<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+																		</svg>
+																	</a>
+
+																{% endif %}
+																{# SI L'USER CURRENT N'AS PAS PUBLIER SA SORTIE #}
+																{% if sortie.etat.id == 1 and app.user.id == sortie.organisateur.id %}
+																	<a href="#{# {{ path('sortie/delete', {'id': sortie.id}) }} #}" class="btn btn-success">
+																		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewbox="0 0 16 16">
+																			<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+																			<path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"></path>
+																		</svg>
+																	</a>
+																{% endif %}
+															</td>
+														</tr>
+												{% endif %}
+											{% else %}
+												{# LISTE DE TOUTES LES SORTIES SANS USER CURRENT #}
+												{% if (sortie.etat.id == 7) or  (sortie.etat.id == 5 and sortie.dateLimiteInscription|date_modify("+1 month")|date("U") < "now"|date("U")) %}
+													{% else %}
+														{% if sortie.etat.id != 1 %}
+															<tr>
+																<td>{{ sortie.nom }}</td>
+																<td>{{ sortie.dateDebut |date('d/m/Y - H:i') }}</td>
+																<td>{{ sortie.dateLimiteInscription |date('d/m/Y') }}</td>
+																<td>{{ sortie.participants | length }}
+																	/
+																	{{ sortie.nbIncriptionMax }}</td>
+																<td>{{ sortie.etat.libelle }}
+																</td>
+																<td>
+																	<a href="{{ path('profil', {'id': sortie.organisateur.id} ) }}">{{ sortie.organisateur.pseudo }}</a>
+																</td>
+																<td>
+
+																	<a href="{{ path('app_sortie_display',{'id':sortie.id}) }}" class="btn btn-primary">
+																		<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewbox="0 0 16 16">
+																			<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+																		</svg>
+																	</a>
+
+																</td>
+															</tr>
+														{% endif %}
+												{% endif %}
+											{% endif %}
+										{% endfor %}
+									</tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+
+=======
+                </tr>
+                </thead>
+                <tbody>
+                {% for sortie in sorties %}
+                    {% if app.user %}
+                        {% if (sortie.etat.id == 7) or (sortie.etat.id == 1 and sortie.organisateur.id != app.user.id) or (sortie.etat.id == 5 and sortie.dateLimiteInscription|date_modify("+1 month")|date("U") < "now"|date("U") ) %}
+                        {% else %}
+                            <tr>
+                                <td>{{ sortie.nom }}</td>
+                                <td class="text-center">{{ sortie.dateDebut |date('d/m/Y H:m') }}</td>
+                                <td class="text-center">{{ sortie.dateLimiteInscription |date('d/m/Y') }}</td>
+                                <td>{{ sortie.participants | length }}
+                                    /
+                                    {{ sortie.nbIncriptionMax }}</td>
+                                <td>{{ sortie.etat.libelle }}</td>
+                                {% if sortie.participants | length == 0 %}
+                                    <td></td>
+                                {% else %}
+                                    <td>
+                                        {% if (app.user in sortie.participants ) %}
+                                            X
+                                        {% endif %}
+                                    </td>
+                                {% endif %}
+                                <td>
+                                    <a href="{{ path('profil', {'id': sortie.organisateur.id} ) }}">{{ sortie.organisateur.pseudo }}</a>
+                                </td>
+                                {# BOUTON ACTIONS EN FONCTIONS DE CONDITIONS #}
+                                <td class="inline-block">
+                                    {# SI != DE USER CURRENT CREATEUR DE SORTIE #}
+                                    {% if sortie.organisateur.id == app.user.id and sortie.etat.id == 1 %}
+                                        <a href="{{ path('app_sortie_update',{'id':sortie.id}) }}"
+                                           class="btn btn-warning"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+												<path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"></path>
+												<path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"></path>
+											</svg></a>
+                                    {% else %}
+
+                                        <a data-toggle="tooltip" title="Voir la fiche" data-placement="top" href="{{ path('app_sortie_display',{'id':sortie.id}) }}"
+                                           class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+												<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+											</svg></a>
+
+                                    {% endif %}
+                                    {# SI L'USER CURRENT EST INSCRIT A LA SORTIE #}
+
+                                    {% if (app.user in sortie.participants ) %}
+                                        <a href="{{ path('app_sortie_unsubscribe', {'idUser': app.user.id,'idSortie': sortie.id}) }}"
+                                           class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-dash" viewBox="0 0 16 16">
+												<path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
+												<path fill-rule="evenodd" d="M11 7.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5z"></path>
+											</svg></a>
+									{% endif %}
+									{% if (app.user not in sortie.participants ) %}
+
+										<a href="{{ path('app_sortie_subscribe', {'idUser': app.user.id,'idSortie': sortie.id}) }}"
+										   class="btn btn-success"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-dash" viewBox="0 0 16 16">
+												<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus" viewBox="0 0 16 16">
+													<path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"></path>
+													<path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"></path>
+												</svg></a>
+
+                                    {% endif %}
+                                    {# SI L'USER CURRENT EST L'ORGANISATEUR DE LA SORTIE #}
+                                    {% if sortie.organisateur.id == app.user.id and (sortie.etat.id == 2 or sortie.etat.id == 3) %}
+                                        <a  href="{{ path('app_sortie_cancel',{'id':sortie.id}) }}"
+                                           class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+												<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+												<path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"></path>
+											</svg></a>
+
+                                    {% endif %}
+                                    {# SI L'USER CURRENT N'AS PAS PUBLIER SA SORTIE #}
+                                    {% if sortie.etat.id == 1 and app.user.id == sortie.organisateur.id %}
+                                        <a  href="#{# {{ path('sortie/delete', {'id': sortie.id}) }} #}"
+                                           class="btn btn-success"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle" viewBox="0 0 16 16">
+												<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+												<path d="M10.97 4.97a.235.235 0 0 0-.02.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05z"></path>
+											</svg></a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endif %}
+                    {% else %}
+                        {# LISTE DE TOUTES LES SORTIES SANS USER CURRENT #}
+                        {% if (sortie.etat.id == 7) or  (sortie.etat.id == 5 and sortie.dateLimiteInscription|date_modify("+1 month")|date("U") < "now"|date("U")) %}
+                        {% else %}
+                            {% if sortie.etat.id != 1 %}
+                                <tr>
+                                    <td>{{ sortie.nom }}</td>
+                                    <td>{{ sortie.dateDebut |date('d/m/Y - H:i') }}</td>
+                                    <td>{{ sortie.dateLimiteInscription |date('d/m/Y') }}</td>
+                                    <td>{{ sortie.participants | length }}
+                                        /
+                                        {{ sortie.nbIncriptionMax }}</td>
+                                    <td>{{ sortie.etat.libelle }}
+                                    </td>
+                                    <td>
+                                        <a href="{{ path('profil', {'id': sortie.organisateur.id} ) }}">{{ sortie.organisateur.pseudo }}</a>
+                                    </td>
+                                    <td>
+
+                                        <a href="{{ path('app_sortie_display',{'id':sortie.id}) }}"
+                                           class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+												<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"></path>
+											</svg></a>
+
+
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {% endif %}
+    </div>
+    </div>
+    </div>
+    {% endblock %}
+
+
+    {# VERSION MOBILE #}
+{% block bodyMobile %}
+	<div class="container">
+		<h1 class="text-center mt-5">
+			Mes sorties
+		</h1>
+		<div class="row">
+
+			<div class="row mt-5">
+				<div class="col-md-12 table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Nom de la sortie</th>
+								<th>Date de sortie</th>
+								<th>Lieu</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							{% for sortie in sorties %}
+								{% if app.user %}
+									{% if (sortie.etat.id == 7) or (sortie.etat.id == 1 and sortie.organisateur.id != app.user.id) or (sortie.etat.id == 5 and sortie.dateLimiteInscription|date_modify("+1 month")|date("U") < "now"|date("U") ) %}
+										{% else %}
+											<tr>
+												<td>
+													<a href="{{ path('app_sortie_display',{'id':sortie.id}) }}">
+														{{ sortie.nom }}</a>
+												</td>
+												<td class="text-center">{{ sortie.dateDebut |date('d/m/Y H:m') }}</td>
+												<td class="text-center">{{ sortie.lieu.nomLieu }}</td>
+											</tr>
+									{% endif %}
+								{% endif %}
+							{% endfor %}
+						</tbody>
+					</table>
+				</tbody>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+>>>>>>> ea2e9ccaaf0c959bf996496fc028465bd458b124

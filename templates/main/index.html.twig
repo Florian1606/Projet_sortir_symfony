@@ -1,9 +1,10 @@
-{% extends 'base.html.twig' %}
+{% extends is_mobile() ? "baseMobile.html.twig" : "base.html.twig" %}
+
 
 {% block title %}Accueil
 {% endblock %}
 {% block stylesheet %}
-    <link href="{{ asset('css/index.css') }}" rel="stylesheet">
+	<link href="{{ asset('css/index.css') }}" rel="stylesheet">
 {% endblock %}
 {% block body %}
 
@@ -41,17 +42,17 @@ background: linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7
 {% endfor %}
 {# SEARCHBAR #}
 	{% if app.user %}
-<form action="{{ path('app_search', {'id': app.user.id}) }}" method="post">
-    {% else %}
-    <form action="{{ path('app_search', {'id': 0}) }}" method="post">
-        {% endif %}
-        <div class="container mt-5">
-            <div class="row d-flex justify-content-center flex-wrap">
-                <div class="col ">
-                    <div class="card p-3 py-4">
-                        <h5>Démerde toi à chercher une sortie</h5>
-                        <div class="row g-3 mt-2">
-                            <div class="col-md-3">
+		<form action="{{ path('app_search', {'id': app.user.id}) }}" method="post">
+		{% else %}
+			<form action="{{ path('app_search', {'id': 0}) }}" method="post">
+			{% endif %}
+			<div class="container mt-5">
+				<div class="row d-flex justify-content-center flex-wrap">
+					<div class="col ">
+						<div class="card p-3 py-4">
+							<h5>Démerde toi à chercher une sortie</h5>
+							<div class="row g-3 mt-2">
+								<div class="col-md-3">
 
 									<select class="btn btn-secondary dropdown-toggle btn-lg w-100" name="site" id="site-select">
 										<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -273,3 +274,47 @@ background: linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7
     </div>
     </div>
     {% endblock %}
+
+
+    {# VERSION MOBILE #}
+{% block bodyMobile %}
+	<div class="container">
+		<h1 class="text-center mt-5">
+			Mes sorties
+		</h1>
+		<div class="row">
+
+			<div class="row mt-5">
+				<div class="col-md-12 table-responsive">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Nom de la sortie</th>
+								<th>Date de sortie</th>
+								<th>Lieu</th>
+
+							</tr>
+						</thead>
+						<tbody>
+							{% for sortie in sorties %}
+								{% if app.user %}
+									{% if (sortie.etat.id == 7) or (sortie.etat.id == 1 and sortie.organisateur.id != app.user.id) or (sortie.etat.id == 5 and sortie.dateLimiteInscription|date_modify("+1 month")|date("U") < "now"|date("U") ) %}
+										{% else %}
+											<tr>
+												<td>
+													<a href="{{ path('app_sortie_display',{'id':sortie.id}) }}">
+														{{ sortie.nom }}</a>
+												</td>
+												<td class="text-center">{{ sortie.dateDebut |date('d/m/Y H:m') }}</td>
+												<td class="text-center">{{ sortie.lieu.nomLieu }}</td>
+											</tr>
+									{% endif %}
+								{% endif %}
+							{% endfor %}
+						</tbody>
+					</table>
+				</tbody>
+			</div>
+		</div>
+	</div>
+{% endblock %}
