@@ -27,7 +27,7 @@ class SortieRepository extends ServiceEntityRepository
             ->innerJoin('s.site', 'si')
             ->andWhere('si.id =  :site')
             ->andWhere('s.nom LIKE :search')
-            ->setParameter('search', '%'.$search.'%')
+            ->setParameter('search', '%' . $search . '%')
             ->setParameter('site', $idSite)
             ->setParameter('search', '%' . $search . '%')
             ->getQuery()
@@ -43,7 +43,7 @@ class SortieRepository extends ServiceEntityRepository
             ->andWhere('s.dateLimiteInscription <= :dateFin')
             ->andWhere('si.id =  :site')
             ->andWhere('s.nom LIKE :search')
-            ->setParameter('search', '%'.$search.'%')
+            ->setParameter('search', '%' . $search . '%')
             ->setParameter('site', $idSite)
             ->setParameter('dateDebut', $dateDebut)
             ->setParameter('dateFin', $dateFin)
@@ -59,7 +59,7 @@ class SortieRepository extends ServiceEntityRepository
             ->andWhere('s.organisateur  =  :id')
             ->andWhere('si.id =  :site')
             ->andWhere('s.nom LIKE :search')
-            ->setParameter('search', '%'.$search.'%')
+            ->setParameter('search', '%' . $search . '%')
             ->setParameter('site', $idSite)
             ->setParameter('id', $idUserCurrent)
             ->getQuery()
@@ -75,7 +75,7 @@ class SortieRepository extends ServiceEntityRepository
             ->andWhere('p.id =  :id')
             ->andWhere('si.id =  :site')
             ->andWhere('s.nom LIKE :search')
-            ->setParameter('search', '%'.$search.'%')
+            ->setParameter('search', '%' . $search . '%')
             ->setParameter('site', $idSite)
             ->setParameter('id', $idUserCurrent)
             ->getQuery()
@@ -83,18 +83,18 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     // Retourne un tableau selon la non inscription de l'user current et le site
-    public function findByIdParticipantNonInscrit($sorties,$idUserCurrent, $idSite)
+    public function findByIdParticipantNonInscrit($sorties, $idUserCurrent, $idSite)
     {
 
         foreach ($sorties as $sortie) {
-             foreach ($sortie->getParticipants() as $participant) {
-                 if ($participant->getId() == $idUserCurrent || $idSite != $sortie->getSite()->getId()) {
-                     $id = array_search($sortie,$sorties);
-                     unset($sorties[$id]);
-                 }
-             }
-         }
-         return $sorties;
+            foreach ($sortie->getParticipants() as $participant) {
+                if ($participant->getId() == $idUserCurrent || $idSite != $sortie->getSite()->getId()) {
+                    $id = array_search($sortie, $sorties);
+                    unset($sorties[$id]);
+                }
+            }
+        }
+        return $sorties;
     }
 
     // Retourne un tableau des sorties passées
@@ -106,11 +106,20 @@ class SortieRepository extends ServiceEntityRepository
             ->andWhere('e.id =  5')
             ->andWhere('si.id =  :site')
             ->andWhere('s.nom LIKE :search')
-            ->setParameter('search', '%'.$search.'%')
+            ->setParameter('search', '%' . $search . '%')
             ->setParameter('site', $idSite)
             ->getQuery()
             ->getResult();
     }
 
-
+    // Retourne un tableau des sorties selon le lieu
+    public function findBySites($idSite)
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.site', 'si')
+            ->andWhere('si.id =  :site')
+            ->setParameter('site', $idSite)
+            ->getQuery()
+            ->getResult();
+    }
 }

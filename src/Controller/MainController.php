@@ -154,6 +154,11 @@ class MainController extends AbstractController
             $sorties = array_merge($sorties, $sortieRepo->findBySearchAndSite($search, $idSite, $search)); // NE RIEN METTRE = findAll()
         }
 
+        if ($idSite != "" && $search == "" && $isSortiesOrganisateur == null && $isSortiesInscrit == null && $isSortiesNonInscrit == null
+        && $isSortiesPassees == null && $dateDebut == "" && $dateLimiteInscription == "") {
+            $sorties = array_merge($sorties, $sortieRepo->findBySites($idSite));
+        }
+
         // Retourne un tableau selon les dates rentrées et le site et site
         if ($dateDebut != "" && $dateLimiteInscription != "") {
             $sorties = array_merge($sorties, $sortieRepo->findByDates($dateDebut, $dateLimiteInscription, $idSite, $search));
