@@ -303,10 +303,11 @@ class MainController extends AbstractController
             $photoFile = $form->get('photo')->getData();
             if ($photoFile) {
                 // Supprimer photo si déjà existante
-                if ($this->getUser()->getAvatarFilename() != 'avatar-default.jpg') {
+                if (file_exists($this->getTargetDirectory() . "/" .$filename)) {
                     $urlPhotoOld = $this->getUser()->getAvatarFilename();
-                    $fileUploader->removeAvatar($urlPhotoOld);
+
                 }
+                $fileUploader->removeAvatar($urlPhotoOld);
                 // Mettre en place la nouvelle photo
                 $photoFileName = $fileUploader->upload($photoFile);
                 $participant->setAvatarFilename($photoFileName);

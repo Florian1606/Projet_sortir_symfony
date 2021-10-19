@@ -21,10 +21,9 @@ class SortieRepository extends ServiceEntityRepository
 
     public function findAllWithSitesAndEtats() {
         return $this->createQueryBuilder('s')
-        ->leftJoin('s.etat', 'e')
-        ->leftJoin('s.site', 'si')
-        ->addSelect('si')
-        ->addSelect('e')
+        ->leftJoin('s.etats', 'c')
+        ->addSelect('c')
+        ->orderBy('w.id', 'ASC')
         ->getQuery()
         ->getResult()
     ;

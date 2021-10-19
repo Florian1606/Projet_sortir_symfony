@@ -1,8 +1,7 @@
 {% extends is_mobile() ? "baseMobile.html.twig" : "base.html.twig" %}
 
 
-{% block title %}
-	SORTIR.COM
+{% block title %} SORTIR.COM
 {% endblock %}
 {% block stylesheet %}
 	<link href="{{ asset('css/index.css') }}" rel="stylesheet">
@@ -16,18 +15,18 @@
 				<div class="col-lg-6">
 					<div class="text-center my-5">
 						<h1 class="display-5 fw-bolder text-white mb-2" style="background: #121FCF;
-																					background: -webkit-linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7B08 49%, #CF1512 100%);
-																					background: -moz-linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7B08 49%, #CF1512 100%);
-																					background: linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7B08 49%, #CF1512 100%);
-																					-webkit-background-clip: text;
-																					-webkit-text-fill-color: transparent;">SORTEZ DE CHEZ VOUS !</h1>
+														background: -webkit-linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7B08 49%, #CF1512 100%);
+														background: -moz-linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7B08 49%, #CF1512 100%);
+														background: linear-gradient(to right, #121FCF 0%, #00FF00 32%, #EEFF05 27%, #FF7B08 49%, #CF1512 100%);
+														-webkit-background-clip: text;
+														-webkit-text-fill-color: transparent;">SORTEZ DE CHEZ VOUS !</h1>
 						<span>Date du jour :
 							{{ "now"|date("m/d/Y") }}</span>
 
 						<p class="lead text-white-50 mb-4">Participer ou organiser des sorties pour vous et votre ville</p>
 						<div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
 							<a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('app_sortie_add') }}">Ajouter une
-																								                            sortie</a>
+																                            sortie</a>
 							<a class="btn btn-outline-light btn-lg px-4" href="{{ path('app_about_us') }}">Learn More</a>
 						</div>
 					</div>
@@ -73,56 +72,53 @@
 									<input type="submit" class="btn btn-lg btn-secondary btn-block" value="Rechercher">
 								</div>
 							</div>
-							{# RECHERCHE AVANCEE #}
-							{% if app.user %}
-								<div class="mt-3">
-									<a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" class="advanced">
-										Recherche avancée
-										<i class="fa fa-angle-down"></i>
-									</a>
-
-									<div class="collapse" id="collapseExample">
-										<div class="d-flex align-items-center flex-wrap justify-content-evenly m-4 flex-wrap">
-											<div class="d-flex flex-column flex-wrap">
-												<div class="row">
-													<label for="dateDebut">Commence le :</label>
-													<input type="date" name="dateDebut" id="dateDebut">
-												</div>
-												<div class="row mt-2">
-													<label for="dateFin">Termine le :
-													</label>
-													<input type="date" name="dateFin" id="dateFin">
-												</div>
+							<div class="mt-3">
+								<a data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample" class="advanced">
+									Recherche avancée
+									<i class="fa fa-angle-down"></i>
+								</a>
+								{# RECHERCHE AVANCEE #}
+								<div class="collapse" id="collapseExample">
+									<div class="d-flex align-items-center flex-wrap justify-content-evenly m-4 flex-wrap">
+										<div class="d-flex flex-column flex-wrap">
+											<div class="row">
+												<label for="dateDebut">Commence le :</label>
+												<input type="date" name="dateDebut" id="dateDebut">
 											</div>
-											<div class="d-flex flex-column flex-wrap">
-												<div class="form-check m-1">
-													<input class="form-check-input" type="checkbox" name="isSortiesOrganisateur" id="isSortiesOrganisateur">
-													<label class="form-check-label" for="isSortiesOrganisateur">
-														Sorties dont je suis l'organisateur/trice
-													</label>
-												</div>
-												<div class="form-check m-1">
-													<input class="form-check-input" type="checkbox" name="isSortiesInscrit" id="isSortiesInscrit">
-													<label class="form-check-label" for="isSortiesInscrit">
-														Sorties auxquelles je suis inscrit/e
-													</label>
-												</div>
-												<div class="form-check m-1">
-													<input class="form-check-input" type="checkbox" name="isSortiesPasInscrit" id="isSortiesPasInscrit">
-													<label class="form-check-label" for="isSortiesPasInscrit">
-														Sorties auxquelles je ne suis pas inscrit/e
-													</label>
-												</div>
-												<div class="form-check m-1">
-													<input class="form-check-input" type="checkbox" name="isSortiesPassees" id="isSortiesPassees">
-													<label class="form-check-label" for="isSortiesPassees">
-														Sorties passées
-													</label>
-												</div>
+											<div class="row mt-2">
+												<label for="dateFin">Termine le :
+												</label>
+												<input type="date" name="dateFin" id="dateFin">
+											</div>
+										</div>
+										<div class="d-flex flex-column flex-wrap">
+											<div class="form-check m-1">
+												<input class="form-check-input" type="checkbox" name="isSortiesOrganisateur" id="isSortiesOrganisateur">
+												<label class="form-check-label" for="isSortiesOrganisateur">
+													Sorties dont je suis l'organisateur/trice
+												</label>
+											</div>
+											<div class="form-check m-1">
+												<input class="form-check-input" type="checkbox" name="isSortiesInscrit" id="isSortiesInscrit">
+												<label class="form-check-label" for="isSortiesInscrit">
+													Sorties auxquelles je suis inscrit/e
+												</label>
+											</div>
+											<div class="form-check m-1">
+												<input class="form-check-input" type="checkbox" name="isSortiesPasInscrit" id="isSortiesPasInscrit">
+												<label class="form-check-label" for="isSortiesPasInscrit">
+													Sorties auxquelles je ne suis pas inscrit/e
+												</label>
+											</div>
+											<div class="form-check m-1">
+												<input class="form-check-input" type="checkbox" name="isSortiesPassees" id="isSortiesPassees">
+												<label class="form-check-label" for="isSortiesPassees">
+													Sorties passées
+												</label>
 											</div>
 										</div>
 									</div>
-								{% endif %}
+								</div>
 							</form>
 							{# FIN RECHERCHE AVANCEE #}
 						</div>
@@ -132,8 +128,7 @@
 
 				{# LISTE DES SORTIES #}
 
-				<div class="row">
-					{% if sorties | length == 0 %}
+					<div class="row"> {% if sorties | length == 0 %}
 						<h3 class="text-center mt-5">
 							Aucun résultat trouvé !</h3>
 					{% else %}
@@ -335,5 +330,5 @@
 	</div>
 {% endblock %}
 {% block javascripts %}
-	<script type="text/javascript" src="{{ asset('js/searchbar.js')}}"></script>
+	 <script type="text/javascript" src="{{ asset('js/searchbar.js')}}"></script> 
 {% endblock %}

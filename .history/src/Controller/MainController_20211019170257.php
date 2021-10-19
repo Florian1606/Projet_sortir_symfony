@@ -98,7 +98,7 @@ class MainController extends AbstractController
         // verifier si on a soumis le form et si les donnes valide
         if ($form->isSubmitted() && $form->isValid()) {
             // génerer sql insert into et ajouter dans queue
-            $profil->setAvatarFilename('avatar-default.jpg');
+            $profil->setAvatarFilename('avatar-default.jpg')
             $profil->setIsAdmin(false);
             $profil->setIsActif(false);
             $profil->setPassword(
@@ -303,10 +303,8 @@ class MainController extends AbstractController
             $photoFile = $form->get('photo')->getData();
             if ($photoFile) {
                 // Supprimer photo si déjà existante
-                if ($this->getUser()->getAvatarFilename() != 'avatar-default.jpg') {
-                    $urlPhotoOld = $this->getUser()->getAvatarFilename();
-                    $fileUploader->removeAvatar($urlPhotoOld);
-                }
+                $urlPhotoOld = $this->getUser()->getAvatarFilename();
+                $fileUploader->removeAvatar($urlPhotoOld);
                 // Mettre en place la nouvelle photo
                 $photoFileName = $fileUploader->upload($photoFile);
                 $participant->setAvatarFilename($photoFileName);

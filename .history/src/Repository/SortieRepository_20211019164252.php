@@ -19,15 +19,8 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
-    public function findAllWithSitesAndEtats() {
-        return $this->createQueryBuilder('s')
-        ->leftJoin('s.etat', 'e')
-        ->leftJoin('s.site', 'si')
-        ->addSelect('si')
-        ->addSelect('e')
-        ->getQuery()
-        ->getResult()
-    ;
+    public function findWithSitesAndEtats() {
+        
     }
 
 

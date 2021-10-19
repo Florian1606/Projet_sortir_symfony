@@ -76,8 +76,8 @@ class MainController extends AbstractController
     public function index(SortieRepository $sortieRepo, SiteRepository $siteRepo): Response
     {
         $sorties = $sortieRepo->findAllWithSitesAndEtats();
-        dump($sorties);
         $sites = $siteRepo->findAll();
+        findAllWithSitesAndEtats
         return $this->render('main/index.html.twig', [
             'sorties' => $sorties,
             'sites' => $sites,
@@ -98,7 +98,7 @@ class MainController extends AbstractController
         // verifier si on a soumis le form et si les donnes valide
         if ($form->isSubmitted() && $form->isValid()) {
             // génerer sql insert into et ajouter dans queue
-            $profil->setAvatarFilename('avatar-default.jpg');
+
             $profil->setIsAdmin(false);
             $profil->setIsActif(false);
             $profil->setPassword(
@@ -113,6 +113,7 @@ class MainController extends AbstractController
             $em->flush();
             // redirect vers la liste wish
             //création de message de succes qui sera affiché sur la prochaine page
+            $this->addFlash('success', 'le titre   ' . $profil->getMonprofil() . ' a été ajoute');
             //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
             $id = $profil->getId();
             return $this->redirectToRoute("app_creationProfil", array('id' => $id = $profil->getId()));
@@ -303,10 +304,8 @@ class MainController extends AbstractController
             $photoFile = $form->get('photo')->getData();
             if ($photoFile) {
                 // Supprimer photo si déjà existante
-                if ($this->getUser()->getAvatarFilename() != 'avatar-default.jpg') {
-                    $urlPhotoOld = $this->getUser()->getAvatarFilename();
-                    $fileUploader->removeAvatar($urlPhotoOld);
-                }
+                $urlPhotoOld = $this->getUser()->getAvatarFilename();
+                $fileUploader->removeAvatar($urlPhotoOld);
                 // Mettre en place la nouvelle photo
                 $photoFileName = $fileUploader->upload($photoFile);
                 $participant->setAvatarFilename($photoFileName);
