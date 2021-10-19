@@ -12,19 +12,20 @@
 		</div>
 	{% endfor %}
 	<div class="row text-center mt-4">
+		<h2>Mon profil</h2>
 	</div>
 
 	<div class="container">
 		<div class="row">
-			<div class="col-3 mt-5">
+			<div class="col-3">
 				<img src="{{ asset('uploads/avatars/' ~ app.user.avatarFilename)}}" class="img-thumbnail img-fluid" alt="..." max-width="200" max-height="100">
 			</div>
-			<div class="col ml-5">
-					<h2 class="text-center">Mon profil</h2>
+			<div class="col">
 				<div class="row mt-4">
 					<div>
 						{% form_theme formProfil 'bootstrap_5_horizontal_layout.html.twig' %}
 						{{ form_start(formProfil) }}
+						{# {{ form_widget(formProfil) }} #}
 						{{ form_row(formProfil.pseudo)}}
 						{{ form_row(formProfil.prenom)}}
 						{{ form_row(formProfil.nom)}}
@@ -33,12 +34,17 @@
 						{{ form_row(formProfil.password)}}
 						{{ form_row(formProfil.idSite)}}
 						{{ form_row(formProfil.photo)}}
-						<div class="d-flex justify-content-around align-items-center mt-5">
-							<input class="btn btn-primary" type="submit" id="{{ field_name(formProfil.Enregistrer) }}" name="{{ field_name(formProfil.Enregistrer) }}" value="Enregistrer"/>
+						<div class="d-flex justify-content-center align-items-center">
+						{# {{ form_row(formProfil.Enregistrer)}} #}
+						<input class="btn btn-primary" type="submit"
+							id="{{ field_name(formProfil.Enregistrer) }}"
+							name="{{ field_name(formProfil.Enregistrer) }}"
+							value="Enregistrer"
+						 /> 
 
-							<a href="{{ path('main') }}" class="btn btn-primary">
-								Annuler
-							</a>
+						<a href="{{ path('main') }}" class="btn btn-primary">
+							Annuler
+						</a>
 						</div>
 						{{ form_end(formProfil) }}
 

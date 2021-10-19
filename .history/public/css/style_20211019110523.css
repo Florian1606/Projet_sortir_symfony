@@ -21,4 +21,8 @@
     margin-bottom: 10px;
 }
 
-.button {}
+.button {
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}

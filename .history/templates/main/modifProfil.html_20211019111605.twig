@@ -12,15 +12,15 @@
 		</div>
 	{% endfor %}
 	<div class="row text-center mt-4">
+		<h2>Mon profil</h2>
 	</div>
 
 	<div class="container">
 		<div class="row">
-			<div class="col-3 mt-5">
+			<div class="col-3">
 				<img src="{{ asset('uploads/avatars/' ~ app.user.avatarFilename)}}" class="img-thumbnail img-fluid" alt="..." max-width="200" max-height="100">
 			</div>
-			<div class="col ml-5">
-					<h2 class="text-center">Mon profil</h2>
+			<div class="col">
 				<div class="row mt-4">
 					<div>
 						{% form_theme formProfil 'bootstrap_5_horizontal_layout.html.twig' %}
