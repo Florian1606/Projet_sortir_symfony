@@ -298,8 +298,6 @@ class MainController extends AbstractController
         $form->handleRequest($request);
         // verifier si on a soumis le form et si les donnes valide
         if ($form->isSubmitted() && $form->isValid()) {
-
-
             $photoFile = $form->get('photo')->getData();
             if ($photoFile) {
                 // Supprimer photo si déjà existante
