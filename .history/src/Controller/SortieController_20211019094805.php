@@ -119,7 +119,7 @@ class SortieController extends AbstractController
         $user = $repoParticipant->find($idUser);
         $sortie->removeParticipant($user);
         $em->flush();
-        $this->addFlash('success', 'Vous êtes désinscrit de la sortie !');
+        $this->addFlash('success', 'Vous êtes dé-inscrit de la sortie !');
         return $this->redirectToRoute("main");
     }
 
