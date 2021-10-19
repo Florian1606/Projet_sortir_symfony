@@ -130,12 +130,12 @@ class MainController extends AbstractController
         return $this->render("main/base.html.twig");
     }
 
-    /**
-     *@Route("/main/about_us",name="app_about_us")
+        /**
+     *@Route("/main/annuler",name="app_Annuler")
      */
-    public function aboutUs(Request $request): Response
+    public function Annuler(Request $request): Response
     {
-        return $this->render("main/about-us.html.twig");
+        return $this->render("main/base.html.twig");
     }
 
 

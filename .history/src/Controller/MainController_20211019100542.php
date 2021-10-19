@@ -135,7 +135,7 @@ class MainController extends AbstractController
      */
     public function aboutUs(Request $request): Response
     {
-        return $this->render("main/about-us.html.twig");
+        return $this->render("main/base.html.twig");
     }
 
 
