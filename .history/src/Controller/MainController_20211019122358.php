@@ -43,10 +43,9 @@ class MainController extends AbstractController
     {
 
         $participant = $repo->find($id);
-        $sorties = $repoSorties->findBy(array('organisateur' => $participant));
+        $sorties -> $repoSorties->findBy(array('organisateur' => $participant))
         return $this->render('main/profil.html.twig', [
             'participant' => $participant,
-            'sorties' => $sorties,
         ]);
     }
 

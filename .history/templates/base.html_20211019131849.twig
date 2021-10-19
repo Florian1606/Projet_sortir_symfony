@@ -40,7 +40,7 @@
 	<body>
 
 
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3 sticky-top">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
 			<img src="{{ asset('img/daco.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
 			<a class="navbar-brand" href="{{ path('main') }}">
 				<span class="name pull-left">SORTIE.COM</span>
@@ -211,8 +211,25 @@ if (largeur < LARGEUR_SMARTPHONE) { // On regarde si l'user est connectée sinon
 	}
 	});
 }
+
+// When the user scrolls the page, execute myFunction
+window.onscroll = function() {myFunction()};
+
+// Get the navbar
+var navbar = document.getElementById("navbar");
+
+// Get the offset position of the navbar
+var sticky = navbar.offsetTop;
+
+// Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
+function myFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky")
+  } else {
+    navbar.classList.remove("sticky");
+  }
+}
 	</script>
 	<script type="text/javascript" src="{{ asset('js/smartphone.js')}}"></script>
-	<script type="text/javascript" src="{{ asset('js/stickynavbar.js')}}"></script>
 
 </html>

@@ -1,8 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	{{ participant.pseudo}}
-	- Sortir.com
+    {{ participant.pseudo}} - Sortir.com
 {% endblock %}
 {% block stylesheets %}
 	<link href="{{ asset('css/profil.css') }}" rel="stylesheet">
@@ -12,49 +11,12 @@
 
 	<section>
 		<img src="{{ asset('uploads/avatars/' ~ participant.avatarFilename)}}" class="avatar">
-		<h1>{{ participant.nom }}
+		<h2>{{ participant.nom }}
 			{{ participant.prenom}}
-		</h1>
-		<div>
-			<h3 class="text-center mt-5">
-				Sorties organisées par {{ participant.pseudo}} :
-			</h3>
-			<div class="row">
+		</h2>
+        <div>
 
-				<div class="row mt-2 d-flex justify-content-center">
-					<div class="col-md-8 table-responsive text-center ">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th>Nom de la sortie</th>
-									<th>Date de sortie</th>
-									<th>Lieu</th>
-
-								</tr>
-							</thead>
-							<tbody>
-								{% for sortie in sorties %}
-									{% if app.user %}
-										{% if (sortie.etat.id == 7) or (sortie.etat.id == 1 and sortie.organisateur.id != app.user.id) or (sortie.etat.id == 5 and sortie.dateLimiteInscription|date_modify("+1 month")|date("U") < "now"|date("U") ) %}
-											{% else %}
-												<tr>
-													<td>
-														<a href="{{ path('app_sortie_display',{'id':sortie.id}) }}">
-															{{ sortie.nom }}</a>
-													</td>
-													<td class="">{{ sortie.dateDebut |date('d/m/Y H:m') }}</td>
-													<td class="">{{ sortie.lieu.nomLieu }}</td>
-												</tr>
-										{% endif %}
-									{% endif %}
-								{% endfor %}
-							</tbody>
-						</table>
-					</tbody>
-				</div>
-			</div>
-
-		</div>
+        </div>
 
 
 		<div class="info">

@@ -26,7 +26,6 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link href="https://fonts.googleapis.com/css?family=Kaushan+Script" rel="stylesheet"> 
 		<link rel="shortcut icon" href="{{ asset('img/together.png') }}" type="image/x-icon">
-		<link href="{{ asset('css/style.css') }}" type="stylesheet">
 
 		{% block stylesheets %}{% endblock %}
 		<title>
@@ -40,7 +39,7 @@
 	<body>
 
 
-		<nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3 sticky-top">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark p-3">
 			<img src="{{ asset('img/daco.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
 			<a class="navbar-brand" href="{{ path('main') }}">
 				<span class="name pull-left">SORTIE.COM</span>
@@ -117,7 +116,12 @@
 				<div
 					class="row mt-3">
 					<!-- Grid column -->
-
+					<style>
+						#bg {
+							background-image: url({{ asset('img/together.png') }});
+							background-repeat: no-repeat;
+						};
+					</style>
 					<div
 						class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
 
@@ -203,16 +207,32 @@ var url = window.location.pathname;
 
 // Si l'écran du navigateur est plus petit que 767px (taille smartphone)
 if (largeur < LARGEUR_SMARTPHONE) { // On regarde si l'user est connectée sinon on redirige vers la page login
-	document.addEventListener('DOMContentLoaded', function () 
-	{
-		let isAuthenticated = $('.js-user-rating').data('isAuthenticated');
-		if (! isAuthenticated && url != '/login') {
-		window.document.location = '{{ path('app_login') }}';
-	}
-	});
+document.addEventListener('DOMContentLoaded', function () {
+let isAuthenticated = $('.js-user-rating').data('isAuthenticated');
+if (! isAuthenticated && url != '/login') {
+window.document.location = '{{ path('app_login') }}';
+}
+});
+}
+
+// When the user scrolls the page, execute myFunction
+window.onscroll = function() {myFunction()};
+
+// Get the navbar
+var navbar = document.getElementById("navbar");
+
+// Get the offset position of the navbar
+var sticky = navbar.offsetTop;
+
+// Add the sticky class to the navbar when you reach its scroll position. Remove "sticky" when you leave the scroll position
+function myFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky")
+  } else {
+    navbar.classList.remove("sticky");
+  }
 }
 	</script>
 	<script type="text/javascript" src="{{ asset('js/smartphone.js')}}"></script>
-	<script type="text/javascript" src="{{ asset('js/stickynavbar.js')}}"></script>
 
 </html>

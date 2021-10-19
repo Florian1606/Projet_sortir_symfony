@@ -39,14 +39,12 @@ class MainController extends AbstractController
     /**
      * @Route("/main/profil/{id}", name="profil", requirements={"id":"\d+"})
      */
-    public function profil(SortieRepository $repoSorties, ParticipantRepository $repo, $id = 0): Response
+    public function profil(ParticipantRepository $repo, $id = 0): Response
     {
 
         $participant = $repo->find($id);
-        $sorties = $repoSorties->findBy(array('organisateur' => $participant));
         return $this->render('main/profil.html.twig', [
             'participant' => $participant,
-            'sorties' => $sorties,
         ]);
     }
 
