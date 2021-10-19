@@ -79,38 +79,38 @@
 								</a>
 								{# RECHERCHE AVANCEE #}
 								<div class="collapse" id="collapseExample">
-									<div class="d-flex justify-content-evenly m-4 flex-wrap">
+									<div class="d-flex align-items-center flex-wrap justify-content-evenly m-4 flex-wrap">
 										<div class="d-flex flex-column flex-wrap">
 											<div class="row">
 												<label for="dateDebut">Commence le :</label>
 												<input type="date" name="dateDebut" id="dateDebut">
 											</div>
-											<div class="row">
+											<div class="row mt-2">
 												<label for="dateFin">Termine le :
 												</label>
 												<input type="date" name="dateFin" id="dateFin">
 											</div>
 										</div>
-										<div class="">
-											<div class="form-check">
+										<div class="d-flex flex-column flex-wrap">
+											<div class="form-check m-1">
 												<input class="form-check-input" type="checkbox" name="isSortiesOrganisateur" id="isSortiesOrganisateur">
 												<label class="form-check-label" for="isSortiesOrganisateur">
 													Sorties dont je suis l'organisateur/trice
 												</label>
 											</div>
-											<div class="form-check">
+											<div class="form-check m-1">
 												<input class="form-check-input" type="checkbox" name="isSortiesInscrit" id="isSortiesInscrit">
 												<label class="form-check-label" for="isSortiesInscrit">
 													Sorties auxquelles je suis inscrit/e
 												</label>
 											</div>
-											<div class="form-check ">
+											<div class="form-check m-1">
 												<input class="form-check-input" type="checkbox" name="isSortiesPasInscrit" id="isSortiesPasInscrit">
 												<label class="form-check-label" for="isSortiesPasInscrit">
 													Sorties auxquelles je ne suis pas inscrit/e
 												</label>
 											</div>
-											<div class="form-check">
+											<div class="form-check m-1">
 												<input class="form-check-input" type="checkbox" name="isSortiesPassees" id="isSortiesPassees">
 												<label class="form-check-label" for="isSortiesPassees">
 													Sorties passées
@@ -168,7 +168,7 @@
 															{% if sortie.participants | length == 0 %}
 																<td></td>
 															{% else %}
-																<td>
+																<td class="text-center">
 																	{% if (app.user in sortie.participants ) %}
 																		X
 																	{% endif %}
