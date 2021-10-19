@@ -1,0 +1,106 @@
+<?php 
+
+
+    // Retourne un tableau de sorties selon la recherche effectuée dans la searchbar et le site indiquée
+    function findBySearchAndSite($search, $idSite)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.nom LIKE :search')
+            ->innerJoin('s.site', 'si')
+            ->andWhere('si.id =  :site')
+            ->andWhere('s.nom LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->setParameter('site', $idSite)
+            ->setParameter('search', '%' . $search . '%')
+            ->getQuery()
+            ->getResult();
+    }
+
+    // Retourne un tableau selon les dates rentrées et le site et site
+    function findByDates($dateDebut, $dateFin, $idSite, $search)
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.site', 'si')
+            ->andWhere('s.dateDebut >= :dateDebut')
+            ->andWhere('s.dateLimiteInscription <= :dateFin')
+            ->andWhere('si.id =  :site')
+            ->andWhere('s.nom LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->setParameter('site', $idSite)
+            ->setParameter('dateDebut', $dateDebut)
+            ->setParameter('dateFin', $dateFin)
+            ->getQuery()
+            ->getResult();
+    }
+
+    // Retourne un tableau selon si l'user current est l'organisateur/trice et le site
+    function findByIdOrganisateur($idUserCurrent, $idSite, $search)
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.site', 'si')
+            ->andWhere('s.organisateur  =  :id')
+            ->andWhere('si.id =  :site')
+            ->andWhere('s.nom LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->setParameter('site', $idSite)
+            ->setParameter('id', $idUserCurrent)
+            ->getQuery()
+            ->getResult();
+    }
+
+    // Retourne un tableau selon l'inscription de l'user current et le site
+    function findByIdParticipantInscrit($idUserCurrent, $idSite, $search)
+    {
+        return $this->createQueryBuilder('s')
+            ->leftJoin('s.participants', 'p')
+            ->innerJoin('s.site', 'si')
+            ->andWhere('p.id =  :id')
+            ->andWhere('si.id =  :site')
+            ->andWhere('s.nom LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->setParameter('site', $idSite)
+            ->setParameter('id', $idUserCurrent)
+            ->getQuery()
+            ->getResult();
+    }
+
+    // Retourne un tableau selon la non inscription de l'user current et le site
+    function findByIdParticipantNonInscrit($sorties, $idUserCurrent, $idSite)
+    {
+
+        foreach ($sorties as $sortie) {
+            foreach ($sortie->getParticipants() as $participant) {
+                if ($participant->getId() == $idUserCurrent || $idSite != $sortie->getSite()->getId()) {
+                    $id = array_search($sortie, $sorties);
+                    unset($sorties[$id]);
+                }
+            }
+        }
+        return $sorties;
+    }
+
+    // Retourne un tableau des sorties passées
+    function findByEtatPassees($idSite, $search)
+    {
+        return $this->createQueryBuilder('s')
+            ->leftJoin('s.etat', 'e')
+            ->innerJoin('s.site', 'si')
+            ->andWhere('e.id =  5')
+            ->andWhere('si.id =  :site')
+            ->andWhere('s.nom LIKE :search')
+            ->setParameter('search', '%' . $search . '%')
+            ->setParameter('site', $idSite)
+            ->getQuery()
+            ->getResult();
+    }
+
+    // Retourne un tableau des sorties selon le lieu
+    function findBySites($idSite)
+    {
+        return $this->createQueryBuilder('s')
+            ->innerJoin('s.site', 'si')
+            ->andWhere('si.id =  :site')
+            ->setParameter('site', $idSite)
+            ->getQuery()
+            ->getResult();
+    }
