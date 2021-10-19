@@ -47,7 +47,7 @@
 											<i class="fas fa-key"></i>
 										</span>
 									</div>
-									<input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+									<input type="password" name="password" id="inputPassword" class="form-control" placeholder="Rentrez votre mot de passe.." autocomplete="current-password" required>
 								</div>
 								<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
 
@@ -65,7 +65,7 @@
 										</button>
 									</div>
 									<div class="text-center m-3">
-										<a class="mt-5" href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ? (grosse merde)</a>
+										<a class="mt-5" href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
 									</div>
 								</div>
 
