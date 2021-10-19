@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mot de passe oublié{% endblock %}
+
+{% block body %}
+    <h1>Demandez un nouveau mot de passe</h1>
+	{% form_theme requestForm 'bootstrap_5_horizontal_layout.html.twig' %}
+
+    {{ form_start(resetForm) }}
+        {{ form_row(resetForm.plainPassword) }}
+        <button class="btn btn-primary">Demandez un nouveau mot de passe</button>
+    {{ form_end(resetForm) }}
+{% endblock %}
