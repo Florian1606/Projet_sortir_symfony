@@ -284,7 +284,15 @@ class MainController extends AbstractController
             'sites' => $sites,
         ]);
     }
+    /**
+     * @Route("/test",name="app_test")
+     */
+    public function test(FileUploader $fileUploader): Response
+    {
 
+        $fileUploader->removeAvatar("Mohammed-Ali-616e8dab94fdb.jpg");
+        dd("ddd");
+    }
 
     /**
      * @Route("/monProfil/{id}",name="app_modifier")

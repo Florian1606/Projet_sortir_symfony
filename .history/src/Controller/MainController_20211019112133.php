@@ -71,7 +71,7 @@ class MainController extends AbstractController
     /**
      * @Route("/main", name="main")
      */
-    public function index(SortieRepository $sortieRepo, SiteRepository $siteRepo): Response
+    public function index( SortieRepository $sortieRepo, SiteRepository $siteRepo): Response
     {
         $sorties = $sortieRepo->findAll();
         $sites = $siteRepo->findAll();
@@ -285,7 +285,6 @@ class MainController extends AbstractController
         ]);
     }
 
-
     /**
      * @Route("/monProfil/{id}",name="app_modifier")
      */
@@ -298,14 +297,11 @@ class MainController extends AbstractController
         $form->handleRequest($request);
         // verifier si on a soumis le form et si les donnes valide
         if ($form->isSubmitted() && $form->isValid()) {
-
+            // Supprimer photo si déjà existante
+            $urlPhotoOld = $participant->getAvatarFilename();
 
             $photoFile = $form->get('photo')->getData();
             if ($photoFile) {
-                // Supprimer photo si déjà existante
-                $urlPhotoOld = $this->getUser()->getAvatarFilename();
-                $fileUploader->removeAvatar($urlPhotoOld);
-                // Mettre en place la nouvelle photo
                 $photoFileName = $fileUploader->upload($photoFile);
                 $participant->setAvatarFilename($photoFileName);
             }

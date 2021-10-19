@@ -38,9 +38,10 @@ class FileUploader
     }
 
     public function removeAvatar($filename) {
+        dd($this->getTargetDirectory());
 
         if(file_exists($this->getTargetDirectory() . "/" .$filename)) {
-            unlink($this->getTargetDirectory() . "/" . $filename); 
+            unlink($this->getTargetDirectory() . $filename); 
         }
     }
 

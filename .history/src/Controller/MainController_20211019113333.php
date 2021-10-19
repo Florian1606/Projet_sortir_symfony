@@ -71,7 +71,7 @@ class MainController extends AbstractController
     /**
      * @Route("/main", name="main")
      */
-    public function index(SortieRepository $sortieRepo, SiteRepository $siteRepo): Response
+    public function index( SortieRepository $sortieRepo, SiteRepository $siteRepo): Response
     {
         $sorties = $sortieRepo->findAll();
         $sites = $siteRepo->findAll();
@@ -284,7 +284,15 @@ class MainController extends AbstractController
             'sites' => $sites,
         ]);
     }
+    /**
+     * @Route("/test",name="app_test")
+     */
+    public function test(FileUploader $fileUploader): Response
+    {
 
+        $fileUploader -> removeAvatar("Mohammed-Ali-616e8dab94fdb.jpg");
+        dd("ddd");
+    }
 
     /**
      * @Route("/monProfil/{id}",name="app_modifier")
@@ -302,10 +310,9 @@ class MainController extends AbstractController
 
             $photoFile = $form->get('photo')->getData();
             if ($photoFile) {
-                // Supprimer photo si déjà existante
-                $urlPhotoOld = $this->getUser()->getAvatarFilename();
-                $fileUploader->removeAvatar($urlPhotoOld);
-                // Mettre en place la nouvelle photo
+                            // Supprimer photo si déjà existante
+            $urlPhotoOld = $this->getUser()->getAvatarFilename();
+            $fileUploader -> removeAvatar($urlPhotoOld);
                 $photoFileName = $fileUploader->upload($photoFile);
                 $participant->setAvatarFilename($photoFileName);
             }
