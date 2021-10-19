@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-
+use App\Form\LieuType;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
@@ -38,6 +38,7 @@ class SortieController extends AbstractController
 
         // Instance de la class Sortie
         $sortie = new Sortie();
+
         // Création du formulaire depuis l'entité Sortie
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
@@ -48,33 +49,38 @@ class SortieController extends AbstractController
 
         // Contrôle si les données sont valides et si le formulaire est soumis.
         if ($form->isSubmitted() && $form->isValid()) {
-            $repoPart = $this->getDoctrine()->getRepository(Participant::class);
             // app current user -> organisateur
-            $sortie->setOrganisateur($repoPart->find($request->request->get("idCurrentUser")));
-
+            $sortie->setOrganisateur($this->getUser());
             //!\\ Backslash pour indiquer une fonction PHP //!\\
             $sortie->setDateDebut(new \DateTime($request->request->get("dateDebut")));
             $sortie->setDateLimiteInscription(new \DateTime($request->request->get("dateLimiteInscription")));
-
             // Set etat suivant event
             $repo = $this->getDoctrine()->getRepository(Etat::class);
             if ($form->get('add')->isClicked()) {
                 $sortie->setEtat($repo->find(1));
                 $this->addFlash('success', 'Sortie publiée !');
+                $em->persist($sortie);
+                $em->flush();
             }
             if ($form->get('save')->isClicked()) {
                 $sortie->setEtat($repo->find(2));
                 $this->addFlash('success', 'Sortie enregistrée !');
+                $em->persist($sortie);
+                $em->flush();
             }
-            $em->persist($sortie);
-            $em->flush();
-            return $this->redirectToRoute("main");
+
+//            return $this->redirectToRoute("main");
+            return $this->redirectToRoute("app_sortie_add");
         }
         $errors = $validator->validate($sortie);
         $titre = "Création d'une sortie";
 
         $tab = compact("titre", "errors",'villes');
         $tab["formSortie"] = $form->createView();
+
+        $lieu = new Lieu();
+        $lieuForm = $this->createForm(LieuType::class,$lieu);
+        $tab['lieuForm'] = $lieuForm->createView();
 
         return $this->render('sortie/index.html.twig', $tab);
     }
@@ -148,6 +154,7 @@ class SortieController extends AbstractController
     public function deleteSortie(SortieRepository $repo, EntityManagerInterface $em, $id): Response
     {
         // Récupère le current user.
+
         $user = $this->get('security.token_storage')->getToken()->getUser();
         // Récupère la sortie suivant l'id passé en paramètre.
         $sortie = $repo->find($id);
@@ -238,20 +245,34 @@ class SortieController extends AbstractController
         return $this->render("sortie/modifierSortie.html.twig", $tab);
     }
 
+
+
     /**
-     * @Route("/sortie/getLieu/{id}",name="app_sortie_get_lieu")
+     * @Route("/sortie/infosLieu/{id}", name="infosLieu")
      */
-    public function getLieu(LieuRepository $repo, EntityManagerInterface $em, $id): Response
-    {
-        $lieu = $repo->find($id);
-        $repoV = $this->getDoctrine()->getRepository(Ville::class);
-        $ville = $repoV->findOneBy(array('id' => $lieu->getVille()->getId()));
-
-        return $this->json('{"cp":"' . $ville->getCodePostal() . '","ville":"' .
-            $ville->getNomVille() . '","rue":"' . $lieu->getRue() . '","lat":"' . $lieu->getLatitude() . '","long":"' . $lieu->getLongitude() . '"}');
+    public function infosLieu(LieuRepository $repo,$id):Response{
+        $lieu=$repo->find($id);
+        return $this->json('{"rue":"'.$lieu->getRue().'","lat":"'.$lieu->getLatitude().'","long":"'.$lieu->getLongitude().'"}');
     }
-
-
+    /**
+     * @Route("/sortie/lieu/{id}", name="lieu")
+     */
+    public function afficherLieu(VilleRepository $repo, $id):Response{
+        $ville = $repo->find($id);
+        $lieuTab = $ville->getLieus();
+        $tab=[];
+        foreach ($lieuTab as $val){
+            array_push($tab,array("id"=>$val->getId(),"nom"=>$val->getNomLieu()));
+        }
+        return $this->json(json_encode($tab));
+    }
+    /**
+     * @Route("/sortie/lieu/cp/{id}", name="cp")
+     */
+    public function afficherCP(VilleRepository $repo, $id):Response{
+        $ville = $repo->find($id);
+        return $this->json('{"codePostal":"'.$ville->getCodePostal().'"}');
+    }
 
 
 }

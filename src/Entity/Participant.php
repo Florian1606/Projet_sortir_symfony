@@ -16,6 +16,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
+
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
