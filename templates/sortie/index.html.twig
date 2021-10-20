@@ -149,13 +149,13 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Ajouter un lieu</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" id="close-modal" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div id="errors"></div>
-                        {{ form_start(lieuForm,{'attr': {"onsubmit":'return validateMyForm(event);'}}) }}
+                        {{ form_start(lieuForm,{'attr': {"onsubmit":'return validateMyForm(event);', 'id' : 'formModal'}}) }}
 
                         <div class="mb-3">
                             {{ form_row(lieuForm.nomLieu,{'attr': {'class': 'form-control'}}) }}
@@ -186,9 +186,8 @@
     </div>
     {# FIN MODAL AJOUTER UN LIEU #}
 
-    {# JS ADD LIEU #}
+    {# JS INFO LIEU #}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
     <script>
 
         $(document).ready(function () {
@@ -208,19 +207,14 @@
 
                         var id = $(this).val();
                         $.get("/sortie/infosLieu/" + id, function (data, status) {
-
                             var infosLieu = JSON.parse(data);
                             $("#rue").val(infosLieu.rue);
                             $("#latitude").val(infosLieu.lat);
                             $("#longitude").val(infosLieu.long);
                         });
-
                     });
                     $.get("/sortie/lieu/cp/" + id, function (data, status) {
-
                         var infosVilleCP = JSON.parse(data);
-
-                        //console.log(infosVilleCP);
                         $("#cp").val(infosVilleCP.codePostal);
 
                     });
@@ -238,6 +232,8 @@
             const http = new XMLHttpRequest();
             http.responseType = "json";
             http.onload = function () {
+                // console.log(this.response);
+
                 let test = '';
                 if (http.readyState == 4 && http.status == 200) {
                     $.each($.parseJSON(this.response), function (i, obj) {
@@ -245,33 +241,20 @@
                     });
                 }
                 $("#errors").html(test)
+
+                $.each($.parseJSON(this.response), function (i, obj) {
+                    if(obj.class == 'success') {
+                        $('#close-modal').click();// sortir de modal
+                        document.getElementById("formModal").reset();
+                    }
+                });
             };
-
-
-
-
-            http.open(form.method, "/lieu/add", function (data, status) {
-                    // console.log("Data: " + data + "\nStatus: " + status);
-                }
-            );
-
+            http.open(form.method, "/lieu/add");
             http.send(new FormData(form));
+
             // Pour ne pas renvoyer le tableau
-            //TEST FERMETURE MODAL
-            let msgSuccess = '';
-            // $.each($.parseJSON(this.response), function (i, obj) {
-            //     if(obj.class == 'success') {
-            //         $('#exampleModalCenter').modal('hide');
-            //         let msgSuccess = '<div class="alert alert-' + obj.class + '" role="alert">' + obj.property.substring(9, obj.property.length - 1) + '  ' + obj.message + '</div>';
-            //
-            //     }
-            //     console.log(msgSuccess);
-            //     $("#msgSuccess").html(msgSuccess)
-            // });
-            // FIN TEST FERMETURE MODAL
             event.preventDefault();
         }
-
     </script>
     {# FIN MODAL AJOUTER UN LIEU V2 #}
 {% endblock %}
