@@ -16,7 +16,7 @@
 
 
         <div class="row mt-3">
-
+            <div id="msgSuccess"></div>
             {% for item in errors %}
                 <div class="alert alert-danger mt-2" role="alert">
                     {{ item.message }}
@@ -79,6 +79,7 @@
                         <label class="form-label">Ville Organisatrice</label>
                         <input type="text" value="{{ app.user.idSite.nom }}" class="form-control" name="site"
                                disabled="disabled">
+
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Ville</label>
@@ -171,7 +172,7 @@
                         <div class="mb-3">
                             {{ form_row(lieuForm.ville,{'attr': {'class': 'form-control'}}) }}
                         </div>
-                        <div class="mb-3">
+                        <div id="btnPublier" class="mb-3">
                             {{ form_row(lieuForm.publier,{'attr': {'class': 'btn btn-success mx-2 ','id' : 'addLieu'}}) }}
                         </div>
                         {{ form_end(lieuForm) }}
@@ -237,28 +238,39 @@
             const http = new XMLHttpRequest();
             http.responseType = "json";
             http.onload = function () {
-            let test = '';
+                let test = '';
                 if (http.readyState == 4 && http.status == 200) {
-                    $.each($.parseJSON(this.response), function(i, obj) {
-                        // alert(this.response);
-
-                        test += '<div class="alert alert-danger" role="alert">'+ obj.property.substring(9,obj.property.length - 1) + ':' + obj.message  + '</div>';
-                                   });
-
-
-
+                    $.each($.parseJSON(this.response), function (i, obj) {
+                        test += '<div class="alert alert-' + obj.class + '" role="alert">' + obj.property.substring(9, obj.property.length - 1) + '  ' + obj.message + '</div>';
+                    });
                 }
                 $("#errors").html(test)
             };
+
+
+
+
             http.open(form.method, "/lieu/add", function (data, status) {
                     // console.log("Data: " + data + "\nStatus: " + status);
                 }
             );
+
             http.send(new FormData(form));
             // Pour ne pas renvoyer le tableau
+            //TEST FERMETURE MODAL
+            let msgSuccess = '';
+            // $.each($.parseJSON(this.response), function (i, obj) {
+            //     if(obj.class == 'success') {
+            //         $('#exampleModalCenter').modal('hide');
+            //         let msgSuccess = '<div class="alert alert-' + obj.class + '" role="alert">' + obj.property.substring(9, obj.property.length - 1) + '  ' + obj.message + '</div>';
+            //
+            //     }
+            //     console.log(msgSuccess);
+            //     $("#msgSuccess").html(msgSuccess)
+            // });
+            // FIN TEST FERMETURE MODAL
             event.preventDefault();
         }
-
 
     </script>
     {# FIN MODAL AJOUTER UN LIEU V2 #}

@@ -80,6 +80,7 @@ class Sortie
     private $site;
 
     /**
+     *
      * @ORM\ManyToOne(targetEntity=Etat::class, inversedBy="sorties")
      */
     private $etat;

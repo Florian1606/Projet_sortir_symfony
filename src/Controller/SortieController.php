@@ -8,6 +8,7 @@ use App\Entity\Participant;
 use App\Entity\Etat;
 use App\Entity\Ville;
 use App\Entity\Lieu;
+use App\Entity\Site;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
@@ -54,6 +55,8 @@ class SortieController extends AbstractController
             //!\\ Backslash pour indiquer une fonction PHP //!\\
             $sortie->setDateDebut(new \DateTime($request->request->get("dateDebut")));
             $sortie->setDateLimiteInscription(new \DateTime($request->request->get("dateLimiteInscription")));
+            $repoSite = $this->getDoctrine()->getRepository(Site::class);
+            $sortie->setSite($repoSite->find($this->getUser()->getIdSite()->getId()));
             // Set etat suivant event
             $repo = $this->getDoctrine()->getRepository(Etat::class);
             if ($form->get('add')->isClicked()) {
