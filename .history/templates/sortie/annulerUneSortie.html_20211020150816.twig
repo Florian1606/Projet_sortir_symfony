@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annuler une sortie - Sortir.com
+{% endblock %}
+{% block stylesheets %}
+	<link href="{{ asset('css/profil.css') }}" rel="stylesheet">
+{% endblock %}
+{% block body %}
+
+
+
+<section>
+	<h1 class="">
+		{{ sortie.nom }}
+	</h1>
+	<div class="info">
+		<div class="d-flex align-items-center">
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar" viewbox="0 0 16 16">
+				<path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+			</svg>
+			<span>{{ sortie.dateDebut | date('d/m/Y') }}</span>
+		</div>
+		<div class="d-flex align-items-center">
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-building" viewbox="0 0 16 16">
+				<path fill-rule="evenodd" d="M14.763.075A.5.5 0 0 1 15 .5v15a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V14h-1v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V10a.5.5 0 0 1 .342-.474L6 7.64V4.5a.5.5 0 0 1 .276-.447l8-4a.5.5 0 0 1 .487.022zM6 8.694 1 10.36V15h5V8.694zM7 15h2v-1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5V15h2V1.309l-7 3.5V15z"/>
+				<path d="M2 11h1v1H2v-1zm2 0h1v1H4v-1zm-2 2h1v1H2v-1zm2 0h1v1H4v-1zm4-4h1v1H8V9zm2 0h1v1h-1V9zm-2 2h1v1H8v-1zm2 0h1v1h-1v-1zm2-2h1v1h-1V9zm0 2h1v1h-1v-1zM8 7h1v1H8V7zm2 0h1v1h-1V7zm2 0h1v1h-1V7zM8 5h1v1H8V5zm2 0h1v1h-1V5zm2 0h1v1h-1V5zm0-2h1v1h-1V3z"/>
+			</svg>
+			<span>{{ sortie.site.nom | upper }}</span>
+		</div>
+		<div class="d-flex align-items-center">
+			<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewbox="0 0 16 16">
+				<path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+				<path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+			</svg>
+			<span>
+				{{ sortie.lieu.nomLieu}}
+				<br>
+				{{ sortie.lieu.rue}}
+				<br>
+				{{ sortie.lieu.ville.codePostal}}
+				{{ sortie.lieu.ville.nomVille}}</span>
+		</div>
+	</div>
+	<div>
+		<h3 class="text-center mt-5">
+			<em>le
+				{{ sortie.dateDebut | date('d/m/Y') }}<em></h5>
+			</h3>
+
+
+		</section>
+
+		<div class="d-flex justify-content-around">
+			<button name="btn-cancel" class="btn btn-lg btn-primary">
+				Enregistrer
+			</button>
+			<a href=" {{ path('app_Annuler')}}" class="btn btn-lg btn-primary">
+				Annuler
+			</a>
+		</div>
+	{% endblock %}
