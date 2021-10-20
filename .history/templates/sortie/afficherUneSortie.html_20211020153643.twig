@@ -1,0 +1,246 @@
+{% extends is_mobile() ? "baseMobile.html.twig" : "base.html.twig" %}
+
+{% block title %}
+	{{ sortie.nom }}
+	- Sortir.com
+{% endblock %}
+
+{% block body %}
+
+	<div class="container">
+		<div class="row mt-3">
+			{% if sortie.MotifAnnulation != null %}
+				<h2 class="text-center m-2">Afficher sortie - SORTIE ANNULEE</h2>
+				<div class="alert alert-success">
+					{{ message }}
+				</div>
+			{% else %}
+				<h2 class="text-center m-2">{{ sortie.nom }}</h2>
+			{% endif %}
+		</div>
+		<div
+			class="row mt-3">
+			{# Col 1 #}
+			<div class="col">
+
+				<div class="mb-3">
+					<label class="form-label" for="nom">Nom de la sortie :</label>
+					<input type="text" name="" value="{{ sortie.nom }}" class="form-control" id="exampleFormControlInput1" disabled="disabled">
+				</div>
+				<div class=" mb-3">
+					<label class="form-label">Date et heure de la sortie :</label>
+					<input type="text" class="form-control" value="{{ sortie.dateDebut | date('d-m-Y ') }}à {{ sortie.dateDebut | date(' H:i') }}" name="dateDebut" disabled="disabled">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Date limlite d'inscription</label>
+					<input type="text" class="form-control" value="{{ sortie.dateLimiteInscription | date('d-m-Y ') }}à {{ sortie.dateLimiteInscription | date(' H:i') }}" name="dateLimiteInscription" disabled="disabled">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Nombre d'inscription Max</label>
+					<input type="number" class="form-control" value="{{ sortie.nbIncriptionMax }}" name="" disabled="disabled">
+				</div>
+				<div class=" mb-3">
+					<label class="form-label">Durée ?</label>
+					<div class="d-flex align-items-center"><input type="number" class="form-control mr-1" value="{{ sortie.duree }}" name="" step="15" disabled="disabled"><span>
+							minutes</span>
+					</div>
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Description et infos</label>
+					<textarea class="form-control" id="" name="" rows="3" disabled="disabled">{{ sortie.description }}</textarea>
+				</div>
+				<div class="mb-3">
+					<div class="d-flex align-items-center">
+						<label class="form-label">Participants
+							{{ sortie.participants | length }}
+							/{{ sortie.nbIncriptionMax }}
+						</label>
+						<div>
+							<button type="button" data-toggle="modal" data-backdrop="false" data-target="#infos" class="btn btn-info ml-3">Afficher
+							</button>
+						</div>
+						<div class="modal fade" id="infos" style="display: none;" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h4 class="modal-title">Liste des participants</h4>
+										<button type="button" class="close" data-dismiss="modal">
+											<span>×</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<table class="table">
+											<thead>
+												<tr>
+													<th scope="col">Pseudo</th>
+													<th scope="col">Mail</th>
+												</tr>
+											</thead>
+											<tbody>
+												{% for item in sortie.participants %}
+													<tr>
+														<td>
+															<a href="{{ path('profil', {'id': item.id} ) }}">{{ item.pseudo }}</a>
+														</td>
+														<td>{{ item.email }}</td>
+													</tr>
+												{% endfor %}
+											</tbody>
+										</table>
+									</div>
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			{# Col 2 #}
+			<div class=" col">
+				<div class="mb-3">
+					<label class="form-label">Ville Organisatrice</label>
+					<input type="text" class="form-control" value="{{ sortie.organisateur.idSite.nom }}" name="site" disabled="disabled">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Ville</label>
+					<input type="text" class="form-control" value="{{ sortie.lieu.ville.nomVille }}" name="" disabled="disabled">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Lieu</label>
+					<input type="text" class="form-control" value="{{ sortie.lieu.nomLieu }}" name="" disabled="disabled">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Rue</label>
+					<input type="text" class="form-control" value="{{ sortie.lieu.rue }}" name="" disabled="disabled">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Code Postal</label>
+					<input type="text" class="form-control" value="{{ sortie.lieu.ville.codePostal }}" name="" disabled="disabled">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Latitude</label>
+					<input type="text" class="form-control" value="{{ sortie.lieu.latitude }}" name="" disabled="disabled">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Longitude</label>
+					<input type="text" class="form-control" value="{{ sortie.lieu.longitude }}" name="" disabled="disabled">
+				</div>
+			</div>
+		</div>
+	</div>
+</div></div><script src="{{ asset('js/main') }}"></script>{% endblock %}{% block bodyMobile %}<div class="container">
+<div class="row mt-3">
+	<h2>Afficher sortie</h2>
+</div>
+<div
+	class="row mt-3">
+	{# Col 1 #}
+
+	<div class="mb-3">
+		<label class="form-label" for="nom">Nom de la sortie :</label>
+		<input type="text" name="" value="{{ sortie.nom }}" class="form-control" id="exampleFormControlInput1" disabled="disabled">
+	</div>
+	<div class=" mb-3">
+		<label class="form-label">Date et heure de la sortie :</label>
+		<input type="text" class="form-control" value="{{ sortie.dateDebut | date('d-m-Y ') }}à {{ sortie.dateDebut | date(' H:i') }}" name="dateDebut" disabled="disabled">
+	</div>
+	<div class="mb-3">
+		<label class="form-label">Date limlite d'inscription</label>
+		<input type="text" class="form-control" value="{{ sortie.dateLimiteInscription | date('d-m-Y ') }}à {{ sortie.dateLimiteInscription | date(' H:i') }}" name="dateLimiteInscription" disabled="disabled">
+	</div>
+	<div class="mb-3">
+		<label class="form-label">Nombre d'inscription Max</label>
+		<input type="number" class="form-control" value="{{ sortie.nbIncriptionMax }}" name="" disabled="disabled">
+	</div>
+	<div class=" mb-3">
+		<label class="form-label">Durée ?</label>
+		<div class="d-flex align-items-center"><input type="number" class="form-control mr-1" value="{{ sortie.duree }}" name="" step="15" disabled="disabled"><span>
+				minutes</span>
+		</div>
+	</div>
+	<div class="mb-3">
+		<label class="form-label">Description et infos</label>
+		<textarea class="form-control" id="" name="" rows="3" disabled="disabled">{{ sortie.description }}</textarea>
+	</div>
+
+	{# Col 2 #}
+	<div class="mb-3">
+		<label class="form-label">Ville Organisatrice</label>
+		<input type="text" class="form-control" value="{{ sortie.organisateur.idSite.nom }}" name="site" disabled="disabled">
+	</div>
+	<div class="mb-3">
+		<label class="form-label">Ville</label>
+		<input type="text" class="form-control" value="{{ sortie.lieu.ville.nomVille }}" name="" disabled="disabled">
+	</div>
+	<div class="mb-3">
+		<label class="form-label">Lieu</label>
+		<input type="text" class="form-control" value="{{ sortie.lieu.nomLieu }}" name="" disabled="disabled">
+	</div>
+	<div class="mb-3">
+		<label class="form-label">Rue</label>
+		<input type="text" class="form-control" value="{{ sortie.lieu.rue }}" name="" disabled="disabled">
+	</div>
+	<div class="mb-3">
+		<label class="form-label">Code Postal</label>
+		<input type="text" class="form-control" value="{{ sortie.lieu.ville.codePostal }}" name="" disabled="disabled">
+	</div>
+	<div class="mb-3">
+		<label class="form-label">Latitude</label>
+		<input type="text" class="form-control" value="{{ sortie.lieu.latitude }}" name="" disabled="disabled">
+	</div>
+	<div class="mb-3">
+		<label class="form-label">Longitude</label>
+		<input type="text" class="form-control" value="{{ sortie.lieu.longitude }}" name="" disabled="disabled">
+	</div>
+	<div class="mb-3">
+		<div class="d-flex align-items-center">
+			<label class="form-label">Participants
+				{{ sortie.participants | length }}
+				/{{ sortie.nbIncriptionMax }}
+			</label>
+			<div>
+				<button type="button" data-toggle="modal" data-backdrop="false" data-target="#infos" class="btn btn-info ml-3">Afficher
+				</button>
+			</div>
+			<div class="modal fade" id="infos" style="display: none;" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h4 class="modal-title">Liste des participants</h4>
+							<button type="button" class="close" data-dismiss="modal">
+								<span>×</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<table class="table">
+								<thead>
+									<tr>
+										<th scope="col">Pseudo</th>
+										<th scope="col">Mail</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for item in sortie.participants %}
+										<tr>
+											<td>{{ item.pseudo }}</td>
+											<td>{{ item.email }}</td>
+										</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div></div></div></div><script src="{{ asset('js/main') }}"></script>{% endblock %}

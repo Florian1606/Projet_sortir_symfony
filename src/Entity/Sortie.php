@@ -23,32 +23,40 @@ class Sortie
 
     /**
      * @ORM\Column(type="string", length=30)
+     * @Assert\NotBlank(message="Veuillez saisir un nom")
+     * @Assert\Length(
+     *    min=3,
+     *   max=250,
+     *   minMessage="Le nom doit faire au moins {{ limit }} caractères",
+     *    maxMessage="Le nom ne peut pas faire plus de {{ limit }} caractères"
+     * )
      */
     private $nom;
 
     /**
      *
-   
-     *
      * @ORM\Column(type="datetime")
-     *
      */
     private $dateDebut;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     * @Assert\Positive(message="La durée doit être strictement positif")
      */
     private $duree;
-
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\Type(
+     *      type = "\DateTime",
+     *      message = "vacancy.date.valid",
+     * )
      */
     private $dateLimiteInscription;
 
     /**
      *
      * @ORM\Column(type="integer")
-     *
+     * @Assert\Positive(message="Le nombre d'inscription max doit être strictement positif")
      */
     private $nbIncriptionMax;
 
@@ -90,6 +98,11 @@ class Sortie
      */
     private $lieu;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $MotifAnnulation;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -117,7 +130,7 @@ class Sortie
         return $this->dateDebut;
     }
 
-    public function setDateDebut(\DateTimeInterface $dateDebut): self
+    public function setDateDebut(?\DateTimeInterface $dateDebut): self
     {
         $this->dateDebut = $dateDebut;
 
@@ -255,6 +268,18 @@ class Sortie
     public function setLieu(?Lieu $lieu): self
     {
         $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->MotifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $MotifAnnulation): self
+    {
+        $this->MotifAnnulation = $MotifAnnulation;
 
         return $this;
     }

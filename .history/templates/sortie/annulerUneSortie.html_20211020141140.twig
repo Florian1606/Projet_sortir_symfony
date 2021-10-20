@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annuler une sortie - Sortir.com
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+			<div class="row">
+				<div class="col-md-5 mx-auto">
+					<div id="first">
+						<div class="myform form ">
+							<div class="logo mb-3">
+								<div class="col-md-12 text-center mt-5 mb-5">
+									<h1> Annuler une sortie</h1>
+								</div>
+							</div>
+							<div>
+                                <p> Nom de la sortie : </p>
+                                <p> {{ sortie.nom }} </p>
+							</div>
+                            <div>
+                                <p> Date de la sortie : </p>
+                                <p> {{ sortie.dateDebut | date('d/m/Y H:m') }} </p>
+							</div>
+                            <div>
+                                <p> Nom de la sortie : </p>
+                                <p> {{ sortie.nom }} </p>
+							</div>
+
+                            <div>
+                                <p> Nom de la sortie : </p>
+                                <p> {{ sortie.nom }} </p>
+							</div>
+
+
+								<div class="input-group">
+									<div class="input-group-append">
+										<span class="input-group-text">
+											<i class="fas fa-key"></i>
+										</span>
+									</div>
+									<input type="password" name="password" id="inputPassword" class="form-control" placeholder="Rentrez votre mot de passe.." autocomplete="current-password" required>
+								</div>
+								<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+
+								<div class="checkbox mb-3">
+									<div class="mt-3 mb-2 text-center">
+										<input type="checkbox" id="_remember_me" name="_remember_me">
+										<label for="_remember_me">
+											Se souvenir de moi
+										</label>
+									</div>
+									<div class="d-flex justify-content-center">
+										<button class="btn btn-lg btn-primary" type="submit">
+											Connexion
+										</button>
+									</div>
+									<div class="text-center m-3">
+										<a class="mt-5" href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
+									</div>
+								</div>
+
+							</form>
+
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+			<div class="col"></div>
+		</div>
+	</form>
+{% endblock %}

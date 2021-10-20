@@ -25,6 +25,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Form\LieuType;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+use function PHPUnit\Framework\isEmpty;
 
 class SortieController extends AbstractController
 {
@@ -48,12 +49,44 @@ class SortieController extends AbstractController
             return $this->redirectToRoute("main");
         }
 
+        // VERIF DATE 
+        $dateNow =  new \DateTime("now");
+        $dateNow = $dateNow->getTimestamp();
+        $dateDebut = $request->request->get("dateDebut");
+        $dateDebutUnix = strtotime($request->request->get("dateDebut"));
+        $dateLimiteInscription = $request->request->get("dateLimiteInscription");
+        $dateLimiteInscriptionUnix = strtotime($request->request->get("dateLimiteInscription"));
+
+        $msg_error = [];
+        if ($dateDebut != null) {
+            if ($dateDebutUnix > $dateNow) {
+                $sortie->setDateDebut(new \DateTime($dateDebut));
+            } else
+                array_push($msg_error, "La date de sortie doit être supérieur ou égale à la date d'aujourd'hui");
+        } else
+            array_push($msg_error, "Veuillez saisir une date de début");
+
+        // VERIF DATE FIN
+            if ($dateLimiteInscription != null) {
+            if ($dateLimiteInscriptionUnix > $dateNow) {
+                if ($dateLimiteInscriptionUnix < $dateDebutUnix) {
+                    $sortie->setDateDebut(new \DateTime($dateLimiteInscription));
+                } else
+                    array_push($msg_error, "La date de limite d'inscription doit être strictement inférieur à la date de début de la sortie");
+            } else
+                array_push($msg_error, "La date de limite d'inscription doit être supérieur ou égale à la date d'aujourd'hui");
+        } else
+            array_push($msg_error, "Veuillez saisir une date de limite d'inscription");
+
+
+
         // Contrôle si les données sont valides et si le formulaire est soumis.
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && isEmpty($msg_error)) {
             // app current user -> organisateur
             $sortie->setOrganisateur($this->getUser());
             //!\\ Backslash pour indiquer une fonction PHP //!\\
-            $sortie->setDateDebut(new \DateTime($request->request->get("dateDebut")));
+
+
             $sortie->setDateLimiteInscription(new \DateTime($request->request->get("dateLimiteInscription")));
             $repoSite = $this->getDoctrine()->getRepository(Site::class);
             $sortie->setSite($repoSite->find($this->getUser()->getIdSite()->getId()));
@@ -71,21 +104,19 @@ class SortieController extends AbstractController
                 $em->persist($sortie);
                 $em->flush();
             }
-
             return $this->redirectToRoute("main");
-
         }
         $errors = $validator->validate($sortie);
         $titre = "Création d'une sortie";
 
-        $tab = compact("titre", "errors",'villes');
+        $tab = compact("titre", "errors", 'villes','msg_error');
         $tab["formSortie"] = $form->createView();
 
         $lieu = new Lieu();
-        $lieuForm = $this->createForm(LieuType::class,$lieu);
+        $lieuForm = $this->createForm(LieuType::class, $lieu);
         $tab['lieuForm'] = $lieuForm->createView();
 
-        return $this->render('sortie/index.html.twig', $tab);
+        return $this->render('sortie/index.html.twig',$tab);
     }
 
     /**
@@ -102,19 +133,24 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/cancel/{id}",name="app_sortie_cancel")
      */
-    public function cancelSortie(SortieRepository $repo, EntityManagerInterface $em, $id): Response
-    {
+    public function cancelSortie(Request $request, SortieRepository $repo, EntityManagerInterface $em, $id): Response
+    {   
         $sortie = $repo->find($id);
-        $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
-        $datenow = new \DateTime("now");
-        if ($sortie->getDateDebut() > $datenow) {
-            $sortie->setEtat($repoEtat->find(6));
-            $em->flush();
-            $this->addFlash('success', 'Sortie Annulée !');
-            return $this->redirectToRoute("main");
+        if ($request->get('btn-cancel') != null) {
+            $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
+            $datenow = new \DateTime("now");
+            if ($sortie->getDateDebut() <= $datenow) {
+                $sortie->setEtat($repoEtat->find(6));
+                $sortie->setMotifAnnulation($request->get('motif'));
+                $em->flush();
+                $this->addFlash('success', 'Sortie Annulée !');
+                return $this->redirectToRoute("main");
+            }
+            $this->addFlash('warning', 'Vous ne pouvez pas annuler la sortie !');
         }
-        $this->addFlash('warning', 'Vous ne pouvez pas annuler la sortie !');
-        return $this->render("main");
+        return $this->render("sortie/annulerUneSortie.html.twig", [
+            'sortie' => $sortie,
+        ]);
     }
 
     /**
@@ -167,7 +203,7 @@ class SortieController extends AbstractController
         // Doit être l'organisateur ou un admin.
         if ($user == $sortie->getOrganisateur() || $user->getIsAdmin()) {
 
-            if($idEtat != 1 || !$user->getIsAdmin()) {
+            if ($idEtat != 1 || !$user->getIsAdmin()) {
                 $this->addFlash('warning', "Il n'est plus possible de supprimer cette sortie");
                 return $this->redirectToRoute("main");
             } else {
@@ -178,9 +214,9 @@ class SortieController extends AbstractController
                 return $this->redirectToRoute("main");
             }
         } else {
-                $this->addFlash('warning', "Vous n'avez pas les droits pour supprimer cette sortie");
-                return $this->redirectToRoute("main");
-            }
+            $this->addFlash('warning', "Vous n'avez pas les droits pour supprimer cette sortie");
+            return $this->redirectToRoute("main");
+        }
     }
 
     /**
@@ -208,7 +244,7 @@ class SortieController extends AbstractController
 
         if ($request->request->get("save")) {
 
-// #################################################################
+            // #################################################################
             $sortie = $repo->find($id);
             $form = $this->createForm(SortieType::class, $sortie);
             $form->handleRequest($request);
@@ -226,7 +262,7 @@ class SortieController extends AbstractController
                 //création de message de succes qui sera affiché sur la prochaine page
                 $this->addFlash('success', 'Votre sortie   ' . $sortie->getNom() . ' a été modifié');
 
-//            ############################################################################################
+                //            ############################################################################################
                 $this->addFlash('success', 'ON A FAIT UN SAVE !');
                 return $this->redirectToRoute("main");
             }
@@ -253,29 +289,30 @@ class SortieController extends AbstractController
     /**
      * @Route("/sortie/infosLieu/{id}", name="infosLieu")
      */
-    public function infosLieu(LieuRepository $repo,$id):Response{
-        $lieu=$repo->find($id);
-        return $this->json('{"rue":"'.$lieu->getRue().'","lat":"'.$lieu->getLatitude().'","long":"'.$lieu->getLongitude().'"}');
+    public function infosLieu(LieuRepository $repo, $id): Response
+    {
+        $lieu = $repo->find($id);
+        return $this->json('{"rue":"' . $lieu->getRue() . '","lat":"' . $lieu->getLatitude() . '","long":"' . $lieu->getLongitude() . '"}');
     }
     /**
      * @Route("/sortie/lieu/{id}", name="lieu")
      */
-    public function afficherLieu(VilleRepository $repo, $id):Response{
+    public function afficherLieu(VilleRepository $repo, $id): Response
+    {
         $ville = $repo->find($id);
         $lieuTab = $ville->getLieus();
-        $tab=[];
-        foreach ($lieuTab as $val){
-            array_push($tab,array("id"=>$val->getId(),"nom"=>$val->getNomLieu()));
+        $tab = [];
+        foreach ($lieuTab as $val) {
+            array_push($tab, array("id" => $val->getId(), "nom" => $val->getNomLieu()));
         }
         return $this->json(json_encode($tab));
     }
     /**
      * @Route("/sortie/lieu/cp/{id}", name="cp")
      */
-    public function afficherCP(VilleRepository $repo, $id):Response{
+    public function afficherCP(VilleRepository $repo, $id): Response
+    {
         $ville = $repo->find($id);
-        return $this->json('{"codePostal":"'.$ville->getCodePostal().'"}');
+        return $this->json('{"codePostal":"' . $ville->getCodePostal() . '"}');
     }
-
-
 }

@@ -15,22 +15,37 @@
         <div class="row mt-3"><h1>Créer une sortie</h1></div>
 
 
-        <div class="row mt-3">
-            <div id="msgSuccess"></div>
-            {% for item in errors %}
-                <div class="alert alert-danger mt-2" role="alert">
-                    {{ item.message }}
-                </div>
-            {% endfor %}
-            <div class="row">
-                <div class="col">
-                    {{ form_start(formSortie) }}
-                    <div class="mb-3">
-                        <label class="form-label" for="nom">Nom de la sortie :</label>
-                        <input type="text" name="{{ field_name(formSortie.nom) }}"
-                               value="{{ field_value(formSortie.nom) }}" class="form-control"
-                               id="exampleFormControlInput1">
-                    </div>
+		<div class="row mt-3">
+			{% if not formSortie.vars.valid %}
+				<div class="alert alert-danger alert-dismissible fade show">
+					<h4 class="alert-heading">
+						<i class="bi-exclamation-octagon-fill"></i>
+						Oops! Il y a des erreurs.</h4>
+					<hr>
+					<ul>
+						{% for item in errors %}
+							<li>
+								{{ item.message }}
+							</li>
+						{% endfor %}
+						{% for item in msg_error %}
+							<li>
+								{{ item }}
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+
+			{% endif %}
+
+
+				<div class="row">
+					<div class="col">
+						{{ form_start(formSortie) }}
+						<div class="mb-3">
+							<label class="form-label" for="nom">Nom de la sortie :</label>
+							<input type="text" name="{{ field_name(formSortie.nom) }}" value="{{ field_value(formSortie.nom) }}" class="form-control" id="exampleFormControlInput1">
+						</div>
 
                     <div class="mb-3">
                         <label class="form-label">Date et heure de la sortie :</label>
@@ -73,16 +88,14 @@
                     </div>
                 </div>
 
-                {# Col 2 #}
-                <div class="col">
-                    <div class="mb-3">
-                        <label class="form-label">Ville Organisatrice</label>
-                        <input type="text" value="{{ app.user.idSite.nom }}" class="form-control" name="site"
-                               disabled="disabled">
-
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Ville</label>
+					{# Col 2 #}
+					<div class="col">
+						<div class="mb-3">
+							<label class="form-label">Ville Organisatrice</label>
+							<input type="text" value="{{ app.user.idSite.nom }}" class="form-control" name="site" disabled="disabled">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Ville</label>
 
                         <select class="form-select" id="villeform" name="ville">
                             {% for item in villes %}

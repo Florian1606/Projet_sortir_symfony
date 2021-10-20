@@ -77,7 +77,7 @@ class ImportCsvController extends AbstractController
         $data = $this->loadCSVtoArray($pathToFile);
 
         if (!$data) {
-            $this->addFlash('error', 'Erreur dans l importation du fichier, verifier le format!');
+            $this->addFlash('error', 'Erreur dans l\'importation du fichier, verifier le format!');
             return $this->redirectToRoute('display_events');
         }
 

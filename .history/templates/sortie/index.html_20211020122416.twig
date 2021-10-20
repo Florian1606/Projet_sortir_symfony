@@ -1,0 +1,261 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une sortie - Sortir.com
+{% endblock %}
+
+{% block body %}
+	{% for label,messages in app.flashes %}
+		{% for message in messages %}
+			<div class="alert alert-{{ label }}">
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+
+	<div class="container">
+		<div class="row mt-3">
+			<h1>Créer une sortie</h1>
+		</div>
+
+
+		<div class="row mt-3">
+			{% if not formSortie.vars.valid %}
+				<div class="alert alert-danger alert-dismissible fade show">
+					<h4 class="alert-heading">
+						<i class="bi-exclamation-octagon-fill"></i>
+						Oops! Il y a des erreurs.</h4>
+					<hr>
+					<ul>
+						{% for item in errors %}
+							<li>
+								{{ item.message }}
+							</li>
+						{% endfor %}
+						{% for item in msg_error %}
+							<li>
+								{{ item }}
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+
+			{% endif %}
+
+
+				<div class="row">
+					<div class="col">
+						{{ form_start(formSortie) }}
+						<div class="mb-3">
+							<label class="form-label" for="nom">Nom de la sortie :</label>
+							<input type="text" name="{{ field_name(formSortie.nom) }}" value="{{ field_value(formSortie.nom) }}" class="form-control" id="exampleFormControlInput1">
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">Date et heure de la sortie :</label>
+							<input type="datetime-local" class="form-control" value="" name="dateDebut">
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">Date limite d'inscription</label>
+							<input type="datetime-local" class="form-control" value="" name="dateLimiteInscription">
+						</div>
+
+
+						<div class="mb-3">
+							<label class="form-label">Nombre d'inscription Max</label>
+							<input type="number" class="form-control" value="{{ field_value(formSortie.nbIncriptionMax) }}" name="{{ field_name(formSortie.nbIncriptionMax) }}">
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">Durée ?</label>
+							<div class="d-flex align-items-center"><input type="number" class="form-control mr-1" value="{{ field_value(formSortie.duree) }}" name="{{ field_name(formSortie.duree) }}" step="15">
+								<span>minutes</span>
+							</div>
+						</div>
+
+
+						<div class="mb-3">
+							<label class="form-label">Description et infos</label>
+							<textarea class="form-control" id="{{ field_name(formSortie.description) }}" name="{{ field_name(formSortie.description) }}" rows="3">{{ field_value(formSortie.description) }}</textarea>
+						</div>
+					</div>
+
+					{# Col 2 #}
+					<div class="col">
+						<div class="mb-3">
+							<label class="form-label">Ville Organisatrice</label>
+							<input type="text" value="{{ app.user.idSite.nom }}" class="form-control" name="site" disabled="disabled">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Ville</label>
+
+							<select class="form-select" id="villeform" name="ville">
+								{% for item in villes %}
+									<option value="{{ item.id }}">{{ item.nomVille }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Lieu
+								<a href="" data-toggle="modal" data-target="#exampleModalCenter">
+									<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewbox="0 0 16 16">
+										<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+										<path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+									</svg>
+								</a>
+							</label>
+							{{ form_widget(formSortie.lieu, {'id': 'lieu-widget'}) }}
+						</div>
+
+						<div class="mb-3">
+							<label class="form-label">Rue</label>
+							<input type="text" id="rue" class="form-control" value="" name="" disabled="disabled">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Code Postal</label>
+							<input type="text" id="cp" class="form-control" value="" name="" disabled="disabled">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Latitude</label>
+							<input type="text" id="latitude" class="form-control" value="" name="" disabled="disabled">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Longitude</label>
+							<input type="text" id="longitude" class="form-control" value="" name="" disabled="disabled">
+						</div>
+					</div>
+
+					{# Line 3 - Button #}
+					<div class="row my-2">
+						<div class="d-flex">
+							<button type="Submit" name="{{ field_name(formSortie.save) }}" class="btn btn-success mx-2 ">Enregistrer
+							</button>
+							<button type="Submit" name="{{ field_name(formSortie.add) }}" class="btn btn-success mx-2 ">Publier la sortie
+							</button>
+							<button type="Submit" name="{{ field_name(formSortie.cancel) }}" class="btn btn-warning ml-auto">Annuler
+							</button>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{{ form_rest(formSortie) }}
+		{{ form_end(formSortie) }}
+
+		{# MODAL AJOUTER UN LIEU #}
+		<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div id="modalPop" class="modal-content   ">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Ajouter un lieu</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body">
+							<div id="errors"></div>
+							{{ form_start(lieuForm,{'attr': {"onsubmit":'return validateMyForm(event);'}}) }}
+
+							<div class="mb-3">
+								{{ form_row(lieuForm.nomLieu,{'attr': {'class': 'form-control'}}) }}
+							</div>
+							<div class="mb-3">
+								{{ form_row(lieuForm.rue,{'attr': {'class': 'form-control'}}) }}
+							</div>
+							<div class="mb-3">
+								{{ form_row(lieuForm.longitude,{'attr': {'class': 'form-control'}}) }}
+							</div>
+							<div class="mb-3">
+								{{ form_row(lieuForm.latitude,{'attr': {'class': 'form-control'}}) }}
+							</div>
+							<div class="mb-3">
+								{{ form_row(lieuForm.ville,{'attr': {'class': 'form-control'}}) }}
+							</div>
+							<div class="mb-3">
+								{{ form_row(lieuForm.publier,{'attr': {'class': 'btn btn-success mx-2 ','id' : 'addLieu'}}) }}
+							</div>
+							{{ form_end(lieuForm) }}
+						</div>
+
+
+					</div>
+
+				</div>
+			</div>
+		</div>
+		{# FIN MODAL AJOUTER UN LIEU #}
+
+		{# JS ADD LIEU #}
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+		<script>
+
+			$(document).ready(function () {
+
+$("#villeform").change(function () {
+
+var id = $(this).val();
+$.get("/sortie/lieu/" + id, function (data, status) {
+var infosVilleLieu = JSON.parse(data);
+
+let html = "<option>choisir un lieu</option>";
+for (let i = 0; i < infosVilleLieu.length; i++) { // console.log(infos[i]);
+html += '<option value="' + infosVilleLieu[i].id + '" >' + infosVilleLieu[i].nom + '</option>';
+}
+$("#lieu-widget").html(html).change(function () {
+
+var id = $(this).val();
+$.get("/sortie/infosLieu/" + id, function (data, status) {
+
+var infosLieu = JSON.parse(data);
+$("#rue").val(infosLieu.rue);
+$("#latitude").val(infosLieu.lat);
+$("#longitude").val(infosLieu.long);
+});
+
+});
+$.get("/sortie/lieu/cp/" + id, function (data, status) {
+
+var infosVilleCP = JSON.parse(data);
+
+// console.log(infosVilleCP);
+$("#cp").val(infosVilleCP.codePostal);
+
+});
+})
+})
+});
+		</script>
+
+
+		{# test JS ADD LIEU V2 #}
+		<script>
+			function validateMyForm(event) {
+let form = event.target;
+// console.log(event);
+const http = new XMLHttpRequest();
+http.responseType = "json";
+http.onload = function () {
+let test = '';
+if (http.readyState == 4 && http.status == 200) {
+$.each($.parseJSON(this.response), function (i, obj) { // alert(this.response);
+
+test += '<div class="alert alert-danger" role="alert">' + obj.property.substring(9, obj.property.length - 1) + ':' + obj.message + '</div>';
+});
+
+
+}
+$("#errors").html(test)
+};
+http.open(form.method, "/lieu/add", function (data, status) { // console.log("Data: " + data + "\nStatus: " + status);
+});
+http.send(new FormData(form));
+// Pour ne pas renvoyer le tableau
+event.preventDefault();
+}
+		</script>
+		{# FIN MODAL AJOUTER UN LIEU V2 #}
+	{% endblock %}

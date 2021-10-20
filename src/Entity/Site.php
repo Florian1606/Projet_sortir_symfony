@@ -45,6 +45,7 @@ class Site
         return $this->id;
     }
 
+
     public function getNom(): ?string
     {
         return $this->nom;
