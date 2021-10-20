@@ -91,10 +91,6 @@ class MainController extends AbstractController
         return $this->render("main/about-us.html.twig");
     }
 
-
-
-
-
     /**
      *@Route("/search/{id}",name="app_search")
      */
@@ -214,13 +210,4 @@ class MainController extends AbstractController
             'formProfil' => $form->createView(),
         ]);
     }
-
-
-
-
-
-
-
-
-
 }

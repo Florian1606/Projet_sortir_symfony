@@ -19,7 +19,7 @@ class UploadMembersFromCSVFileType extends AbstractType
                 'csvFile',
                 FileType::class,
                 [
-                    'label' => 'Fichier CSV',
+                    'label' => false,
                     'mapped' => false,
                     'required' => true,
                     'multiple' => false,
@@ -27,7 +27,7 @@ class UploadMembersFromCSVFileType extends AbstractType
                         new File(
                             [
                                 'maxSize' => '1024k',
-//                                'mimeTypes' => [
+//                               'mimeTypes' => [
 //                                'application/csvm+json'
 //                                ],
                                 'mimeTypesMessage' => 'S\'il vous plait, veuillez uploader un document csv valide !'
@@ -35,8 +35,23 @@ class UploadMembersFromCSVFileType extends AbstractType
 
                         )],
                 ])
-            ->add('save', SubmitType::class, ['label' => 'Importer']);
-    }
+            ->add(
+                'save',
+                SubmitType::class,array(
+
+                     'label' => 'Importer',
+                     'attr' => ['class' => "btn btn-primary"
+                         ])
+            );
+
+
+      }
+
+
+
+
+
+
 
     public function configureOptions(OptionsResolver $resolver)
     {

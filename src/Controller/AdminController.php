@@ -61,6 +61,16 @@ class AdminController extends AbstractController
     }
 
     /**
+     * @Route("/admin/profil", name="app_admin_profil",)
+     */
+    public function adminProfil(ParticipantRepository $repo, $id = 0): Response
+    {
+
+        return $this->render('admin/profil.html.twig', [
+            'controller_name' => 'AdminController',
+        ]);
+    }
+    /**
      * @Route("/admin/participants", name="app_admin_participant")
      */
     public function gestionParticipants(EntityManagerInterface $em, ParticipantRepository $repo): Response
@@ -87,7 +97,19 @@ class AdminController extends AbstractController
 
         return $this->render('admin/gererLieux.html.twig',$tab );
     }
+    /**
+     * @Route("/admin/sites", name="app_admin_site")
+     */
+    public function gestionSite(EntityManagerInterface $em, SiteRepository $repo): Response
+    {
+        $sites = $repo->findAll();
 
+        $titre = "Gestion des Sites";
+
+        $tab = compact("titre","sites");
+
+        return $this->render('admin/gererLesSites.html.twig',$tab );
+    }
     /**
      * @Route("/admin/villes", name="app_admin_villes")
      */
@@ -348,4 +370,36 @@ class AdminController extends AbstractController
 
         return $this->render('admin/creationProfil.html.twig', $tab);
     }
+
+    /**
+     * @Route("/site/delete/{id}",name="app_site_delete")
+     */
+    public function deleteSite(SiteRepository $repo, EntityManagerInterface $em, $id)
+    {
+
+        // Récupère le current user.
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        // Récupère le lieu suivant l'id passé en paramètre.
+        $site = $repo->find($id);
+
+        $tabSorties =$site->getSorties();
+
+
+        // Vérification des droits
+        // Doit être un admin et ne doit pas avoir de sortie
+        if ($user->getIsAdmin() && count($tabSorties) == 0 ) {
+            $this->addFlash('success', "Site : ".$site->getNom()." supprimé !");
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($site);
+            $em->flush();
+        } else {
+            $this->addFlash('danger', "Lieu : ".$site->getNom()." ne peut être supprimé ! (Rattaché à des sorties)");
+
+
+        }
+
+        return $this->redirectToRoute("app_admin_site");
+    }
+
+
 }
