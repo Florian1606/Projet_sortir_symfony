@@ -55,6 +55,11 @@ class MainController extends AbstractController
      */
     public function cgu(ParticipantRepository $repo, $id = 0): Response
     {
+        $user = $this->getUser();
+        dd(count($user->getSorties()));
+        foreach ($user->getSortiesOrganisees()  as $sortie ) {
+            dd($sortie);
+        }
         return $this->render('main/cgu.html.twig');
     }
 

@@ -32,8 +32,8 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank(message="Veuillez saisir un email")
-     * @Assert\Email(
+     * @Assert\NotBlank(message="Veuillez saisir un nom")
+    * @Assert\Email(
      *     message = "L'email '{{ value }}' n'est pas un email valide."
      * )
      */
