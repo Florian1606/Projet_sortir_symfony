@@ -33,7 +33,7 @@ class MonProfilType extends AbstractType
                 'invalid_message' => 'Les mots de passe ne correspondent pas.',
                 'options' => ['attr' => ['class' => 'password-field'],],
                 'required' => true,
-                'first_options'  => ['label' => 'Mot de passe'],
+                'first_options' => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Confirmer le mot de passe'],
                 'constraints' => [
                     new NotBlank([
@@ -78,13 +78,14 @@ class MonProfilType extends AbstractType
                         'mimeTypes' => [
                             'image/png',
                             'image/jpeg',
-                            
+
                         ],
                         'mimeTypesMessage' => 'Veuillez mettre une photo valide ! (.jpg / .jpeg / .png )',
                     ])
                 ],
             ])
             ->add('Enregistrer', SubmitType::class);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

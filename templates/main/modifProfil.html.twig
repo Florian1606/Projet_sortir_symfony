@@ -25,16 +25,15 @@
 					<div>
 						{% form_theme formProfil 'bootstrap_5_horizontal_layout.html.twig' %}
 						{{ form_start(formProfil) }}
-						{{ form_widget(formProfil) }}
-						<a href="{{ path('main') }}" class="btn-lg btn-primary">
-							Annuler
-						</a>
+					<div class="alerte alert-danger" {{ form_widget(formProfil) }}</div>
 						{{ form_end(formProfil) }}
-
 					</div>
+
 				</div>
 			</div>
 		</div>
+
 	</div>
+	<div style="text-align: center;"><a href="{{ path('main') }}" class="btn-lg btn-primary" style="width:100px;height:50px;position : absolute">Annuler</a></div>
 
 {% endblock %}

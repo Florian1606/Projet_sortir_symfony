@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Member;
 use App\Entity\Participant;
 use App\Form\MonProfilType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use App\Repository\SortieRepository;
+use App\Service\DefaultPasswordGenerator;
 use DateTime;
 use App\Repository\WishRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,6 +29,7 @@ use App\Entity\Site;
 use App\Form\AjoutSiteType;
 use App\Service\FileUploader;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MainController extends AbstractController
@@ -313,4 +316,102 @@ class MainController extends AbstractController
         return $this->render('admin/importation.html.twig', [
         ]);
     }
+
+    /**
+     * @Route("/displayevents", name="display_events")
+     */
+    public function displayEvents(EntityManagerInterface $entityManager){
+        $site = $this->getUser()->getSite();
+        $eventRepo = $entityManager->getRepository(Event::class);
+        $sites = $entityManager->getRepository(Site::class)->findAll();
+
+        $events = $eventRepo->findEventBySite($site);
+
+        //to update events status
+//        $updateOneEvent = new UpdateEventStatus($entityManager);
+//        $updateOneEvent->updateEventStatus();
+
+        return $this->render("displayevents/displayevents.html.twig",compact('events','sites'));
+    }
+
+
+    /**
+     * @Route("/admin/register-from-csv-file/", name="app_register_from_csv")
+     */
+    public function registerFromFileCSV(EntityManagerInterface $em, UserPasswordEncoderInterface $passwordEncoder, $data)
+    {
+
+        //Check for errors
+        if (count($data) == 0 || count($data) == 1 || is_null($data)) {
+            $this->addFlash('success', 'Aucun membre dans la liste à insérer');
+            return $this->redirectToRoute('display_events');
+        }
+
+        //Remove header (ie first lign):
+        $newParticipants = array_slice($data, 1);
+
+        $errors = array();
+
+        foreach ($newParticipants as $participant) {
+
+            $name = $participant[0];
+            $surname = $participant[1];
+            $email = $participant[2];
+            $siteName = $participant[3];
+
+            //Check si le membre existe deja dans la base de données (email seulement car pas de pseudo encore)
+            if ($em->getRepository(Member::class)->findByEmail($email)) {
+                //Existe déjà:
+                $errors[] = ['member' => $participant, 'msg' => $email. ': email existe déjà dans la base, il n\'a pas été inséré.'];
+                continue;
+            }
+
+
+            $user = new Participant();
+            $user->setName($name);
+            $user->setSurname($surname);
+            $user->setMail($email);
+            $plainPassword = DefaultPasswordGenerator::defaultPasswordFromNameAndSurname($name, $surname);
+            $user->setPassword($passwordEncoder->encodePassword($user, $plainPassword));
+            $user->setActive(true);
+
+            //Set site:
+            if( !is_null($siteUser = $this->getSite($em, $siteName)) ){
+                $user->setSite($siteUser);
+            }
+            else{
+                $errors[] = ['member' => $participant, 'msg' => $name. ' : site renseignée inconnu, il n\'a pas été inséré.'];
+                continue;
+            }
+
+            //Persist:
+            $em->persist($user);
+            $this->addFlash('error', $name . ' : inscrit avec succès !');
+        }
+
+        $em->flush();
+        dump($errors);
+
+        //Display errors:
+        foreach ($errors as $error){
+            $this->addFlash('error', $error['msg']);
+        }
+
+        return $this->redirectToRoute('display_events');
+
+    }
+
+
+    //set user site if site exists in db, return user, false otherwise
+    public function getSite(EntityManagerInterface $em, $siteName){
+
+        $site = $em->getRepository(Site::class)->findByName($siteName);
+        if(!is_null($site)){
+            return $site;
+        }
+        return null;
+    }
+
+
+
 }
