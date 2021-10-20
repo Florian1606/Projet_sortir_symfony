@@ -208,7 +208,7 @@ class AdminController extends AbstractController
             $user->setPrenom($prenom);
             $user->setTelephone($tel);
             $user->setIsActif(1);
-            $user->setIsAdmin(0);
+            $user->setIsActif(1);
             $user->setAvatarFilename('avatar-default.jpg');
 
             //Set site:
@@ -233,7 +233,7 @@ class AdminController extends AbstractController
             $this->addFlash('error', $error['msg']);
         }
 
-        return $this->redirectToRoute('/admin/upload-users-csv/');
+        return $this->redirectToRoute('');
     }
 
 

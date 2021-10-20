@@ -162,13 +162,13 @@ class AdminController extends AbstractController
         /**
      * @Route("/admin/register-from-csv-file/", name="app_register_from_csv")
      */
-    public function registerFromFileCSV(ParticipantRepository $repoUser, SiteRepository $repoSite, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasherInterface, $data)
+    public function registerFromFileCSV(EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasherInterface, $data)
     {
 
         //Check for errors
         if (count($data) == 0 || count($data) == 1 || is_null($data)) {
             $this->addFlash('success', 'Aucun membre dans la liste à insérer');
-            return $this->redirectToRoute('/admin/upload-users-csv/');
+            return $this->redirectToRoute('display_events');
         }
 
         //Remove header (ie first lign):
@@ -178,17 +178,13 @@ class AdminController extends AbstractController
 
         foreach ($newParticipants as $participant) {
 
-            $pseudo = $participant[0];
-            $email = $participant[1];
-            $password = $participant[2];
-            $nom = $participant[4];
-            $prenom = $participant[5];
-            $tel = $participant[6];
-            $site = $participant[7];
-
+            $name = $participant[0];
+            $surname = $participant[1];
+            $email = $participant[2];
+            $siteName = $participant[3];
 
             //Check si le membre existe deja dans la base de données (email seulement car pas de pseudo encore)
-            if ($repoUser->findOneBy(['email' => $email])) {
+            if ($em->getRepository(Member::class)->findByEmail($email)) {
                 //Existe déjà:
                 $errors[] = ['member' => $participant, 'msg' => $email. ': email existe déjà dans la base, il n\'a pas été inséré.'];
                 continue;
@@ -196,48 +192,59 @@ class AdminController extends AbstractController
 
 
             $user = new Participant();
-            $user->setPseudo($pseudo);
-            $user->setEmail($email);
+            $user->setPseudo();
+            $user->setEmail();
             $user->setPassword(
                 $userPasswordHasherInterface->hashPassword(
                     $user,
-                    $password
+                    // mdp récupérer
                 )
             );
-            $user->setNom($nom);
-            $user->setPrenom($prenom);
-            $user->setTelephone($tel);
-            $user->setIsActif(1);
-            $user->setIsAdmin(0);
-            $user->setAvatarFilename('avatar-default.jpg');
+            $user->setNom();
+            $user->setPrenom();
+            $user->setTelephone();
+            $user->setIsActif();
+            $user->setIdSite($repoSite->findByName( ));
+
 
             //Set site:
-            $siteUser = $repoSite->findByName($site);
-            if( $siteUser != null ){
+            $repoSite->findByName('')
+            if( !is_null()) ){
                 $user->setIdSite($siteUser);
             }
             else{
-                $errors[] = ['member' => $participant, 'msg' => $pseudo. ' : site renseignée inconnu, il n\'a pas été inséré.'];
+                $errors[] = ['member' => $participant, 'msg' => $name. ' : site renseignée inconnu, il n\'a pas été inséré.'];
                 continue;
             }
 
             //Persist:
             $em->persist($user);
-            $this->addFlash('error', $pseudo . ' : inscrit avec succès !');
+            $this->addFlash('error', $name . ' : inscrit avec succès !');
         }
 
         $em->flush();
+        dump($errors);
 
         //Display errors:
         foreach ($errors as $error){
             $this->addFlash('error', $error['msg']);
         }
 
-        return $this->redirectToRoute('/admin/upload-users-csv/');
+        return $this->redirectToRoute('display_events');
+
     }
 
+        //set user site if site exists in db, return user, false otherwise
+        public function getSite(EntityManagerInterface $em, $siteName){
 
-    /**
+            $site = $em->getRepository(Site::class)->findByName($siteName);
+            if(!is_null($site)){
+                return $site;
+            }
+            return null;
+        }
+
+            /**
      * @Route("/admin/importation", name="incorporation" )
      */
     public function incorporation(ParticipantRepository $repo, $id = 0): Response
@@ -245,8 +252,24 @@ class AdminController extends AbstractController
         return $this->render('admin/importation.html.twig', []);
     }
 
-
     /**
+     * @Route("/displayevents", name="display_events")
+     */
+    public function displayEvents(EntityManagerInterface $entityManager){
+        $site = $this->getUser()->getSite();
+        $eventRepo = $entityManager->getRepository(Event::class);
+        $sites = $entityManager->getRepository(Site::class)->findAll();
+
+        $events = $eventRepo->findEventBySite($site);
+
+        //to update events status
+//        $updateOneEvent = new UpdateEventStatus($entityManager);
+//        $updateOneEvent->updateEventStatus();
+
+        return $this->render("displayevents/displayevents.html.twig",compact('events','sites'));
+    }
+
+        /**
      *@Route("/admin/gererLesVilles",name="app_gerer_les_villes")
      */
     public function gererLesVilles(Request $request, VilleRepository $villeRepo, EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response

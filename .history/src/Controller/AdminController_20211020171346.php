@@ -168,7 +168,7 @@ class AdminController extends AbstractController
         //Check for errors
         if (count($data) == 0 || count($data) == 1 || is_null($data)) {
             $this->addFlash('success', 'Aucun membre dans la liste à insérer');
-            return $this->redirectToRoute('/admin/upload-users-csv/');
+            return $this->redirectToRoute('admin/upload-users-csv/');
         }
 
         //Remove header (ie first lign):
@@ -208,7 +208,7 @@ class AdminController extends AbstractController
             $user->setPrenom($prenom);
             $user->setTelephone($tel);
             $user->setIsActif(1);
-            $user->setIsAdmin(0);
+            $user->setIsActif(1);
             $user->setAvatarFilename('avatar-default.jpg');
 
             //Set site:
@@ -233,7 +233,7 @@ class AdminController extends AbstractController
             $this->addFlash('error', $error['msg']);
         }
 
-        return $this->redirectToRoute('/admin/upload-users-csv/');
+        return $this->redirectToRoute('display_events');
     }
 
 
@@ -245,8 +245,24 @@ class AdminController extends AbstractController
         return $this->render('admin/importation.html.twig', []);
     }
 
-
     /**
+     * @Route("/displayevents", name="display_events")
+     */
+    public function displayEvents(EntityManagerInterface $entityManager){
+        $site = $this->getUser()->getSite();
+        $eventRepo = $entityManager->getRepository(Event::class);
+        $sites = $entityManager->getRepository(Site::class)->findAll();
+
+        $events = $eventRepo->findEventBySite($site);
+
+        //to update events status
+//        $updateOneEvent = new UpdateEventStatus($entityManager);
+//        $updateOneEvent->updateEventStatus();
+
+        return $this->render("displayevents/displayevents.html.twig",compact('events','sites'));
+    }
+
+        /**
      *@Route("/admin/gererLesVilles",name="app_gerer_les_villes")
      */
     public function gererLesVilles(Request $request, VilleRepository $villeRepo, EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
