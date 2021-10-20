@@ -1,0 +1,232 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une sortie - Sortir.com {% endblock %}
+
+{% block body %}
+
+
+<div class="container">
+    <div class="row mt-3"><h1>Créer une sortie</h1></div>
+
+
+    <div class="row mt-3">
+
+        {% for item in errors %}
+            <div class="alert alert-danger mt-2" role="alert">
+                {{ item.message }}
+            </div>
+        {% endfor %}
+        <div class="row">
+
+            <div class="col">
+                {{ form_start(formSortie) }}
+                <form action="{{ path("app_sortie_add") }}" method="post">
+                    <div class="mb-3">
+                        <label class="form-label" for="nom">Nom de la sortie :</label>
+                        <input type="text" name="{{ field_name(formSortie.nom) }}"
+                               value="{{ field_value(formSortie.nom) }}" class="form-control"
+                               id="exampleFormControlInput1">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Date et heure de la sortie :</label>
+                        <input type="datetime-local" class="form-control"
+                               value=""
+
+                               name="dateDebut">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Date limite d'inscription</label>
+                        <input type="datetime-local" class="form-control"
+                               value=""
+                               name="dateLimiteInscription">
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre d'inscription Max</label>
+                        <input type="number" class="form-control"
+                               value="{{ field_value(formSortie.nbIncriptionMax) }}"
+                               name="{{ field_name(formSortie.nbIncriptionMax) }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Durée ?</label>
+                        <div class="d-flex align-items-center"><input type="number" class="form-control mr-1"
+                                                                      value="{{ field_value(formSortie.duree) }}"
+                                                                      name="{{ field_name(formSortie.duree) }}" step=15>
+                            <span>minutes</span></div>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Description et infos</label>
+                        <textarea class="form-control" id="{{ field_name(formSortie.description) }}"
+                                  name="{{ field_name(formSortie.description) }}"
+                                  rows="3">{{ field_value(formSortie.description) }}</textarea>
+                    </div>
+            </div>
+
+            {# Col 2 #}
+            <div class="col">
+                <div class="mb-3">
+                    <label class="form-label">Ville Organisatrice</label>
+                    <input type="text" class="form-control" value="" name="site" disabled="disabled">
+                </div>
+
+                {% if app.user %}
+                    <input type="hidden" class="form-control" value="" name="idCurrentUser">
+                {% endif %}
+                <div class="mb-3">
+                    <label class="form-label">Ville</label>
+                    <input type="text" id="ville" class="form-control" value="" name="">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Lieu <a href="" data-toggle="modal" data-target="#exampleModalCenter">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                 class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                            </svg>
+                        </a> </label>
+                    {{ form_widget(formSortie.lieu, {'id': 'lieu-widget'}) }}
+                </div>
+                {# MODAL AJOUTER UN LIEU #}
+
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div  id="modalPop"class="modal-content   ">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Ajouter un lieu</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+
+                                        <div class="form-group">
+                                            <label for="nomModal" class="col-form-label">Nom</label>
+                                            <input type="text" id="nomModal" class="form-control">
+
+                                            <label for="rueModal" class="col-form-label">Rue</label>
+                                            <input type="text" id="rueModal" class="form-control">
+
+                                            <label for="viModal" class="col-form-label">Ville</label>
+
+                                                <select class="form-select" id="viModal">
+                                                    {% for item in villes %}
+                                                    <option value="{{ item.id }}">{{ item.nomVille }}</option>
+                                                    {% endfor %}
+                                                </select>
+
+                                            <label for="latModal" class="col-form-label">Latitude</label>
+                                            <input type="text" id="latModal" class="form-control">
+
+                                            <label for="longModal" class="col-form-label">Longitude</label>
+                                            <input type="text" id="longModal" class="form-control">
+                                        </div>
+
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                                    <button type="button" onclick="clicktest()" data-dismiss="modal" class="btn btn-primary">Ajouter</button>
+                                </div>
+                            </div>
+                            {# #}
+                        </div>
+                    </div>
+                </div>
+                {# test JS ADD LIEU #}
+                <script>
+                    function clicktest() {
+                        var nom = document.getElementById("nomModal").value;
+                        var rue = document.getElementById("rueModal").value;
+                        var ville = document.getElementById("viModal").value;
+                        var longitude = document.getElementById("longModal").value;
+                        var latitude = document.getElementById("latModal").value;
+
+                        console.log(nom);
+                        console.log(rue);
+                        console.log(ville);
+                        console.log(longitude);
+                        console.log(latitude);
+
+                        jQuery.get("/lieu/add/" + nom + "/" + rue + "/" + ville + "/" + longitude + "/" + latitude);
+
+                    }
+
+                </script>
+                {# FIN MODAL AJOUTER UN LIEU #}
+                <div class="mb-3">
+                    <label class="form-label">Rue</label>
+                    <input type="text" id="rue" class="form-control" value="" name="" disabled="disabled">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Code Postal</label>
+                    <input type="text" id="cp" class="form-control" value="" name="" disabled="disabled">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Latitude</label>
+                    <input type="text" id="latitude" class="form-control" value="" name="" disabled="disabled">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Longitude</label>
+                    <input type="text" id="longitude" class="form-control" value="" name="" disabled="disabled">
+                </div>
+
+                <script>
+                    $(document).ready(function () {
+                        $("#lieu-widget").change(function () {
+                            var id = $(this).val();
+                            jQuery.get("/sortie/getLieu/" + id, function (data, status) {
+
+                                var res = JSON.parse(data);
+                                $("#rue").val(res.rue);
+                                $("#longitude").val(res.long);
+                                $("#cp").val(res.cp);
+                                $("#ville").val(res.ville);
+                                $("#latitude").val(res.lat);
+
+
+                            });
+                        });
+                    });
+                </script>
+
+
+            </div>
+
+            {# Line 3 - Button #}
+            <div class="row my-2">
+
+                <div class="d-flex">
+                    <button type="submit" name="save" id="{{ field_name(formSortie.save) }}"
+                            class="btn btn-success mx-2 ">Enregistrer
+                    </button>
+
+
+                    <button type="submit" name="publish" id="{{ field_name(formSortie.add) }}"
+                            class="btn btn-success mx-2 ">Publier la
+                        sortie
+                    </button>
+
+
+                    <button type="submit" id="{{ field_name(formSortie.cancel) }}" value="cancel"
+                            class="btn btn-warning ml-auto">Annuler
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+    {{ form_rest(formSortie) }}
+    {{ form_end(formSortie) }}
+    {% endblock %}

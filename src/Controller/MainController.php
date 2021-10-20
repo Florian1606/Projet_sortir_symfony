@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Data\SearchData;
 use App\Entity\Participant;
 use App\Form\MonProfilType;
 use App\Repository\ParticipantRepository;
@@ -25,8 +26,11 @@ use App\Form\AjoutVilleType;
 use App\Entity\Ville;
 use App\Entity\Site;
 use App\Form\AjoutSiteType;
+use App\Form\SearchType;
 use App\Service\FileUploader;
+use Doctrine\ORM\Mapping\Id;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
+use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class MainController extends AbstractController
@@ -35,11 +39,14 @@ class MainController extends AbstractController
     /**
      * @Route("/main/profil/{id}", name="profil", requirements={"id":"\d+"})
      */
-    public function profil(ParticipantRepository $repo, $id = 0): Response
+    public function profil(SortieRepository $repoSorties, ParticipantRepository $repo, $id = 0): Response
     {
+
         $participant = $repo->find($id);
+        $sorties = $repoSorties->findBy(array('organisateur' => $participant));
         return $this->render('main/profil.html.twig', [
             'participant' => $participant,
+            'sorties' => $sorties,
         ]);
     }
 
@@ -56,9 +63,10 @@ class MainController extends AbstractController
     /**
      * @Route("/main", name="main")
      */
-    public function index(Request $request, SortieRepository $sortieRepo, SiteRepository $siteRepo): Response
+    public function index(SortieRepository $sortieRepo, SiteRepository $siteRepo): Response
     {
-        $sorties = $sortieRepo->findAll();
+        $sorties = $sortieRepo->findAllWithSitesAndEtats();
+        dump($sorties);
         $sites = $siteRepo->findAll();
         return $this->render('main/index.html.twig', [
             'sorties' => $sorties,
@@ -80,7 +88,7 @@ class MainController extends AbstractController
         // verifier si on a soumis le form et si les donnes valide
         if ($form->isSubmitted() && $form->isValid()) {
             // génerer sql insert into et ajouter dans queue
-
+            $profil->setAvatarFilename('avatar-default.jpg');
             $profil->setIsAdmin(false);
             $profil->setIsActif(false);
             $profil->setPassword(
@@ -95,7 +103,6 @@ class MainController extends AbstractController
             $em->flush();
             // redirect vers la liste wish
             //création de message de succes qui sera affiché sur la prochaine page
-            $this->addFlash('success', 'le titre   ' . $profil->getMonprofil() . ' a été ajoute');
             //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
             $id = $profil->getId();
             return $this->redirectToRoute("app_creationProfil", array('id' => $id = $profil->getId()));
@@ -113,6 +120,87 @@ class MainController extends AbstractController
     public function Annuler(Request $request): Response
     {
         return $this->render("main/base.html.twig");
+    }
+
+    /**
+     *@Route("/main/about_us",name="app_about_us")
+     */
+    public function aboutUs(Request $request): Response
+    {
+        return $this->render("main/about-us.html.twig");
+    }
+
+
+
+    /**
+     *@Route("/admin/gererLesVilles",name="app_gerer_les_villes")
+     */
+    public function gererLesVilles(Request $request, VilleRepository $villeRepo, EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
+    {
+        // instanciation de la classe produit
+        $formville = new Ville();
+        // la creation du formulaire
+        $form = $this->createForm(AjoutVilleType::class, $formville);
+
+
+        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
+        $form->handleRequest($request);
+        // verifier si on a soumis le form et si les donnes valide
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            // génerer sql insert into et ajouter dans queue
+
+            $em->persist($formville);
+            // appliquer insert into dans la bdd
+            $em->flush();
+            // redirect vers la liste wish
+            //création de message de succes qui sera affiché sur la prochaine page
+            $this->addFlash('success', 'la ville   '  . ' a été ajoute');
+            //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
+            $id = $formville->getId();
+            return $this->redirectToRoute("app_gerer_les_villes", array('id' => $id = $formville->getId()));
+        }
+        $titre = "Sortir.com - gererville";
+
+        $villes = $villeRepo->findAll();
+        return $this->render('admin/gererLesVilles.html.twig', [
+            'villes' => $villes,
+            'formville2' => $form->createView(),
+        ]);
+    }
+
+    /**
+     *@Route("/admin/gererLesSites",name="app_gerer_les_sites")
+     */
+    public function gererLesSites(Request $request, SiteRepository $siteRepo, EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
+    {
+        // instanciation de la classe produit
+        $formsite = new Site();
+        // la creation du formulaire
+        $form = $this->createForm(AjoutSiteType::class, $formsite);
+        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
+        $form->handleRequest($request);
+        // verifier si on a soumis le form et si les donnes valide
+        if ($form->isSubmitted() && $form->isValid()) {
+            // génerer sql insert into et ajouter dans queue
+
+            $em->persist($formsite);
+            // appliquer insert into dans la bdd
+            $em->flush();
+            // redirect vers la liste wish
+            //création de message de succes qui sera affiché sur la prochaine page
+            $this->addFlash('success', 'le site   '  . ' a été ajoute');
+            //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
+            $id = $formsite->getId();
+            return $this->redirectToRoute("app_gerer_les_sites", array('id' => $id = $formsite->getId()));
+        }
+        $titre = "Sortir.com - gererville";
+
+        $sites = $siteRepo->findAll();
+        return $this->render('admin/gererLesSites.html.twig', [
+            'sites' => $sites,
+            'formsite2' => $form->createView(),
+        ]);
     }
 
     /**
@@ -142,6 +230,13 @@ class MainController extends AbstractController
             && $isSortiesPassees == null && $dateDebut == "" && $dateLimiteInscription == ""
         ) {
             $sorties = array_merge($sorties, $sortieRepo->findBySearchAndSite($search, $idSite, $search)); // NE RIEN METTRE = findAll()
+        }
+
+        if (
+            $idSite != "" && $search == "" && $isSortiesOrganisateur == null && $isSortiesInscrit == null && $isSortiesNonInscrit == null
+            && $isSortiesPassees == null && $dateDebut == "" && $dateLimiteInscription == ""
+        ) {
+            $sorties = array_merge($sorties, $sortieRepo->findBySites($idSite));
         }
 
         // Retourne un tableau selon les dates rentrées et le site et site
@@ -183,84 +278,10 @@ class MainController extends AbstractController
     }
 
 
-
     /**
-     *@Route("/admin/gererLesVilles",name="app_gerer_les_villes")
+     * @Route("/monProfil/{id}",name="app_modifier")
      */
-    public function gererLesVilles(Request $request,VilleRepository $villeRepo,EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
-    {
-        // instanciation de la classe produit
-        $formville = new Ville();
-        // la creation du formulaire
-        $form = $this->createForm(AjoutVilleType::class, $formville);
-
-
-        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
-        $form->handleRequest($request);
-        // verifier si on a soumis le form et si les donnes valide
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            // génerer sql insert into et ajouter dans queue
-
-            $em->persist($formville);
-            // appliquer insert into dans la bdd
-            $em->flush();
-            // redirect vers la liste wish
-            //création de message de succes qui sera affiché sur la prochaine page
-            $this->addFlash('success', 'la ville   '  . ' a été ajoute');
-            //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
-            $id = $formville->getId();
-            return $this->redirectToRoute("app_gerer_les_villes", array('id' => $id = $formville->getId()));
-        }
-        $titre = "Sortir.com - gererville";
-
-            $villes = $villeRepo->findAll();
-            return $this->render('admin/gererLesVilles.html.twig', [
-                'villes' => $villes,
-                'formville2'=> $form->createView(),
-            ]);
-            }
-
-    /**
-     *@Route("/admin/gererLesSites",name="app_gerer_les_sites")
-     */
-    public function gererLesSites(Request $request,SiteRepository $siteRepo,EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
-    {
-        // instanciation de la classe produit
-        $formsite = new Site();
-        // la creation du formulaire
-        $form = $this->createForm(AjoutSiteType::class, $formsite);
-        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
-        $form->handleRequest($request);
-        // verifier si on a soumis le form et si les donnes valide
-        if ($form->isSubmitted() && $form->isValid()) {
-            // génerer sql insert into et ajouter dans queue
-
-            $em->persist($formsite);
-            // appliquer insert into dans la bdd
-            $em->flush();
-            // redirect vers la liste wish
-            //création de message de succes qui sera affiché sur la prochaine page
-            $this->addFlash('success', 'le site   '  . ' a été ajoute');
-            //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
-            $id = $formsite->getId();
-            return $this->redirectToRoute("app_gerer_les_sites", array('id' => $id = $formsite->getId()));
-        }
-        $titre = "Sortir.com - gererville";
-
-        $sites = $siteRepo->findAll();
-        return $this->render('admin/gererLesSites.html.twig', [
-            'sites' => $sites,
-            'formsite2'=> $form->createView(),
-            ]);
-
-
-    }
-
-        /**
-         * @Route("/monProfil/{id}",name="app_modifier")
-         */
-        public function modifier( FileUploader $fileUploader, Request $request, EntityManagerInterface $em, ParticipantRepository $repo, UserPasswordHasherInterface $userPasswordHasherInterface, $id): Response
+    public function modifier(FileUploader $fileUploader, Request $request, EntityManagerInterface $em, ParticipantRepository $repo, UserPasswordHasherInterface $userPasswordHasherInterface, $id): Response
     {
         // instanciation de la classe produit
         $participant = $repo->find($id);
@@ -271,6 +292,12 @@ class MainController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $photoFile = $form->get('photo')->getData();
             if ($photoFile) {
+                // Supprimer photo si déjà existante
+                if ($this->getUser()->getAvatarFilename() != 'avatar-default.jpg') {
+                    $urlPhotoOld = $this->getUser()->getAvatarFilename();
+                    $fileUploader->removeAvatar($urlPhotoOld);
+                }
+                // Mettre en place la nouvelle photo
                 $photoFileName = $fileUploader->upload($photoFile);
                 $participant->setAvatarFilename($photoFileName);
             }
@@ -300,7 +327,6 @@ class MainController extends AbstractController
      */
     public function incorporation(ParticipantRepository $repo, $id = 0): Response
     {
-        return $this->render('admin/importation.html.twig', [
-        ]);
+        return $this->render('admin/importation.html.twig', []);
     }
 }

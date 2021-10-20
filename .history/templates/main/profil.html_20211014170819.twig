@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheet %}
+    <link href="{{ asset('css/login.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3></h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+                <h3> {{ participant.pseudo }}</h3>
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3></h3>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+
+            <div class="col">
+                <h3>Prenom :</h3>
+                <h3>Nom : </h3>
+                <h3>Telephone : </h3>
+                <h3>Email : </h3>
+                <h3>Ville de Rattachement : </h3>
+            </div>
+            <div class="col">
+                <h3> {{ participant.prenom }}</h3>
+                <h3> {{ participant.nom }}</h3>
+                <h3> {{ participant.telephone }}</h3>
+                <h3> {{ participant.email }}</h3>
+                <h3> {{ participant.idSite.nom }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-success">Retour</button>
+            </div>
+            <div class="col">
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3></h3>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
