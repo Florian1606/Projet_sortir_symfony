@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+{% block title %}Les Villes - Admin{% endblock %}
+
+{% block body %}
+    <div class="row text-center mt-4">
+        <h2> Gérer les villes</h2>
+    </div>
+
+    {# <div class="container"> #}
+    {# <h2>Filtrer les villes</h2> #}
+    {# <p>Proposer le nom de la ville de votre recherche</p> #}
+    {# <input class="form-control" id="myInput" type="text" placeholder="Search.."> #}
+    {# <br> #}
+    {# <ul class="list-group" id="myList"> #}
+    {# {% for site in sites %} #}
+    {# <li class="list-group-item">{{ site.nom | upper }}</li> #}
+    {# {% endfor %} #}
+    {# </ul> #}
+    {# </div> #}
+
+
+
+    <script>
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myList li").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block fanch %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+    <div class="container">
+        <h2>Filtrer les villes</h2>
+        <p>Proposer le nom de la ville de votre recherche</p>
+        <input class="form-control" id="myInput" type="texte" placeholder="Search..">
+        <br>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Code Postal &emsp; &emsp; &emsp;&emsp;&emsp;&emsp;Ville &emsp; &emsp; &emsp;&emsp;&emsp;&emsp; Modifier</th>
+                    <th> </th>
+                </tr>
+
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <ul class="list-group" id="myList">
+                            {% for ville in villes %}
+                                <li class="list-group-item">{{ ville.codePostal}}&emsp;&emsp;&emsp;&emsp;&emsp; &emsp;{{ ville.nomVille | upper }} &emsp;&emsp;&emsp;&emsp; &emsp;&emsp; <a href="{{ path('main') }}" class="text-reset">modifier</a>  &emsp; <a href="{{ path('main') }}" class="text-reset">supprimer</a> </li>
+
+                            {% endfor %}
+
+                        </ul>
+                    </td>
+                    <td>
+                        <div class="row">
+                            <div class="col">
+                            </div>
+                            <div class="col">
+                                <div class="row mt-4">
+                                    <div>
+                                        {{ form(formville2) }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                            </div>
+                        </div>
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+
+
+
+        </div>
+    </div>
+
+
+
+
+
+{% endblock %}
+

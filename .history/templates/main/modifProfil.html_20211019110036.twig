@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+	<title>Mon Profil</title>
+{% endblock %}
+
+
+{% block body %}
+	{% for message in app.flashes('success') %}
+		<div class="alert alert-success">
+			{{ message }}
+		</div>
+	{% endfor %}
+	<div class="row text-center mt-4">
+		<h2>Mon profil</h2>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-3">
+				<img src="{{ asset('uploads/avatars/' ~ app.user.avatarFilename)}}" class="img-thumbnail img-fluid" alt="..." max-width="200" max-height="100">
+			</div>
+			<div class="col">
+				<div class="row mt-4">
+					<div>
+						{% form_theme formProfil 'bootstrap_5_horizontal_layout.html.twig' %}
+						{{ form_start(formProfil) }}
+						{# {{ form_widget(formProfil) }} #}
+						{{ form_row(formProfil.pseudo)}}
+						{{ form_row(formProfil.prenom)}}
+						{{ form_row(formProfil.nom)}}
+						{{ form_row(formProfil.telephone)}}
+						{{ form_row(formProfil.email)}}
+						{{ form_row(formProfil.password)}}
+						{{ form_row(formProfil.idSite)}}
+						{{ form_row(formProfil.photo)}}
+						<div class="d-flex">
+						{{ form_row(formProfil.Enregistrer)}}
+						<a href="{{ path('main') }}" class="h-90 btn-lg btn-primary">
+							Annuler
+						</a>
+						</div>
+						{{ form_end(formProfil) }}
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

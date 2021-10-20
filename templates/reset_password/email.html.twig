@@ -1,0 +1,11 @@
+<h1>Salut frérot !</h1>
+
+<p>Pour avoir un nouveau mot de passe, suit ce lien :</p>
+
+<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
+
+<p>Le lien expire dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+
+<p>Cordialement !</p>
+<p>Les meilleurs.</p>
+<p>SORTIR.COM</p>
