@@ -136,7 +136,7 @@
             </div>
         </div>
     </div>
-    </div>
+
     {{ form_rest(formSortie) }}
     {{ form_end(formSortie) }}
 
@@ -153,27 +153,26 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        {{ form_start(lieuForm,{'attr': {'onsubmit': 'return validateMyForm(event);'}}) }}
-                        <div class="my-custom-class-for-errors">
-                            {{ form_errors(lieuForm) }}
-                        </div>
+                        <div id="errors"></div>
+                        {{ form_start(lieuForm,{'attr': {"onsubmit":'return validateMyForm(event);'}}) }}
 
-                        <div class="row">
-                            <div class="col">
-                                {{ form_row(lieuForm.nomLieu) }}
-                            </div>
-                            <div class="col">
-                                {{ form_row(lieuForm.rue) }}
-                            </div>
-                            <div class="col">
-                                {{ form_row(lieuForm.longitude) }}
-                            </div>
-                            <div class="col">
-                                {{ form_row(lieuForm.latitude) }}
-                            </div>
-                            <div class="col" id="some-custom-id">
-                                {{ form_row(lieuForm.ville) }}
-                            </div>
+                        <div class="mb-3">
+                            {{ form_row(lieuForm.nomLieu,{'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(lieuForm.rue,{'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(lieuForm.longitude,{'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(lieuForm.latitude,{'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(lieuForm.ville,{'attr': {'class': 'form-control'}}) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_row(lieuForm.publier,{'attr': {'class': 'btn btn-success mx-2 ','id' : 'addLieu'}}) }}
                         </div>
                         {{ form_end(lieuForm) }}
                     </div>
@@ -188,6 +187,7 @@
 
     {# JS ADD LIEU #}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <script>
 
         $(document).ready(function () {
@@ -209,9 +209,6 @@
                         $.get("/sortie/infosLieu/" + id, function (data, status) {
 
                             var infosLieu = JSON.parse(data);
-                            console.log(infosLieu.rue);
-                            console.log(infosLieu.lat);
-                            console.log(infosLieu.long);
                             $("#rue").val(infosLieu.rue);
                             $("#latitude").val(infosLieu.lat);
                             $("#longitude").val(infosLieu.long);
@@ -231,26 +228,38 @@
         });
     </script>
 
-    {#     test JS ADD LIEU V2 #}
+
+    {# test JS ADD LIEU V2 #}
     <script>
-        function validateMyForm(event){
+        function validateMyForm(event) {
             let form = event.target;
-            console.log(event);
+            // console.log(event);
             const http = new XMLHttpRequest();
-            http.responseType="json";
-            http.onload = function(){
-                console.log(this.response);
-                 if(http.readyState == 4 && http.status == 200) {
-                     // Redirection
-                     console.log(this.response);
-                     //window.location = "/main";
-                 }
+            http.responseType = "json";
+            http.onload = function () {
+            let test = '';
+                if (http.readyState == 4 && http.status == 200) {
+                    $.each($.parseJSON(this.response), function(i, obj) {
+                        // alert(this.response);
+
+                        test += '<div class="alert alert-danger" role="alert">'+ obj.property.substring(9,obj.property.length - 1) + ':' + obj.message  + '</div>';
+                                   });
+
+
+
+                }
+                $("#errors").html(test)
             };
-            http.open(form.method,"/lieu/add");
+            http.open(form.method, "/lieu/add", function (data, status) {
+                    // console.log("Data: " + data + "\nStatus: " + status);
+                }
+            );
             http.send(new FormData(form));
             // Pour ne pas renvoyer le tableau
             event.preventDefault();
         }
+
+
     </script>
-    {#     FIN MODAL AJOUTER UN LIEU V2 #}
+    {# FIN MODAL AJOUTER UN LIEU V2 #}
 {% endblock %}

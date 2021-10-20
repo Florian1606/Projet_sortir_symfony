@@ -69,8 +69,8 @@ class SortieController extends AbstractController
                 $em->flush();
             }
 
-//            return $this->redirectToRoute("main");
-            return $this->redirectToRoute("app_sortie_add");
+            return $this->redirectToRoute("main");
+
         }
         $errors = $validator->validate($sortie);
         $titre = "Création d'une sortie";
