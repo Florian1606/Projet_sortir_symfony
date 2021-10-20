@@ -134,11 +134,13 @@ class SortieController extends AbstractController
     {   
         $sortie = $repo->find($id);
         if ($request->get('btn-cancel') != null) {
+            dump("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
             $datenow = new \DateTime("now");
-            if ($sortie->getDateDebut() <= $datenow) {
+            if ($sortie->getDateDebut() > $datenow) {
+                dump("NBBBBBBBBBBBBBBBBBBBBBB");
+
                 $sortie->setEtat($repoEtat->find(6));
-                $sortie->setMotifAnnulation($request->get('motif'));
                 $em->flush();
                 $this->addFlash('success', 'Sortie Annulée !');
                 return $this->redirectToRoute("main");

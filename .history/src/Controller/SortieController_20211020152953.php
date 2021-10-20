@@ -138,7 +138,7 @@ class SortieController extends AbstractController
             $datenow = new \DateTime("now");
             if ($sortie->getDateDebut() <= $datenow) {
                 $sortie->setEtat($repoEtat->find(6));
-                $sortie->setMotifAnnulation($request->get('motif'));
+                $sortie->setMotifAnnulation($request->get())
                 $em->flush();
                 $this->addFlash('success', 'Sortie Annulée !');
                 return $this->redirectToRoute("main");

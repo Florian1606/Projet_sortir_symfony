@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annuler une sortie - Sortir.com
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+
+		<form action="{{ path('app_sortie_cancel', {'id': 0}) }}" method="post">
+			<div class="logo mb-3">
+				<div class="col-md-12 text-center mt-5 mb-5">
+					<h1>
+						Annuler une sortie</h1>
+				</div>
+			</div>
+			<div class="d-flex justify-content-around">
+				<p>
+					Nom de la sortie :
+				</p>
+				<p>
+					{{ sortie.nom }}
+				</p>
+			</div>
+			<div class="d-flex justify-content-around">
+				<p>
+					Date de la sortie :
+				</p>
+				<p>
+					{{ sortie.dateDebut | date('d/m/Y') }}
+				</p>
+			</div>
+			<div class="d-flex justify-content-around">
+				<p>
+					Ville organisatrice :
+				</p>
+				<p>
+					{{ sortie.site.id | upper }}
+				</p>
+			</div>
+
+			<div class="d-flex justify-content-around">
+				<p>
+					Lieu :
+				</p>
+				<p>
+					{{ sortie.lieu.nomLieu}}
+				</p>
+				<p>
+					{{ sortie.lieu.rue}}
+				</p>
+				<p>
+					{{ sortie.lieu.ville.codePostal}}
+					{{ sortie.lieu.ville.nomVille}}
+				</p>
+			</div>
+
+			<div class="d-flex justify-content-around">
+				<p>
+					Lieu :
+				</p>
+				<p>
+					{{ sortie.lieu.nomLieu}}
+				</p>
+				<p>
+					{{ sortie.lieu.rue}}
+				</p>
+				<p>
+					{{ sortie.lieu.ville.codePostal}}
+					{{ sortie.lieu.ville.nomVille}}
+				</p>
+			</div>
+			<div class="d-flex justify-content-around">
+				<p>
+					Lieu : {{ sortie.lieu.nomLieu}} <br>
+					{{ sortie.lieu.rue}}
+					{{ sortie.lieu.ville.codePostal}}
+					{{ sortie.lieu.ville.nomVille}}
+				</p>
+			</div>
+			<div class="d-flex justify-content-center">
+				<button name="btn-cancel" class="btn btn-lg btn-primary">
+					Enregistrer
+				</button>
+				<a href=" {{ path('app_Annuler')}}" class="btn btn-lg btn-primary">
+					Annuler
+				</a>
+			</div>
+
+
+		</form>
+
+	</div>
+</div></form>{% endblock %}

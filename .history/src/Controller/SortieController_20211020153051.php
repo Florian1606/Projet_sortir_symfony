@@ -133,6 +133,7 @@ class SortieController extends AbstractController
     public function cancelSortie(Request $request, SortieRepository $repo, EntityManagerInterface $em, $id): Response
     {   
         $sortie = $repo->find($id);
+        dump($request->get('motif'));
         if ($request->get('btn-cancel') != null) {
             $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
             $datenow = new \DateTime("now");

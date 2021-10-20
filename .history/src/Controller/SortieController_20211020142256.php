@@ -133,21 +133,19 @@ class SortieController extends AbstractController
     public function cancelSortie(Request $request, SortieRepository $repo, EntityManagerInterface $em, $id): Response
     {   
         $sortie = $repo->find($id);
-        if ($request->get('btn-cancel') != null) {
+
+        if ($request->get('btn-cancel')) {
             $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
             $datenow = new \DateTime("now");
-            if ($sortie->getDateDebut() <= $datenow) {
+            if ($sortie->getDateDebut() > $datenow) {
                 $sortie->setEtat($repoEtat->find(6));
-                $sortie->setMotifAnnulation($request->get('motif'));
                 $em->flush();
                 $this->addFlash('success', 'Sortie Annulée !');
                 return $this->redirectToRoute("main");
             }
             $this->addFlash('warning', 'Vous ne pouvez pas annuler la sortie !');
         }
-        return $this->render("sortie/annulerUneSortie.html.twig", [
-            'sortie' => $sortie,
-        ]);
+        return $this->render("main");
     }
 
     /**
