@@ -2,39 +2,15 @@
 
 namespace App\Controller;
 
-use App\Entity\Member;
-use App\Entity\Participant;
-use App\Form\MonProfilType;
-use App\Repository\ParticipantRepository;
-use App\Repository\SiteRepository;
-use App\Repository\SortieRepository;
-use App\Service\DefaultPasswordGenerator;
-use DateTime;
-use App\Repository\WishRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use App\Entity\Sortie;
-use App\Entity\Etat;
-use App\Form\SortieType;
-use App\Repository\EtatRepository;
+use App\Entity\Participant;
+use App\Repository\ParticipantRepository;
+use App\Entity\Lieu;
 use App\Repository\LieuRepository;
 use App\Repository\VilleRepository;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use App\Form\AjoutVilleType;
-use App\Entity\Ville;
-use App\Entity\Site;
-use App\Form\AjoutSiteType;
-use App\Service\FileUploader;
-use Doctrine\ORM\Mapping\Id;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 
 class AdminController extends AbstractController
@@ -308,7 +284,6 @@ class AdminController extends AbstractController
             'formsite2' => $form->createView(),
         ]);
     }
-    
     /**
      * @Route("/admin/creationProfil", name="app_creationProfil")
      */

@@ -21,7 +21,6 @@ use App\Entity\Sortie;
 use App\Entity\Etat;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
-use App\Repository\LieuRepository;
 use App\Repository\VilleRepository;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use App\Form\AjoutVilleType;
@@ -31,8 +30,6 @@ use App\Form\AjoutSiteType;
 use App\Service\FileUploader;
 use Doctrine\ORM\Mapping\Id;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
