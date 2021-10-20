@@ -348,4 +348,76 @@ class AdminController extends AbstractController
 
         return $this->render('admin/creationProfil.html.twig', $tab);
     }
+
+    /**
+     * @Route("/admin/role/{id}",name="app_admin_role")
+     */
+    public function changeRole(EntityManagerInterface $em, $id): Response
+    {
+
+
+        $repo = $this->getDoctrine()->getRepository(Participant::class);
+        $participant = $repo->find($id);
+        if ($participant->getIsActif() == false) {
+            $this->addFlash('warning', 'Participant "'.$participant->getPseudo().'" doit être actif !');
+            return $this->redirectToRoute("app_admin_participant");
+        }
+
+        if ($participant == $this->getUser()) {
+            $this->addFlash('warning', ' Ne jouer pas avec vos droits ! !');
+            return $this->redirectToRoute("app_admin_participant");
+        }
+
+            if ($participant->getIsAdmin() == true){
+                $participant->setIsAdmin(false);
+                $roles[] = 'ROLE_PARTICIPANT';
+                 $participant->setRoles($roles);
+                $em->flush();
+                $this->addFlash('success', 'Participant "'.$participant->getPseudo().'" n\'est plus admin !');
+
+            } else {
+                $participant->setIsAdmin(true);
+                $roles[] = 'ROLE_ADMIN';
+                $participant->setRoles($roles);
+                $em->flush();
+                $this->addFlash('success', 'Participant "'.$participant->getPseudo().'" devient admin "Un grand pouvoir implique de grandes responsabilités" !');
+
+            }
+
+
+        return $this->redirectToRoute("app_admin_participant");
+    }
+
+    /**
+     * @Route("/admin/delete-participant/{id}",name="app_admin_delete_participant")
+     */
+    public function deleteUser(EntityManagerInterface $em, $id): Response
+    {
+
+
+        $repo = $this->getDoctrine()->getRepository(Participant::class);
+        $participant = $repo->find($id);
+
+        if ($participant == $this->getUser()) {
+            $this->addFlash('danger', 'Pas ça, Zinédine, pas aujourd’hui, pas maintenant, pas après tout ce que tu as fait');
+            return $this->redirectToRoute("app_admin_participant");
+        }
+
+        // sorties et organisées ???
+
+        if (empty($participant->getSorties()) && empty($participant->getSortiesOrganisees()) ){
+
+            $this->addFlash('warning', 'Le participant ne doit être inscrit à une sortie ou être organisateur ....');
+            return $this->redirectToRoute("app_admin_participant");
+        }
+
+//        $em->remove($participant);
+//        $em->flush();
+        $this->addFlash('success', 'Participant "'.$participant->getPseudo().'" est supprimé !');
+
+
+
+
+        return $this->redirectToRoute("app_admin_participant");
+    }
 }
