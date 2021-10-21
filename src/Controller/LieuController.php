@@ -39,18 +39,21 @@ class LieuController extends AbstractController
         $lieu = new Lieu();
         $lieuForm = $this->createForm(LieuType::class,$lieu);
         $lieuForm->handleRequest($request);
-
+        $json = [];
 
         if($lieuForm->isSubmitted() && $lieuForm->isValid()){
             $em->persist($lieu);
             $em->flush();
-            return $this->json('{"status":201}');
+            array_push($json,["class"=> 'success',"property"=> '',"message"=>'Lieu Ajouté !']);
+            $json = json_encode($json);
+//            return $this->json('{"status":201}');
+            return $this->json($json);
         }
 
         $errors = $validator->validate($lieuForm);
-        $json = [];
+
         foreach ($errors as $val){
-            array_push($json,["property"=> $val->getPropertyPath(),"message"=>$val->getMessage()]);
+            array_push($json,["class"=> 'danger',"property"=> $val->getPropertyPath(),"message"=>$val->getMessage()]);
         }
         $json = json_encode($json);
         return $this->json($json);
