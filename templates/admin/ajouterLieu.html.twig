@@ -1,28 +1,27 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Sortir.com - Créer une sortie{% endblock %}
+{% extends 'admin/base.html.twig' %}
+{% block title %}Gestion des participants{% endblock %}
 
 {% block body %}
+    <div class="content-container mx-2">
+        <div class="container-fluid">
+            <div class="jumbotron">
+                <h1 class="">Ajouter une proposition de lieu</h1>
+                <p class="font-italic">Tapez le nom d'un lieu que vous voulez incorporer.</p>
 
-<div class="container">
+                <div>
+                    {% form_theme formAjoutLieu 'bootstrap_5_horizontal_layout.html.twig' %}
+                    {{ form(formAjoutLieu) }}
+                </div>
 
-    {% for label,messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alert alert-{{ label }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endfor %}
-
-    <div class="container">
-
-        <div class="row text-center">
-            <div>
-                <h1 class="">Administration</h1>
-                <p>- {{ titre }} - </p>
-            </div>
 
             </div>
+            {% for label,messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endfor %}
         </div>
-            </div>
-    {% endblock %}
+    </div>
+{% endblock %}

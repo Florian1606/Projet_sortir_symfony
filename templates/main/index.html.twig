@@ -22,13 +22,13 @@
 																					-webkit-background-clip: text;
 																					-webkit-text-fill-color: transparent;">
                         SORTEZ DE CHEZ VOUS !</h1>
-                    <span>Date du jour :
+                    <span id="ddj">Date du jour :
 							{{ "now"|date("d/m/Y") }}</span>
 
                     <p class="lead text-white-50 mb-4">Participer ou organiser des sorties pour vous et votre ville</p>
                     <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
-                        <a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('app_sortie_add') }}">Ajouter une
-                            sortie</a>
+                        {% if app.user %}<a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('app_sortie_add') }}">Ajouter une
+                            sortie</a>{% endif %}
                         <a class="btn btn-outline-light btn-lg px-4" href="{{ path('app_about_us') }}">Learn More</a>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
             <div class="row d-flex justify-content-center flex-wrap">
                 <div class="col ">
                     <div class="card p-3 py-4">
-                        <h5>Démerde toi à chercher une sortie</h5>
+                        <h5>Filtre de recherche</h5>
                         <div class="row g-3 mt-2">
                             <div class="col-md-3">
 
@@ -251,6 +251,8 @@
 
                                             {% endif %}
                                             {# SI L'USER CURRENT EST L'ORGANISATEUR DE LA SORTIE #}
+                                            {% if sortie.dateDebut|date('Y-m-d') < "now"|date('Y-m-d') %}
+                                            {% else %}
                                             {% if sortie.organisateur.id == app.user.id and (sortie.etat.id == 2 or sortie.etat.id == 3) %}
                                                 <a href="{{ path('app_sortie_cancel',{'id':sortie.id}) }}"
                                                    class="btn btn-danger">
@@ -261,6 +263,7 @@
                                                     </svg>
                                                 </a>
 
+                                            {% endif %}
                                             {% endif %}
                                             {# SI L'USER CURRENT N'AS PAS PUBLIER SA SORTIE #}
                                             {% if sortie.etat.id == 1 and app.user.id == sortie.organisateur.id %}

@@ -7,16 +7,85 @@ Dashboard - Admin
         <div class="container-fluid">
             <div class="jumbotron">
                 <h1>Bienvenue sur l'espace administration de sortie.com</h1>
-
-                
             </div>
-            <p>Cette partie du site permet la gestion des différentes zones du sites, tel que :  </p>
-            <h2>Les participants</h2>
-            <h2>Les sites</h2>
-            <h2>Les lieux </h2>
-            <h2>Les villes</h2>
+            <div class="row">
 
-        </div>
+                <div class="col">
+
+                <p>Cette partie du site permet la gestion des différentes zones du sites, tel que :  </p>
+                    <div class="ml-3">
+                    <li>Les participants</li>
+                <li>Les sites</li>
+                <li>Les lieux </li>
+                <li>Les villes</li>
+                </div>
+                 </div>
+
+
+                <div class="col">
+                    <div class="row">
+                        <div class="card bg-primary mb-3 mx-2" style="max-width: 18rem;">
+                        <div class="card-header">Nombre total de participant</div>
+                        <div class="card-body">
+                            <h1 class="card-title text-center">{{ participants }}</h1>
+
+                        </div>
+                    </div>
+
+                        <div class="card text-white bg-success mb-3 mx-2" style="max-width: 18rem;">
+                        <div class="card-header">Nombre de sortie</div>
+                        <div class="card-body">
+                            <h1 class="card-title text-center">{{ sorties }}</h1>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                    <div class="row">
+                        <div class="card text-white bg-danger mb-3 mx-2" style="max-width: 18rem;">
+                            <div class="card-header">Nombre de ville</div>
+                            <div class="card-body">
+                                <h1 class="card-title text-center">{{ villes }}</h1>
+
+                            </div>
+                        </div>
+
+                        <div class="card bg-warning mb-3 mx-2" style="max-width: 18rem;">
+                            <div class="card-header">Nombre de lieu</div>
+                            <div class="card-body">
+                                <h1 class="card-title text-center">{{ lieux }}</h1>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row">
+                   <h2>Nos administrateurs ...</h2>
+
+                </div>
+
+                    <div class="row text-center">
+
+                        {% for admin in admins %}
+                    <div class="col-xl-3 col-sm-6 mb-5">
+                        <div class="bg-white rounded shadow-sm py-5 px-4"><img src="{{ asset('uploads/avatars/' ~ admin.avatarFilename)}}" alt="" width="100" class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+                            <h5 class="mb-0">{{ admin.nom }} {{ admin.prenom }}</h5><span class="small text-uppercase text-muted">CEO - Founder</span>
+                            <ul class="social mb-0 list-inline mt-3">
+                                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-facebook-f"></i></a></li>
+                                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-twitter"></i></a></li>
+                                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-instagram"></i></a></li>
+                                <li class="list-inline-item"><a href="#" class="social-link"><i class="fa fa-linkedin"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                        {% endfor %}
+
+
+                </div>
+
+
     </div>
 
 {% endblock %}
