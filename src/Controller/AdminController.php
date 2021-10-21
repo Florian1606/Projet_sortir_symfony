@@ -316,6 +316,7 @@ class AdminController extends AbstractController
             $profil->setAvatarFilename('avatar-default.jpg');
             $profil->setIsAdmin(false);
             $profil->setIsActif(false);
+            $profil->setRoles(["ROLE_PARTICIPANT"]);
             $profil->setPassword(
                 $userPasswordHasherInterface->hashPassword(
                     $profil,
