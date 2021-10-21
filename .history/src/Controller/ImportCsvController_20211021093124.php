@@ -105,15 +105,12 @@ class ImportCsvController extends AbstractController
                 while (($data = fgetcsv($handlerCSV, 500, ";")) !== false) {
                     
                     $num = count($data);
-                    
-
-
 
                     $dataALL[] = $data;
 
-                    // if (count($data) !== $nbFieldsExpectedAtEachRow) {
-                    //     return false;
-                    // }
+                    if (count($data) !== $nbFieldsExpectedAtEachRow) {
+                        return false;
+                    }
 
                 }
                 fclose($handlerCSV);

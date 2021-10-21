@@ -68,14 +68,14 @@ class ImportCsvController extends AbstractController
     {
         dump($file_to_import);
         $pathToFile = $this->getParameter('data_csv_directory') . '/' . $file_to_import;
-        dump( $pathToFile);
+
         if (!$this->fileToImportExist($pathToFile)) {
             $this->addFlash('error', 'Impossible de trouver le ficher à importer!');
             return $this->redirectToRoute('main');
         }
 
         $data = $this->loadCSVtoArray($pathToFile);
-        dump($data);
+
         if (!$data) {
             $this->addFlash('error', 'Erreur dans l\'importation du fichier, verifier le format!');
             return $this->redirectToRoute('main');
@@ -98,22 +98,19 @@ class ImportCsvController extends AbstractController
 
             $dataALL = array();
 
-            $nbFieldsExpectedAtEachRow = 7;
+            $nbFieldsExpectedAtEachRow = 4;
 
             if (($handlerCSV = fopen($pathToFile, 'r')) !== false) {
 
                 while (($data = fgetcsv($handlerCSV, 500, ";")) !== false) {
-                    
+
                     $num = count($data);
-                    
-
-
 
                     $dataALL[] = $data;
 
-                    // if (count($data) !== $nbFieldsExpectedAtEachRow) {
-                    //     return false;
-                    // }
+                    if (count($data) !== $nbFieldsExpectedAtEachRow) {
+                        return false;
+                    }
 
                 }
                 fclose($handlerCSV);

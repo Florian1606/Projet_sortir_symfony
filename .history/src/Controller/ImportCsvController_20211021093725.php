@@ -106,8 +106,7 @@ class ImportCsvController extends AbstractController
                     
                     $num = count($data);
                     
-
-
+                    
 
                     $dataALL[] = $data;
 

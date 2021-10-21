@@ -205,14 +205,14 @@ class AdminController extends AbstractController
 
             //Persist:
             $em->persist($user);
-            $this->addFlash('success', $pseudo . '<strong>' . ' : inscrit avec succès !' . '</strong>');
+            $this->addFlash('success', $pseudo . ' : inscrit avec succès !');
         }
 
         $em->flush();
 
         //Display errors:
         foreach ($errors as $error){
-            $this->addFlash('danger', '<strong>' . $error['msg'] . '</strong>');
+            $this->addFlash('danger', $error['msg']);
         }
 
         return $this->redirectToRoute('/admin/upload-users-csv/');

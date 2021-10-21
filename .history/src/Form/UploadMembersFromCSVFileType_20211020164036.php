@@ -30,7 +30,7 @@ class UploadMembersFromCSVFileType extends AbstractType
 //                               'mimeTypes' => [
 //                                'application/csvm+json'
 //                                ],
- //       'mimeTypesMessage' => 'S\'il vous plait, veuillez uploader un document csv valide !'
+                                'mimeTypesMessage' => 'S\'il vous plait, veuillez uploader un document csv valide !'
                             ]
 
                         )],
