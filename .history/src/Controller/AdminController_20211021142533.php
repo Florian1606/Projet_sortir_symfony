@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\Sortie;
 use App\Entity\Etat;
-
+use App\Entity\Lieu;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
@@ -335,6 +335,7 @@ class AdminController extends AbstractController
             $profil->setAvatarFilename('avatar-default.jpg');
             $profil->setIsAdmin(false);
             $profil->setIsActif(false);
+            $profil->setRoles(["ROLE_PARTICIPANT"]);
             $profil->setPassword(
                 $userPasswordHasherInterface->hashPassword(
                     $profil,
@@ -403,7 +404,7 @@ class AdminController extends AbstractController
     public function deleteUser(EntityManagerInterface $em, $id): Response
     {
 
-// sorties et organisées ???
+
         $repo = $this->getDoctrine()->getRepository(Participant::class);
         $participant = $repo->find($id);
 
@@ -412,13 +413,16 @@ class AdminController extends AbstractController
             return $this->redirectToRoute("app_admin_participant");
         }
 
-        if (count($participant->getSortiesOrganisees()) > 0 ){
-            $this->addFlash('warning', 'Le participant ne doit être organisateur ....');
+        // sorties et organisées ???
+
+        if (empty($participant->getSorties()) && empty($participant->getSortiesOrganisees()) ){
+
+            $this->addFlash('warning', 'Le participant ne doit plus être inscrit à une sortie ou être organisateur ....');
             return $this->redirectToRoute("app_admin_participant");
         }
 
-        $em->remove($participant);
-        $em->flush();
+//        $em->remove($participant);
+//        $em->flush();
         $this->addFlash('success', 'Participant "'.$participant->getPseudo().'" est supprimé !');
 
 
