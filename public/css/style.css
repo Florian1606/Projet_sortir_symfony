@@ -36,11 +36,12 @@
 
 .logo-8 h3 {
     color: #ffffff;
-
+    text-shadow: 0px 0px 3px #7ad9cb;
     font-family: 'Comfortaa', cursive;
     font-weight: 300;
     font-size: 30px;
     line-height:1.3;
+
 }
 .logo-8 h3 span {
 
@@ -51,5 +52,6 @@
     -webkit-transform: scaleX(-1);
     transform: scaleX(-1);
     opacity:0.3;
-    margin-left:-35px;
+    margin-left:-36px;
+
 }

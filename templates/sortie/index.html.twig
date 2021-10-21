@@ -98,6 +98,7 @@
 							<label class="form-label">Ville</label>
 
                         <select class="form-select" id="villeform" name="ville">
+                            <option disabled selected>Veuillez selectionner une ville</option>
                             {% for item in villes %}
                                 <option value="{{ item.id }}">{{ item.nomVille }}</option>
                             {% endfor %}

@@ -221,6 +221,7 @@
                                             {% endif %}
                                             {# SI L'USER CURRENT EST INSCRIT A LA SORTIE #}
 
+
                                             {% if (app.user in sortie.participants and (sortie.etat.id != 4 and sortie.etat.id != 5 and sortie.etat.id != 6 and sortie.etat.id != 7) ) %}
                                                 <a href="{{ path('app_sortie_unsubscribe', {'idUser': app.user.id,'idSortie': sortie.id}) }}"
                                                    class="btn btn-danger">
@@ -233,6 +234,8 @@
                                                     </svg>
                                                 </a>
                                             {% endif %}
+
+                                {% if sortie.nbIncriptionMax > sortie.participants|length %}
                                             {% if (app.user not in sortie.participants ) and (sortie.etat.id != 3 and sortie.etat.id != 4 and sortie.etat.id != 5 and sortie.etat.id != 6 and sortie.etat.id != 7) %}
 
                                                 <a href="{{ path('app_sortie_subscribe', {'idUser': app.user.id,'idSortie': sortie.id}) }}"
@@ -248,7 +251,7 @@
                                                                   d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"></path>
                                                         </svg>
                                                 </a>
-
+                                            {% endif %}
                                             {% endif %}
                                             {# SI L'USER CURRENT EST L'ORGANISATEUR DE LA SORTIE #}
                                             {% if sortie.dateDebut|date('Y-m-d') < "now"|date('Y-m-d') %}

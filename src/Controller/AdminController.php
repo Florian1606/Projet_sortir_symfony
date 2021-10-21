@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\Sortie;
 use App\Entity\Etat;
-use App\Entity\Lieu;
+
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
@@ -224,14 +224,14 @@ class AdminController extends AbstractController
 
             //Persist:
             $em->persist($user);
-            $this->addFlash('success', $pseudo . '<strong>' . ' : inscrit avec succès !' . '</strong>');
+            $this->addFlash('success', $pseudo . ' : inscrit avec succès !');
         }
 
         $em->flush();
 
         //Display errors:
         foreach ($errors as $error){
-            $this->addFlash('danger', '<strong>' . $error['msg'] . '</strong>');
+            $this->addFlash('danger', $error['msg']);
         }
 
         return $this->redirectToRoute('/admin/upload-users-csv/');

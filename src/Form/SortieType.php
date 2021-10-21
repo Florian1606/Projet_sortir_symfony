@@ -31,7 +31,8 @@ class SortieType extends AbstractType
                     'choice_label' => 'nomLieu',
                     'expanded' => false,
                     'multiple' => false,
-                    'attr' => ['class' =>'form-control']
+                    'placeholder' => 'Veuillez selectionner votre lieu',
+                    'attr' => ['class' =>'form-select']
                 )
             )
 
