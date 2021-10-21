@@ -20,7 +20,6 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\Sortie;
 use App\Entity\Etat;
-use App\Entity\Lieu;
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
@@ -460,7 +459,7 @@ class AdminController extends AbstractController
             $em->remove($site);
             $em->flush();
         } else {
-            $this->addFlash('danger', "Lieu : ".$site->getNom()." ne peut être supprimé ! (Rattaché à des sorties)");
+            $this->addFlash('danger', "site : ".$site->getNom()." ne peut être supprimé ! (Rattaché à des sorties)");
         }
         return $this->redirectToRoute("app_admin_site");
     }
@@ -546,5 +545,28 @@ class AdminController extends AbstractController
 
         return $this->render('admin/ajouterlieu.html.twig',$tab);
 
+    }
+    /**
+     * @Route("/ville/delete/{id}",name="app_ville_delete")
+     */
+    public function deleteVille(VilleRepository $repo, EntityManagerInterface $em, $id)
+    {
+        // Récupère le current user.
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        // Récupère le lieu suivant l'id passé en paramètre.
+        $ville = $repo->find($id);
+
+        $tabLieus =$ville->getLieus();
+        // Vérification des droits
+        // Doit être un admin et ne doit pas avoir de sortie
+        if ($user->getIsAdmin() && count($tabLieus) == 0 ) {
+            $this->addFlash('success', "Ville: ".$ville->getNomVille()." supprimé !");
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($ville);
+            $em->flush();
+        } else {
+            $this->addFlash('danger', "Ville : ".$ville->getNomVille()." ne peut être supprimé ! (Rattaché à des lieux)");
+        }
+        return $this->redirectToRoute("app_admin_villes");
     }
 }
