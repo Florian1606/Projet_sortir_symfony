@@ -284,40 +284,6 @@ class AdminController extends AbstractController
         ]);
     }
 
-//    /**
-//     *@Route("/admin/gererLesSites",name="app_gerer_les_sites")
-//     */
-//    public function gererLesSites(Request $request, SiteRepository $siteRepo, EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
-//    {
-//        // instanciation de la classe produit
-//        $formsite = new Site();
-//        // la creation du formulaire
-//        $form = $this->createForm(AjoutSiteType::class, $formsite);
-//        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
-//        $form->handleRequest($request);
-//        // verifier si on a soumis le form et si les donnes valide
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            // génerer sql insert into et ajouter dans queue
-//
-//            $em->persist($formsite);
-//            // appliquer insert into dans la bdd
-//            $em->flush();
-//            // redirect vers la liste wish
-//            //création de message de succes qui sera affiché sur la prochaine page
-//            $this->addFlash('success', 'le site   '  . ' a été ajoute');
-//            //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
-//            $id = $formsite->getId();
-//            return $this->redirectToRoute("app_gerer_les_sites", array('id' => $id = $formsite->getId()));
-//        }
-//        $titre = "Sortir.com - gererville";
-//
-//        $sites = $siteRepo->findAll();
-//        return $this->render('admin/gererLesSites.html.twig', [
-//            'sites' => $sites,
-//            'formsite2' => $form->createView(),
-//        ]);
-//    }
-    
     /**
      * @Route("/admin/creationProfil", name="app_creationProfil")
      */
