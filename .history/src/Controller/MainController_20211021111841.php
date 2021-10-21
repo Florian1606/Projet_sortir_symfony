@@ -189,6 +189,8 @@ class MainController extends AbstractController
                 $participant->setAvatarFilename($photoFileName);
             }
             // génerer sql insert into et ajouter dans queue
+            $participant->setIsAdmin(false);
+            $participant->setIsActif(false);
             $participant->setPassword(
                 $userPasswordHasherInterface->hashPassword(
                     $participant,
@@ -207,8 +209,4 @@ class MainController extends AbstractController
             'formProfil' => $form->createView(),
         ]);
     }
-
-
-
-
 }
