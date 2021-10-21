@@ -63,8 +63,10 @@ class SortieController extends AbstractController
                 $sortie->setDateDebut(new \DateTime($dateDebut));
             } else
                 array_push($msg_error, "La date de sortie doit être supérieur ou égale à la date d'aujourd'hui");
-        } else
+        } else {
             array_push($msg_error, "Veuillez saisir une date de début");
+        }
+
 
         // VERIF DATE FIN
             if ($dateLimiteInscription != null) {
@@ -85,19 +87,20 @@ class SortieController extends AbstractController
             // app current user -> organisateur
             $sortie->setOrganisateur($this->getUser());
             //!\\ Backslash pour indiquer une fonction PHP //!\\
-
-
             $sortie->setDateLimiteInscription(new \DateTime($request->request->get("dateLimiteInscription")));
             $repoSite = $this->getDoctrine()->getRepository(Site::class);
             $sortie->setSite($repoSite->find($this->getUser()->getIdSite()->getId()));
             // Set etat suivant event
             $repo = $this->getDoctrine()->getRepository(Etat::class);
+
+            // Publier isClicked
             if ($form->get('add')->isClicked()) {
                 $sortie->setEtat($repo->find(1));
                 $this->addFlash('success', 'Sortie publiée !');
                 $em->persist($sortie);
                 $em->flush();
             }
+            // Enregistrer isClicked
             if ($form->get('save')->isClicked()) {
                 $sortie->setEtat($repo->find(2));
                 $this->addFlash('success', 'Sortie enregistrée !');
@@ -106,12 +109,14 @@ class SortieController extends AbstractController
             }
             return $this->redirectToRoute("main");
         }
+        // Récupère le erreurs
         $errors = $validator->validate($sortie);
         $titre = "Création d'une sortie";
 
         $tab = compact("titre", "errors", 'villes','msg_error');
         $tab["formSortie"] = $form->createView();
 
+        // Créé et rend le formulaire pour l'affichage sur la page
         $lieu = new Lieu();
         $lieuForm = $this->createForm(LieuType::class, $lieu);
         $tab['lieuForm'] = $lieuForm->createView();
@@ -139,7 +144,7 @@ class SortieController extends AbstractController
         if ($request->get('btn-cancel') != null) {
             $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
             $datenow = new \DateTime("now");
-            if ($sortie->getDateDebut() <= $datenow) {
+            if ($sortie->getDateDebut() >= $datenow) {
                 $sortie->setEtat($repoEtat->find(6));
                 $sortie->setMotifAnnulation($request->get('motif'));
                 $em->flush();

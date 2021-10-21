@@ -275,39 +275,39 @@ class AdminController extends AbstractController
         ]);
     }
 
-    /**
-     *@Route("/admin/gererLesSites",name="app_gerer_les_sites")
-     */
-    public function gererLesSites(Request $request, SiteRepository $siteRepo, EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
-    {
-        // instanciation de la classe produit
-        $formsite = new Site();
-        // la creation du formulaire
-        $form = $this->createForm(AjoutSiteType::class, $formsite);
-        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
-        $form->handleRequest($request);
-        // verifier si on a soumis le form et si les donnes valide
-        if ($form->isSubmitted() && $form->isValid()) {
-            // génerer sql insert into et ajouter dans queue
-
-            $em->persist($formsite);
-            // appliquer insert into dans la bdd
-            $em->flush();
-            // redirect vers la liste wish
-            //création de message de succes qui sera affiché sur la prochaine page
-            $this->addFlash('success', 'le site   '  . ' a été ajoute');
-            //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
-            $id = $formsite->getId();
-            return $this->redirectToRoute("app_gerer_les_sites", array('id' => $id = $formsite->getId()));
-        }
-        $titre = "Sortir.com - gererville";
-
-        $sites = $siteRepo->findAll();
-        return $this->render('admin/gererLesSites.html.twig', [
-            'sites' => $sites,
-            'formsite2' => $form->createView(),
-        ]);
-    }
+//    /**
+//     *@Route("/admin/gererLesSites",name="app_gerer_les_sites")
+//     */
+//    public function gererLesSites(Request $request, SiteRepository $siteRepo, EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
+//    {
+//        // instanciation de la classe produit
+//        $formsite = new Site();
+//        // la creation du formulaire
+//        $form = $this->createForm(AjoutSiteType::class, $formsite);
+//        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
+//        $form->handleRequest($request);
+//        // verifier si on a soumis le form et si les donnes valide
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            // génerer sql insert into et ajouter dans queue
+//
+//            $em->persist($formsite);
+//            // appliquer insert into dans la bdd
+//            $em->flush();
+//            // redirect vers la liste wish
+//            //création de message de succes qui sera affiché sur la prochaine page
+//            $this->addFlash('success', 'le site   '  . ' a été ajoute');
+//            //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
+//            $id = $formsite->getId();
+//            return $this->redirectToRoute("app_gerer_les_sites", array('id' => $id = $formsite->getId()));
+//        }
+//        $titre = "Sortir.com - gererville";
+//
+//        $sites = $siteRepo->findAll();
+//        return $this->render('admin/gererLesSites.html.twig', [
+//            'sites' => $sites,
+//            'formsite2' => $form->createView(),
+//        ]);
+//    }
     
     /**
      * @Route("/admin/creationProfil", name="app_creationProfil")
@@ -419,5 +419,39 @@ class AdminController extends AbstractController
 
 
         return $this->redirectToRoute("app_admin_participant");
+    }
+
+    /**
+     * @Route("/admin/sites", name="app_admin_site")
+     */
+    public function gestionSite(EntityManagerInterface $em, SiteRepository $repo): Response
+    {
+        $sites = $repo->findAll();
+        $titre = "Gestion des Sites";
+        $tab = compact("titre","sites");
+        return $this->render('admin/gererLesSites.html.twig',$tab );
+    }
+
+    /**
+     * @Route("/site/delete/{id}",name="app_site_delete")
+     */
+    public function deleteSite(SiteRepository $repo, EntityManagerInterface $em, $id)
+    {
+        // Récupère le current user.
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        // Récupère le lieu suivant l'id passé en paramètre.
+        $site = $repo->find($id);
+        $tabSorties =$site->getSorties();
+        // Vérification des droits
+        // Doit être un admin et ne doit pas avoir de sortie
+        if ($user->getIsAdmin() && count($tabSorties) == 0 ) {
+            $this->addFlash('success', "Site : ".$site->getNom()." supprimé !");
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($site);
+            $em->flush();
+        } else {
+            $this->addFlash('danger', "Lieu : ".$site->getNom()." ne peut être supprimé ! (Rattaché à des sorties)");
+        }
+        return $this->redirectToRoute("app_admin_site");
     }
 }
