@@ -87,7 +87,7 @@ class AdminController extends AbstractController
 
         return $this->render('admin/gererLieux.html.twig',$tab );
     }
-
+    
     /**
      * @Route("/admin/villes", name="app_admin_villes")
      */
@@ -157,7 +157,7 @@ class AdminController extends AbstractController
         }
 
         foreach ($data as $participant) {
-            
+
 
             $pseudo = $participant[0];
             $email = $participant[1];
@@ -192,7 +192,7 @@ class AdminController extends AbstractController
             $user->setIsAdmin(0);
             $user->setAvatarFilename('avatar-default.jpg');
             $user->setRoles(["ROLE_PARTICIPANT"]);
-            
+
             //Set site:
             $siteUser = $repoSite->find($idSite);
             if( $siteUser != null ){
@@ -443,5 +443,61 @@ class AdminController extends AbstractController
             $this->addFlash('danger', "Lieu : ".$site->getNom()." ne peut être supprimé ! (Rattaché à des sorties)");
         }
         return $this->redirectToRoute("app_admin_site");
+    }
+    /**
+     * @Route("/admin/insererVille",name="app_modifier_ville")
+     */
+    public function modifierVille(FileUploader $fileUploader, Request $request, EntityManagerInterface $em, VilleRepository $repo, UserPasswordHasherInterface $userPasswordHasherInterface): Response
+    {
+        // instanciation de la classe produit
+       $ville = new Ville;
+        $form = $this->createForm(AjoutVilleType::class, $ville);
+        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
+        $form->handleRequest($request);
+        // verifier si on a soumis le form et si les donnes valide
+        if ($form->isSubmitted() && $form->isValid()) {
+
+
+            // appliquer insert into dans la bdd
+            $em->persist($ville);
+            $em->flush();
+            //création de message de succes qui sera affiché sur la prochaine page
+            $this->addFlash('success', 'Votre ville   ' . $ville->getNomVille() . ' a été modifié');
+            return $this->redirectToRoute("app_modifier_ville");
+        }
+
+        $formAjoutVille = $form->createView();
+        $tab = compact( "formAjoutVille");
+
+        return $this->render('admin/ajouterVille.html.twig',$tab);
+
+    }
+    /**
+     * @Route("/admin/insererSite",name="app_modifier_Site")
+     */
+    public function modifierSite(FileUploader $fileUploader, Request $request, EntityManagerInterface $em, SiteRepository $repo, UserPasswordHasherInterface $userPasswordHasherInterface): Response
+    {
+        // instanciation de la classe produit
+       $site = new Site;
+        $form = $this->createForm(AjoutSiteType::class, $site);
+        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
+        $form->handleRequest($request);
+        // verifier si on a soumis le form et si les donnes valide
+        if ($form->isSubmitted() && $form->isValid()) {
+
+
+            // appliquer insert into dans la bdd
+            $em->persist($site);
+            $em->flush();
+            //création de message de succes qui sera affiché sur la prochaine page
+            $this->addFlash('success', 'Votre site  ' . $site->getNom() . ' a été modifié');
+            return $this->redirectToRoute("app_modifier_Site");
+        }
+
+        $formAjoutSite = $form->createView();
+        $tab = compact( "formAjoutSite");
+
+        return $this->render('admin/ajouterSite.html.twig',$tab);
+
     }
 }
