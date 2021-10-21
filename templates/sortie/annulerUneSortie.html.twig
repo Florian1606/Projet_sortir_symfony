@@ -6,6 +6,13 @@
 	<link href="{{ asset('css/profil.css') }}" rel="stylesheet">
 {% endblock %}
 {% block body %}
+	{% for label,messages in app.flashes %}
+		{% for message in messages %}
+			<div class="alert alert-{{ label }}">
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endfor %}
 
 	<form action="{{ path('app_sortie_cancel', {'id': sortie.id}) }}" method="post">
 
