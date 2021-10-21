@@ -69,7 +69,7 @@ class SortieController extends AbstractController
 
 
         // VERIF DATE FIN
-            if ($dateLimiteInscription != null) {
+        if ($dateLimiteInscription != null) {
             if ($dateLimiteInscriptionUnix > $dateNow) {
                 if ($dateLimiteInscriptionUnix < $dateDebutUnix) {
                     $sortie->setDateDebut(new \DateTime($dateLimiteInscription));
@@ -113,7 +113,7 @@ class SortieController extends AbstractController
         $errors = $validator->validate($sortie);
         $titre = "Création d'une sortie";
 
-        $tab = compact("titre", "errors", 'villes','msg_error');
+        $tab = compact("titre", "errors", 'villes', 'msg_error');
         $tab["formSortie"] = $form->createView();
 
         // Créé et rend le formulaire pour l'affichage sur la page
@@ -121,7 +121,7 @@ class SortieController extends AbstractController
         $lieuForm = $this->createForm(LieuType::class, $lieu);
         $tab['lieuForm'] = $lieuForm->createView();
 
-        return $this->render('sortie/index.html.twig',$tab);
+        return $this->render('sortie/index.html.twig', $tab);
     }
 
     /**
@@ -139,20 +139,29 @@ class SortieController extends AbstractController
      * @Route("/sortie/cancel/{id}",name="app_sortie_cancel")
      */
     public function cancelSortie(Request $request, SortieRepository $repo, EntityManagerInterface $em, $id): Response
-    {   
+    {
         $sortie = $repo->find($id);
-        if ($request->get('btn-cancel') != null) {
-            $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
-            $datenow = new \DateTime("now");
-            if ($sortie->getDateDebut() >= $datenow) {
-                $sortie->setEtat($repoEtat->find(6));
-                $sortie->setMotifAnnulation($request->get('motif'));
-                $em->flush();
-                $this->addFlash('success', 'Sortie Annulée !');
-                return $this->redirectToRoute("main");
+        $user = $this->getUser();
+        if ($user == $sortie->getOrganisateur() || $user->getIsAdmin()) {
+            if ($request->get('btn-cancel') != null) {
+                $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
+                $datenow = new \DateTime("now");
+                if ($sortie->getDateDebut() >= $datenow) {
+                    $sortie->setEtat($repoEtat->find(6));
+                    $sortie->setMotifAnnulation($request->get('motif'));
+                    $em->flush();
+                    $this->addFlash('success', 'Sortie Annulée !');
+                    return $this->redirectToRoute("main");
+                }
+                $this->addFlash('warning', 'Vous ne pouvez pas annuler la sortie !');
             }
-            $this->addFlash('warning', 'Vous ne pouvez pas annuler la sortie !');
+        } else {
+            $this->addFlash('warning', "Vous n'avez pas les droits pour annuler cette sortie");
+            return $this->redirectToRoute("main");
         }
+
+
+
         return $this->render("sortie/annulerUneSortie.html.twig", [
             'sortie' => $sortie,
         ]);
@@ -163,7 +172,7 @@ class SortieController extends AbstractController
      */
     public function unsubscribeSortie(SortieRepository $repo, EntityManagerInterface $em, $idUser, $idSortie): Response
     {
-
+        
         $sortie = $repo->find($idSortie);
         $repoParticipant = $this->getDoctrine()->getRepository(Participant::class);
         $user = $repoParticipant->find($idUser);
@@ -198,8 +207,8 @@ class SortieController extends AbstractController
     public function deleteSortie(SortieRepository $repo, EntityManagerInterface $em, $id): Response
     {
         // Récupère le current user.
-
         $user = $this->get('security.token_storage')->getToken()->getUser();
+
         // Récupère la sortie suivant l'id passé en paramètre.
         $sortie = $repo->find($id);
         $idEtat = $sortie->getEtat()->getId();

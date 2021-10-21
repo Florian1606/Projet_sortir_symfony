@@ -5,13 +5,15 @@
     <div class="content-container mx-2">
         <div class="container-fluid">
             <div class="jumbotron">
-                <h1 class="">Ajouter une proposition de lieu</h1>
-                <p class="font-italic">Tapez le nom d'un lieu que vous voulez incorporer.</p>
+                <h1 class="">Ajouter une Ville</h1>
+                <p class="font-italic">Tapez le nom d'une ville que vous voulez incorporer.</p>
+
 
                 <div>
-                    {% form_theme formAjoutLieu 'bootstrap_5_horizontal_layout.html.twig' %}
-                    {{ form(formAjoutLieu) }}
+                    {% form_theme  formAjoutVille 'bootstrap_5_horizontal_layout.html.twig' %}
+                    {{ form(formAjoutVille) }}
                 </div>
+
 
 
             </div>

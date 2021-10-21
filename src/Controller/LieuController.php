@@ -82,7 +82,7 @@ class LieuController extends AbstractController
             $em->remove($lieu);
             $em->flush();
         } else {
-            $this->addFlash('danger', "Lieu : ".$lieu->getNomLieu()." ne peut être supprimé ! (Rattaché à des sorties)");
+            $this->addFlash('danger', "Lieu : ".$lieu->getNomLieu()." ne peut pas être supprimé ! (Rattaché à des sorties)");
 
 
         }

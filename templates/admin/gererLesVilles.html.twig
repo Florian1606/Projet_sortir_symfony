@@ -4,22 +4,7 @@
     <div class="row text-center mt-4">
         <h2> Gérer les villes</h2>
     </div>
-
-    {# <div class="container"> #}
-    {# <h2>Filtrer les villes</h2> #}
-    {# <p>Proposer le nom de la ville de votre recherche</p> #}
-    {# <input class="form-control" id="myInput" type="text" placeholder="Search.."> #}
-    {# <br> #}
-    {# <ul class="list-group" id="myList"> #}
-    {# {% for site in sites %} #}
-    {# <li class="list-group-item">{{ site.nom | upper }}</li> #}
-    {# {% endfor %} #}
-    {# </ul> #}
-    {# </div> #}
-
-
-
-    <script>
+     <script>
         $(document).ready(function () {
             $("#myInput").on("keyup", function () {
                 var value = $(this).val().toLowerCase();
@@ -42,7 +27,6 @@
         <p>Proposer le nom de la ville de votre recherche</p>
         <input class="form-control" id="myInput" type="texte" placeholder="Search..">
         <br>
-
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -50,7 +34,6 @@
                     <th>Code Postal &emsp; &emsp; &emsp;&emsp;&emsp;&emsp;Ville &emsp; &emsp; &emsp;&emsp;&emsp;&emsp; Modifier</th>
                     <th> </th>
                 </tr>
-
                 </thead>
                 <tbody>
                 <tr>
@@ -82,10 +65,6 @@
                 </tr>
                 </tbody>
             </table>
-
-
-
-
         </div>
     </div>
 
