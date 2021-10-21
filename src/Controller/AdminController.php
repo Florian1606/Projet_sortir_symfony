@@ -87,19 +87,7 @@ class AdminController extends AbstractController
 
         return $this->render('admin/gererLieux.html.twig',$tab );
     }
-    /**
-     * @Route("/admin/sites", name="app_admin_site")
-     */
-    public function gestionSite(EntityManagerInterface $em, SiteRepository $repo): Response
-    {
-        $sites = $repo->findAll();
-
-        $titre = "Gestion des Sites";
-
-        $tab = compact("titre","sites");
-
-        return $this->render('admin/gererLesSites.html.twig',$tab );
-    }
+    
     /**
      * @Route("/admin/villes", name="app_admin_villes")
      */
