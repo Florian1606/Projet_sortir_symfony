@@ -61,6 +61,16 @@ class AdminController extends AbstractController
     }
 
     /**
+     * @Route("/admin/profil", name="app_admin_profil",)
+     */
+    public function adminProfil(ParticipantRepository $repo, $id = 0): Response
+    {
+
+        return $this->render('admin/profil.html.twig', [
+            'controller_name' => 'AdminController',
+        ]);
+    }
+    /**
      * @Route("/admin/participants", name="app_admin_participant")
      */
     public function gestionParticipants(EntityManagerInterface $em, ParticipantRepository $repo): Response
@@ -87,7 +97,19 @@ class AdminController extends AbstractController
 
         return $this->render('admin/gererLieux.html.twig',$tab );
     }
+    /**
+     * @Route("/admin/sites", name="app_admin_site")
+     */
+    public function gestionSite(EntityManagerInterface $em, SiteRepository $repo): Response
+    {
+        $sites = $repo->findAll();
 
+        $titre = "Gestion des Sites";
+
+        $tab = compact("titre","sites");
+
+        return $this->render('admin/gererLesSites.html.twig',$tab );
+    }
     /**
      * @Route("/admin/villes", name="app_admin_villes")
      */
@@ -140,13 +162,13 @@ class AdminController extends AbstractController
         /**
      * @Route("/admin/register-from-csv-file/", name="app_register_from_csv")
      */
-    public function registerFromFileCSV(ParticipantRepository $repoUser, SiteRepository $repoSite, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasherInterface, $data)
+    public function registerFromFileCSV(EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasherInterface, $data)
     {
 
         //Check for errors
         if (count($data) == 0 || count($data) == 1 || is_null($data)) {
             $this->addFlash('success', 'Aucun membre dans la liste à insérer');
-            return $this->redirectToRoute('/admin/upload-users-csv/');
+            return $this->redirectToRoute('display_events');
         }
 
         //Remove header (ie first lign):
@@ -156,17 +178,13 @@ class AdminController extends AbstractController
 
         foreach ($newParticipants as $participant) {
 
-            $pseudo = $participant[0];
-            $email = $participant[1];
-            $password = $participant[2];
-            $nom = $participant[4];
-            $prenom = $participant[5];
-            $tel = $participant[6];
-            $site = $participant[7];
-
+            $name = $participant[0];
+            $surname = $participant[1];
+            $email = $participant[2];
+            $siteName = $participant[3];
 
             //Check si le membre existe deja dans la base de données (email seulement car pas de pseudo encore)
-            if ($repoUser->findOneBy(['email' => $email])) {
+            if ($em->getRepository(Member::class)->findByEmail($email)) {
                 //Existe déjà:
                 $errors[] = ['member' => $participant, 'msg' => $email. ': email existe déjà dans la base, il n\'a pas été inséré.'];
                 continue;
@@ -174,48 +192,59 @@ class AdminController extends AbstractController
 
 
             $user = new Participant();
-            $user->setPseudo($pseudo);
-            $user->setEmail($email);
+            $user->setPseudo();
+            $user->setEmail();
             $user->setPassword(
                 $userPasswordHasherInterface->hashPassword(
                     $user,
-                    $password
+                    // mdp récupérer
                 )
             );
-            $user->setNom($nom);
-            $user->setPrenom($prenom);
-            $user->setTelephone($tel);
-            $user->setIsActif(1);
-            $user->setIsAdmin(0);
-            $user->setAvatarFilename('avatar-default.jpg');
+            $user->setNom();
+            $user->setPrenom();
+            $user->setTelephone();
+            $user->setIsActif();
+            $user->setIdSite($repoSite->findByName( ));
+
 
             //Set site:
-            $siteUser = $repoSite->findByName($site);
-            if( $siteUser != null ){
+            $siteId = $repoSite->findByName('');
+            if( $siteId != null ){
                 $user->setIdSite($siteUser);
             }
             else{
-                $errors[] = ['member' => $participant, 'msg' => $pseudo. ' : site renseignée inconnu, il n\'a pas été inséré.'];
+                $errors[] = ['member' => $participant, 'msg' => $name. ' : site renseignée inconnu, il n\'a pas été inséré.'];
                 continue;
             }
 
             //Persist:
             $em->persist($user);
-            $this->addFlash('error', $pseudo . ' : inscrit avec succès !');
+            $this->addFlash('error', $name . ' : inscrit avec succès !');
         }
 
         $em->flush();
+        dump($errors);
 
         //Display errors:
         foreach ($errors as $error){
             $this->addFlash('error', $error['msg']);
         }
 
-        return $this->redirectToRoute('/admin/upload-users-csv/');
+        return $this->redirectToRoute('display_events');
+
     }
 
+        //set user site if site exists in db, return user, false otherwise
+        public function getSite(EntityManagerInterface $em, $siteName){
 
-    /**
+            $site = $em->getRepository(Site::class)->findByName($siteName);
+            if(!is_null($site)){
+                return $site;
+            }
+            return null;
+        }
+
+            /**
      * @Route("/admin/importation", name="incorporation" )
      */
     public function incorporation(ParticipantRepository $repo, $id = 0): Response
@@ -223,8 +252,24 @@ class AdminController extends AbstractController
         return $this->render('admin/importation.html.twig', []);
     }
 
-
     /**
+     * @Route("/displayevents", name="display_events")
+     */
+    public function displayEvents(EntityManagerInterface $entityManager){
+        $site = $this->getUser()->getSite();
+        $eventRepo = $entityManager->getRepository(Event::class);
+        $sites = $entityManager->getRepository(Site::class)->findAll();
+
+        $events = $eventRepo->findEventBySite($site);
+
+        //to update events status
+//        $updateOneEvent = new UpdateEventStatus($entityManager);
+//        $updateOneEvent->updateEventStatus();
+
+        return $this->render("displayevents/displayevents.html.twig",compact('events','sites'));
+    }
+
+        /**
      *@Route("/admin/gererLesVilles",name="app_gerer_les_villes")
      */
     public function gererLesVilles(Request $request, VilleRepository $villeRepo, EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
@@ -261,39 +306,39 @@ class AdminController extends AbstractController
         ]);
     }
 
-//    /**
-//     *@Route("/admin/gererLesSites",name="app_gerer_les_sites")
-//     */
-//    public function gererLesSites(Request $request, SiteRepository $siteRepo, EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
-//    {
-//        // instanciation de la classe produit
-//        $formsite = new Site();
-//        // la creation du formulaire
-//        $form = $this->createForm(AjoutSiteType::class, $formsite);
-//        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
-//        $form->handleRequest($request);
-//        // verifier si on a soumis le form et si les donnes valide
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            // génerer sql insert into et ajouter dans queue
-//
-//            $em->persist($formsite);
-//            // appliquer insert into dans la bdd
-//            $em->flush();
-//            // redirect vers la liste wish
-//            //création de message de succes qui sera affiché sur la prochaine page
-//            $this->addFlash('success', 'le site   '  . ' a été ajoute');
-//            //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
-//            $id = $formsite->getId();
-//            return $this->redirectToRoute("app_gerer_les_sites", array('id' => $id = $formsite->getId()));
-//        }
-//        $titre = "Sortir.com - gererville";
-//
-//        $sites = $siteRepo->findAll();
-//        return $this->render('admin/gererLesSites.html.twig', [
-//            'sites' => $sites,
-//            'formsite2' => $form->createView(),
-//        ]);
-//    }
+    /**
+     *@Route("/admin/gererLesSites",name="app_gerer_les_sites")
+     */
+    public function gererLesSites(Request $request, SiteRepository $siteRepo, EntityManagerInterface $em,  UserPasswordHasherInterface $userPasswordHasherInterface): Response
+    {
+        // instanciation de la classe produit
+        $formsite = new Site();
+        // la creation du formulaire
+        $form = $this->createForm(AjoutSiteType::class, $formsite);
+        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
+        $form->handleRequest($request);
+        // verifier si on a soumis le form et si les donnes valide
+        if ($form->isSubmitted() && $form->isValid()) {
+            // génerer sql insert into et ajouter dans queue
+
+            $em->persist($formsite);
+            // appliquer insert into dans la bdd
+            $em->flush();
+            // redirect vers la liste wish
+            //création de message de succes qui sera affiché sur la prochaine page
+            $this->addFlash('success', 'le site   '  . ' a été ajoute');
+            //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
+            $id = $formsite->getId();
+            return $this->redirectToRoute("app_gerer_les_sites", array('id' => $id = $formsite->getId()));
+        }
+        $titre = "Sortir.com - gererville";
+
+        $sites = $siteRepo->findAll();
+        return $this->render('admin/gererLesSites.html.twig', [
+            'sites' => $sites,
+            'formsite2' => $form->createView(),
+        ]);
+    }
     
     /**
      * @Route("/admin/creationProfil", name="app_creationProfil")
@@ -336,98 +381,19 @@ class AdminController extends AbstractController
     }
 
     /**
-     * @Route("/admin/role/{id}",name="app_admin_role")
-     */
-    public function changeRole(EntityManagerInterface $em, $id): Response
-    {
-
-
-        $repo = $this->getDoctrine()->getRepository(Participant::class);
-        $participant = $repo->find($id);
-        if ($participant->getIsActif() == false) {
-            $this->addFlash('warning', 'Participant "'.$participant->getPseudo().'" doit être actif !');
-            return $this->redirectToRoute("app_admin_participant");
-        }
-
-        if ($participant == $this->getUser()) {
-            $this->addFlash('warning', ' Ne jouer pas avec vos droits ! !');
-            return $this->redirectToRoute("app_admin_participant");
-        }
-
-            if ($participant->getIsAdmin() == true){
-                $participant->setIsAdmin(false);
-                $roles[] = 'ROLE_PARTICIPANT';
-                 $participant->setRoles($roles);
-                $em->flush();
-                $this->addFlash('success', 'Participant "'.$participant->getPseudo().'" n\'est plus admin !');
-
-            } else {
-                $participant->setIsAdmin(true);
-                $roles[] = 'ROLE_ADMIN';
-                $participant->setRoles($roles);
-                $em->flush();
-                $this->addFlash('success', 'Participant "'.$participant->getPseudo().'" devient admin "Un grand pouvoir implique de grandes responsabilités" !');
-
-            }
-
-
-        return $this->redirectToRoute("app_admin_participant");
-    }
-
-    /**
-     * @Route("/admin/delete-participant/{id}",name="app_admin_delete_participant")
-     */
-    public function deleteUser(EntityManagerInterface $em, $id): Response
-    {
-
-
-        $repo = $this->getDoctrine()->getRepository(Participant::class);
-        $participant = $repo->find($id);
-
-        if ($participant == $this->getUser()) {
-            $this->addFlash('danger', 'Pas ça, Zinédine, pas aujourd’hui, pas maintenant, pas après tout ce que tu as fait');
-            return $this->redirectToRoute("app_admin_participant");
-        }
-
-        // sorties et organisées ???
-
-        if (empty($participant->getSorties()) && empty($participant->getSortiesOrganisees()) ){
-
-            $this->addFlash('warning', 'Le participant ne doit être inscrit à une sortie ou être organisateur ....');
-            return $this->redirectToRoute("app_admin_participant");
-        }
-
-//        $em->remove($participant);
-//        $em->flush();
-        $this->addFlash('success', 'Participant "'.$participant->getPseudo().'" est supprimé !');
-
-
-
-
-        return $this->redirectToRoute("app_admin_participant");
-    }
-
-    /**
-     * @Route("/admin/sites", name="app_admin_site")
-     */
-    public function gestionSite(EntityManagerInterface $em, SiteRepository $repo): Response
-    {
-        $sites = $repo->findAll();
-        $titre = "Gestion des Sites";
-        $tab = compact("titre","sites");
-        return $this->render('admin/gererLesSites.html.twig',$tab );
-    }
-
-    /**
      * @Route("/site/delete/{id}",name="app_site_delete")
      */
     public function deleteSite(SiteRepository $repo, EntityManagerInterface $em, $id)
     {
+
         // Récupère le current user.
         $user = $this->get('security.token_storage')->getToken()->getUser();
         // Récupère le lieu suivant l'id passé en paramètre.
         $site = $repo->find($id);
+
         $tabSorties =$site->getSorties();
+
+
         // Vérification des droits
         // Doit être un admin et ne doit pas avoir de sortie
         if ($user->getIsAdmin() && count($tabSorties) == 0 ) {
@@ -437,7 +403,12 @@ class AdminController extends AbstractController
             $em->flush();
         } else {
             $this->addFlash('danger', "Lieu : ".$site->getNom()." ne peut être supprimé ! (Rattaché à des sorties)");
+
+
         }
+
         return $this->redirectToRoute("app_admin_site");
     }
+
+
 }
