@@ -28,12 +28,9 @@ class SecurityController extends AbstractController
         $errorFR = "";
         $error = $authenticationUtils->getLastAuthenticationError();
         dump($error);
-
-        if ($error != null && $error->getMessage() !== "Votre compte est inactif")  {
+        if ($error != null)  {
             if ($error->getMessage() === 'Bad credentials.' || $error->getMessage() === 'The presented password is invalid.')
                 $errorFR = "Mauvais mot de passe/email";
-        }else {
-            $errorFR = $error->getMessage();
         }
 
 

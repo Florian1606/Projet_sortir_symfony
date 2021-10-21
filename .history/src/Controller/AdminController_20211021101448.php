@@ -205,7 +205,7 @@ class AdminController extends AbstractController
 
             //Persist:
             $em->persist($user);
-            $this->addFlash('success', $pseudo . '<strong>' . ' : inscrit avec succès !' . '</strong>');
+            $this->addFlash('success', $pseudo . '<strong>' . ' : inscrit avec succès !');
         }
 
         $em->flush();

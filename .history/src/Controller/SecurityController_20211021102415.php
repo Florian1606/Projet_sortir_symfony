@@ -33,7 +33,7 @@ class SecurityController extends AbstractController
             if ($error->getMessage() === 'Bad credentials.' || $error->getMessage() === 'The presented password is invalid.')
                 $errorFR = "Mauvais mot de passe/email";
         }else {
-            $errorFR = $error->getMessage();
+            $errorFR = $error;
         }
 
 

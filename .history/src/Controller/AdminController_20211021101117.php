@@ -145,7 +145,7 @@ class AdminController extends AbstractController
 
         //Check for errors
         if (count($data) == 0 || count($data) == 1 || is_null($data)) {
-            $this->addFlash('danger', 'Aucun membre dans la liste à insérer');
+            $this->addFlash('success', 'Aucun membre dans la liste à insérer');
             return $this->redirectToRoute('/admin/upload-users-csv/');
         }
         //Remove header (ie first lign):
@@ -205,14 +205,14 @@ class AdminController extends AbstractController
 
             //Persist:
             $em->persist($user);
-            $this->addFlash('success', $pseudo . '<strong>' . ' : inscrit avec succès !' . '</strong>');
+            $this->addFlash('success', $pseudo . ' : inscrit avec succès !');
         }
 
         $em->flush();
 
         //Display errors:
         foreach ($errors as $error){
-            $this->addFlash('danger', '<strong>' . $error['msg'] . '</strong>');
+            $this->addFlash('error', $error['msg']);
         }
 
         return $this->redirectToRoute('/admin/upload-users-csv/');
