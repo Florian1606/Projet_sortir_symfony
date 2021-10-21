@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Lieu;
 use App\Entity\Member;
 use App\Entity\Participant;
 use App\Form\MonProfilType;
@@ -52,12 +53,28 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/home", name="app_admin_home",)
      */
-    public function adminHomepage(ParticipantRepository $repo, $id = 0): Response
+    public function adminHomepage(): Response
     {
+        $repoParticipant = $this->getDoctrine()->getRepository(Participant::class);
+        $participants = $repoParticipant->findAll();
+        $participants = count($participants);
+        $repoLieu = $this->getDoctrine()->getRepository(Lieu::class);
+        $lieux = $repoLieu->findAll();
+        $lieux = count($lieux);
+        $repoVille = $this->getDoctrine()->getRepository(Ville::class);
+        $villes = $repoVille->findAll();
+        $villes = count($villes);
+        $repoSortie = $this->getDoctrine()->getRepository(Sortie::class);
+        $sorties = $repoSortie->findAll();
+        $sorties = count($sorties);
 
-        return $this->render('admin/dashboard.html.twig', [
-            'controller_name' => 'AdminController',
-        ]);
+        $admins = $repoParticipant->findby(
+            array('isAdmin' => '1')
+        );
+
+        $tab = compact("lieux", "participants","villes","sorties",'admins');
+        return $this->render("admin/dashboard.html.twig", $tab);
+
     }
 
     /**

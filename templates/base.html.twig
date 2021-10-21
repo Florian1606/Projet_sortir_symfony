@@ -37,10 +37,14 @@
 
 
 <nav  class="navbar navbar-expand-lg navbar-dark bg-dark p-3 sticky-top">
-    <img src="{{ asset('img/daco.png') }}" width="30" height="30" class="d-inline-block align-top" alt="">
-    <a class="navbar-brand" href="{{ path('main') }}">
-        <span class="name pull-left">SORTIE.COM</span>
 
+    <a class="navbar-brand" href="{{ path('main') }}">
+
+        <div class="logo-holder logo-8">
+
+                <h3>Sortir.com <span>Sortir.com</span></h3>
+
+        </div>
 
 
 
@@ -64,7 +68,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {%  if app.user.isAdmin %}<span class="badge badge-danger">admin</span>   {% endif %}
+                        {%  if app.user.isAdmin %}<span class="badge badge-danger">admin</span>{% else %}<span class="badge badge-primary">user</span>   {% endif %}
                         {{ app.user.pseudo | upper }}
                         {% if app.user.avatarFilename %}
                          <img src="{{ asset('uploads/avatars/' ~ app.user.avatarFilename)}}" class="avatar" alt=""/>

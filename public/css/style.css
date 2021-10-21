@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
 #button {
     justify-content: space-between;
 }
@@ -24,4 +25,31 @@
 .panel-body .btn:not(.btn-block) {
     width: 120px;
     margin-bottom: 10px;
+}
+
+/* Logo */
+@import url('https://fonts.googleapis.com/css?family=Bangers|Cinzel:400,700,900|Lato:100,300,400,700,900|Lobster|Lora:400,700|Mansalva|Muli:200,300,400,600,700,800,900|Open+Sans:300,400,600,700,800|Oswald:200,300,400,500,600,700|Roboto:100,300,400,500,700,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
+#ddj {
+    color: #ffffff;
+}
+
+.logo-8 h3 {
+    color: #ffffff;
+
+    font-family: 'Comfortaa', cursive;
+    font-weight: 300;
+    font-size: 30px;
+    line-height:1.3;
+}
+.logo-8 h3 span {
+
+    color: #ffffff;
+    display: inline-block;
+    line-height: 1.8;
+    padding: 0px;
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
+    opacity:0.3;
+    margin-left:-35px;
 }
