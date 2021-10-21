@@ -184,11 +184,12 @@ class AdminController extends AbstractController
             $pseudo = $participant[0];
             $email = $participant[1];
             $password = $participant[2];
-            $nom = $participant[3];
-            $prenom = $participant[4];
-            $tel = $participant[5];
-            $idSite = $participant[6];
+            $nom = $participant[4];
+            $prenom = $participant[5];
+            $tel = $participant[6];
+            $idSite = $participant[7];
             dump($pseudo);
+            dump($site);
 
             //Check si le membre existe deja dans la base de données (email seulement car pas de pseudo encore)
             if ($repoUser->findOneBy(['email' => $email])) {

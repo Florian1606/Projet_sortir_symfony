@@ -99,6 +99,7 @@ class ImportCsvController extends AbstractController
             $dataALL = array();
 
             $nbFieldsExpectedAtEachRow = 7;
+            // récuperer la première ligne
 
             if (($handlerCSV = fopen($pathToFile, 'r')) !== false) {
 
@@ -106,7 +107,6 @@ class ImportCsvController extends AbstractController
                     
                     $num = count($data);
                     
-
 
 
                     $dataALL[] = $data;

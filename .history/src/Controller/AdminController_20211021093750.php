@@ -171,24 +171,20 @@ class AdminController extends AbstractController
             return $this->redirectToRoute('/admin/upload-users-csv/');
         }
         //Remove header (ie first lign):
-      //  $newParticipants = array_slice($data, 1);
+        dd($data);
+        $newParticipants = array_slice($data, 1);
         $errors = array();
 
-        foreach ($data as $user) {
-            dump($user);
-        }
-
-        foreach ($data as $participant) {
-            
+        foreach ($newParticipants as $participant) {
 
             $pseudo = $participant[0];
             $email = $participant[1];
             $password = $participant[2];
-            $nom = $participant[3];
-            $prenom = $participant[4];
-            $tel = $participant[5];
-            $idSite = $participant[6];
-            dump($pseudo);
+            $nom = $participant[4];
+            $prenom = $participant[5];
+            $tel = $participant[6];
+            $site = $participant[7];
+
 
             //Check si le membre existe deja dans la base de données (email seulement car pas de pseudo encore)
             if ($repoUser->findOneBy(['email' => $email])) {
@@ -215,7 +211,7 @@ class AdminController extends AbstractController
             $user->setAvatarFilename('avatar-default.jpg');
 
             //Set site:
-            $siteUser = $repoSite->find($idSite);
+            $siteUser = $repoSite->findByName($site);
             if( $siteUser != null ){
                 $user->setIdSite($siteUser);
             }
