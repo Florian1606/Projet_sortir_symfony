@@ -31,7 +31,6 @@ class AccessDeniedListener implements EventSubscriberInterface
         }
 
         // ... perform some action (e.g. logging)
-       
         $response = new RedirectResponse('./main');
         $event->setResponse($response);
         // optionally set the custom response
