@@ -24,18 +24,21 @@
                         SORTEZ DE CHEZ VOUS !</h1>
                     <span id="ddj">Date du jour :
 							{{ "now"|date("d/m/Y") }}</span>
-
                     <p class="lead text-white-50 mb-4">Participer ou organiser des sorties pour vous et votre ville</p>
                     <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
                         {% if app.user %}<a class="btn btn-primary btn-lg px-4 me-sm-3" href="{{ path('app_sortie_add') }}">Ajouter une
                             sortie</a>{% endif %}
                         <a class="btn btn-outline-light btn-lg px-4" href="{{ path('app_about_us') }}">Learn More</a>
                     </div>
+
                 </div>
             </div>
+
         </div>
     </div>
+    <div class="dance"></div>
 </header>
+
 {% for label,messages in app.flashes %}
     {% for message in messages %}
         <div class="alert alert-{{ label }}">
@@ -49,6 +52,55 @@
     {% else %}
     <form action="{{ path('app_search', {'id': 0}) }}" method="post">
         {% endif %}
+        <style>
+
+            .dance {
+                background-image: url("https://www.google.com/logos/2012/halloweenmonsters/halloweenmonsters-hp-skeleton.png");
+                background-repeat: no-repeat;
+                width: 250px;
+                height: 71px;
+                animation: lovelydance 0.85s steps(1) infinite;
+            }
+
+            @keyframes lovelydance {
+                0% {
+                    background-position: 12px -233px;
+                }
+                10% {
+                    background-position: 0 -311px;
+                }
+                20% {
+                    background-position: 12px -467px;
+                }
+                30% {
+                    background-position: 7px -542px;
+                }
+                40% {
+                    background-position: 5px -622px;
+                }
+                50% {
+                    background-position: 18px -700px;
+                }
+                60% {
+                    background-position: 12px -775px;
+                }
+                70% {
+                    background-position: 26px -854px;
+                }
+                80% {
+                    background-position: 14px -921px;
+                }
+                90% {
+                    background-position: 14px -1000px;
+                }
+                100% {
+                    background-position: 10px -1080px;
+                }
+            }
+
+        </style>
+
+
         <div class="container mt-5">
             <div class="row d-flex justify-content-center flex-wrap">
                 <div class="col ">
