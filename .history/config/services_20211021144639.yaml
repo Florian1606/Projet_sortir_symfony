@@ -31,4 +31,6 @@ services:
     App\EventListener\AccessDeniedListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+        arguments: 
+            [ @router ]
         

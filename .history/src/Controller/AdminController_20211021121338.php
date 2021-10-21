@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Lieu;
 use App\Entity\Member;
 use App\Entity\Participant;
 use App\Form\MonProfilType;
@@ -29,7 +28,6 @@ use App\Form\AjoutVilleType;
 use App\Entity\Ville;
 use App\Entity\Site;
 use App\Form\AjoutSiteType;
-use App\Form\LieuType;
 use App\Service\FileUploader;
 use Doctrine\ORM\Mapping\Id;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher;
@@ -54,28 +52,12 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/home", name="app_admin_home",)
      */
-    public function adminHomepage(): Response
+    public function adminHomepage(ParticipantRepository $repo, $id = 0): Response
     {
-        $repoParticipant = $this->getDoctrine()->getRepository(Participant::class);
-        $participants = $repoParticipant->findAll();
-        $participants = count($participants);
-        $repoLieu = $this->getDoctrine()->getRepository(Lieu::class);
-        $lieux = $repoLieu->findAll();
-        $lieux = count($lieux);
-        $repoVille = $this->getDoctrine()->getRepository(Ville::class);
-        $villes = $repoVille->findAll();
-        $villes = count($villes);
-        $repoSortie = $this->getDoctrine()->getRepository(Sortie::class);
-        $sorties = $repoSortie->findAll();
-        $sorties = count($sorties);
 
-        $admins = $repoParticipant->findby(
-            array('isAdmin' => '1')
-        );
-
-        $tab = compact("lieux", "participants","villes","sorties",'admins');
-        return $this->render("admin/dashboard.html.twig", $tab);
-
+        return $this->render('admin/dashboard.html.twig', [
+            'controller_name' => 'AdminController',
+        ]);
     }
 
     /**
@@ -175,7 +157,7 @@ class AdminController extends AbstractController
         }
 
         foreach ($data as $participant) {
-
+            
 
             $pseudo = $participant[0];
             $email = $participant[1];
@@ -210,14 +192,14 @@ class AdminController extends AbstractController
             $user->setIsAdmin(0);
             $user->setAvatarFilename('avatar-default.jpg');
             $user->setRoles(["ROLE_PARTICIPANT"]);
-
+            
             //Set site:
             $siteUser = $repoSite->find($idSite);
             if( $siteUser != null ){
                 $user->setIdSite($siteUser);
             }
             else{
-                $errors[] = ['member' => $participant, 'msg' => $pseudo. ' : site renseigné inconnu, il n\'a pas été inséré.'];
+                $errors[] = ['member' => $participant, 'msg' => $pseudo. ' : site renseignée inconnu, il n\'a pas été inséré.'];
                 continue;
             }
 
@@ -269,7 +251,7 @@ class AdminController extends AbstractController
             $em->flush();
             // redirect vers la liste wish
             //création de message de succes qui sera affiché sur la prochaine page
-            $this->addFlash('success', 'la ville   '  . ' a été ajouté');
+            $this->addFlash('success', 'la ville   '  . ' a été ajoute');
             //redirection pour eviter un ajout en double en cas de réactualisation de la plage par l'utilisateur
             $id = $formville->getId();
             return $this->redirectToRoute("app_gerer_les_villes", array('id' => $id = $formville->getId()));
@@ -334,7 +316,6 @@ class AdminController extends AbstractController
             $profil->setAvatarFilename('avatar-default.jpg');
             $profil->setIsAdmin(false);
             $profil->setIsActif(false);
-            $profil->setRoles(["ROLE_PARTICIPANT"]);
             $profil->setPassword(
                 $userPasswordHasherInterface->hashPassword(
                     $profil,
@@ -416,7 +397,7 @@ class AdminController extends AbstractController
 
         if (empty($participant->getSorties()) && empty($participant->getSortiesOrganisees()) ){
 
-            $this->addFlash('warning', 'Le participant ne doit plus être inscrit à une sortie ou être organisateur ....');
+            $this->addFlash('warning', 'Le participant ne doit être inscrit à une sortie ou être organisateur ....');
             return $this->redirectToRoute("app_admin_participant");
         }
 
@@ -462,88 +443,5 @@ class AdminController extends AbstractController
             $this->addFlash('danger', "Lieu : ".$site->getNom()." ne peut être supprimé ! (Rattaché à des sorties)");
         }
         return $this->redirectToRoute("app_admin_site");
-    }
-    /**
-     * @Route("/admin/insererVille",name="app_modifier_ville")
-     */
-    public function modifierVille(FileUploader $fileUploader, Request $request, EntityManagerInterface $em, VilleRepository $repo, UserPasswordHasherInterface $userPasswordHasherInterface): Response
-    {
-        // instanciation de la classe produit
-       $ville = new Ville;
-        $form = $this->createForm(AjoutVilleType::class, $ville);
-        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
-        $form->handleRequest($request);
-        // verifier si on a soumis le form et si les donnes valide
-        if ($form->isSubmitted() && $form->isValid()) {
-
-
-            // appliquer insert into dans la bdd
-            $em->persist($ville);
-            $em->flush();
-            //création de message de succes qui sera affiché sur la prochaine page
-            $this->addFlash('success', 'Votre ville   ' . $ville->getNomVille() . ' a été ajouté');
-            return $this->redirectToRoute("app_modifier_ville");
-        }
-
-        $formAjoutVille = $form->createView();
-        $tab = compact( "formAjoutVille");
-
-        return $this->render('admin/ajouterVille.html.twig',$tab);
-
-    }
-    /**
-     * @Route("/admin/insererSite",name="app_modifier_Site")
-     */
-    public function modifierSite(FileUploader $fileUploader, Request $request, EntityManagerInterface $em, SiteRepository $repo, UserPasswordHasherInterface $userPasswordHasherInterface): Response
-    {
-        // instanciation de la classe produit
-       $site = new Site;
-        $form = $this->createForm(AjoutSiteType::class, $site);
-        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
-        $form->handleRequest($request);
-        // verifier si on a soumis le form et si les donnes valide
-        if ($form->isSubmitted() && $form->isValid()) {
-
-
-            // appliquer insert into dans la bdd
-            $em->persist($site);
-            $em->flush();
-            //création de message de succes qui sera affiché sur la prochaine page
-            $this->addFlash('success', 'Votre site  ' . $site->getNom() . ' a été ajouté');
-            return $this->redirectToRoute("app_modifier_Site");
-        }
-
-        $formAjoutSite = $form->createView();
-        $tab = compact( "formAjoutSite");
-
-        return $this->render('admin/ajouterSite.html.twig',$tab);
-
-    }
-    /**
-     * @Route("/admin/insererLieu",name="app_modifier_Lieu")
-     */
-    public function modifierLieu(FileUploader $fileUploader, Request $request, EntityManagerInterface $em, LieuRepository $repo, UserPasswordHasherInterface $userPasswordHasherInterface): Response
-    {
-        // instanciation de la classe produit
-        $lieu = new Lieu;
-        $form = $this->createForm(LieuType::class, $lieu);
-        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
-        $form->handleRequest($request);
-        // verifier si on a soumis le form et si les donnes valide
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            // appliquer insert into dans la bdd
-            $em->persist($lieu);
-            $em->flush();
-            //création de message de succes qui sera affiché sur la prochaine page
-            $this->addFlash('success', 'Votre lieu  ' . $lieu->getNomLieu() . ' a été ajouté');
-            return $this->redirectToRoute("app_modifier_Site");
-        }
-
-        $formAjoutLieu = $form->createView();
-        $tab = compact( "formAjoutLieu");
-
-        return $this->render('admin/ajouterlieu.html.twig',$tab);
-
     }
 }
