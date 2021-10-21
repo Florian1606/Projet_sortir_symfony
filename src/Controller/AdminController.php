@@ -330,7 +330,7 @@ class AdminController extends AbstractController
             'formsite2' => $form->createView(),
         ]);
     }
-    
+
     /**
      * @Route("/admin/creationProfil", name="app_creationProfil")
      */
@@ -400,6 +400,60 @@ class AdminController extends AbstractController
 
         return $this->redirectToRoute("app_admin_site");
     }
+    /**
+     * @Route("/admin/insererVille",name="app_modifier_ville")
+     */
+    public function modifierVille(FileUploader $fileUploader, Request $request, EntityManagerInterface $em, VilleRepository $repo, UserPasswordHasherInterface $userPasswordHasherInterface): Response
+    {
+        // instanciation de la classe produit
+       $ville = new Ville;
+        $form = $this->createForm(AjoutVilleType::class, $ville);
+        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
+        $form->handleRequest($request);
+        // verifier si on a soumis le form et si les donnes valide
+        if ($form->isSubmitted() && $form->isValid()) {
 
 
+            // appliquer insert into dans la bdd
+            $em->persist($ville);
+            $em->flush();
+            //création de message de succes qui sera affiché sur la prochaine page
+            $this->addFlash('success', 'Votre ville   ' . $ville->getNomVille() . ' a été modifié');
+            return $this->redirectToRoute("app_modifier_ville");
+        }
+
+        $formAjoutVille = $form->createView();
+        $tab = compact( "formAjoutVille");
+
+        return $this->render('admin/ajouterVille.html.twig',$tab);
+
+    }
+    /**
+     * @Route("/admin/insererSite",name="app_modifier_Site")
+     */
+    public function modifierSite(FileUploader $fileUploader, Request $request, EntityManagerInterface $em, SiteRepository $repo, UserPasswordHasherInterface $userPasswordHasherInterface): Response
+    {
+        // instanciation de la classe produit
+       $site = new Site;
+        $form = $this->createForm(AjoutSiteType::class, $site);
+        // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
+        $form->handleRequest($request);
+        // verifier si on a soumis le form et si les donnes valide
+        if ($form->isSubmitted() && $form->isValid()) {
+
+
+            // appliquer insert into dans la bdd
+            $em->persist($site);
+            $em->flush();
+            //création de message de succes qui sera affiché sur la prochaine page
+            $this->addFlash('success', 'Votre site  ' . $site->getNom() . ' a été modifié');
+            return $this->redirectToRoute("app_modifier_Site");
+        }
+
+        $formAjoutSite = $form->createView();
+        $tab = compact( "formAjoutSite");
+
+        return $this->render('admin/ajouterSite.html.twig',$tab);
+
+    }
 }
