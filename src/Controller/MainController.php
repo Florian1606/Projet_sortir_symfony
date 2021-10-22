@@ -72,8 +72,6 @@ class MainController extends AbstractController
         ]);
     }
 
-    
-
     /**
      *@Route("/main/annuler",name="app_Annuler")
      */
@@ -152,8 +150,6 @@ class MainController extends AbstractController
             $sorties = array_merge($sorties, $sortieRepo->findByEtatPassees($idSite, $search));
         }
 
-
-
         /* 3/ Supprimer les doublons du tableau de sorties */
         $sorties = array_unique($sorties, SORT_REGULAR);
 
@@ -163,7 +159,6 @@ class MainController extends AbstractController
             'sites' => $sites,
         ]);
     }
-
 
     /**
      * @Route("/monProfil/{id}",name="app_modifier")
@@ -207,8 +202,4 @@ class MainController extends AbstractController
             'formProfil' => $form->createView(),
         ]);
     }
-
-
-
-
 }

@@ -14,6 +14,7 @@
 
 <header class="bg-dark test py-1" id="bg">
     <div class="container px-5">
+
         <div class="row gx-5 justify-content-center">
             <div class="col-lg-6">
                 <div class="text-center my-5">
@@ -34,10 +35,14 @@
                     </div>
 
                 </div>
+
             </div>
 
         </div>
+
+
     </div>
+
     <div class="dance"></div>
 </header>
 
@@ -54,13 +59,16 @@
     {% else %}
     <form action="{{ path('app_search', {'id': 0}) }}" method="post">
         {% endif %}
-        <style>
 
+{#       SKELETON #}
+        <style>
             .dance {
                 background-image: url("https://www.google.com/logos/2012/halloweenmonsters/halloweenmonsters-hp-skeleton.png");
                 background-repeat: no-repeat;
                 width: 250px;
                 height: 71px;
+                margin-left: auto;
+                /*margin-right: auto;*/
                 animation: lovelydance 0.85s steps(1) infinite;
             }
 
@@ -101,13 +109,20 @@
             }
 
         </style>
+        {#    FIN   SKELETON #}
+
+
+
 
 
         <div class="container mt-5">
+
             <div class="row d-flex justify-content-center flex-wrap">
                 <div class="col ">
+
                     <div class="card p-3 py-4">
                         <h5>Filtre de recherche</h5>
+
                         <div class="row g-3 mt-2">
                             <div class="col-md-3">
 
@@ -196,12 +211,15 @@
     {# LISTE DES SORTIES #}
 
     <div class="row">
+
         {% if sorties | length == 0 %}
             <h3 class="text-center mt-5">
                 Aucun résultat trouvé !</h3>
         {% else %}
+
             <div class="row mt-5">
                 <div id="result" class="col-md-12 table-responsive">
+
                     <table id="tab_sorties" class="table table-striped">
                         <thead>
                         <tr>

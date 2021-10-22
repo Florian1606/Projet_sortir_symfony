@@ -244,6 +244,9 @@ class SortieController extends AbstractController
     public function updateSortie(SortieRepository $repo, Request $request, EntityManagerInterface $em, $id = 0): Response
     {
 
+        $repoVille = $this->getDoctrine()->getRepository(Ville::class);
+        $villes = $repoVille->findAll();
+
         $sortie = $repo->find($id);
         $form = $this->createForm(SortieType::class, $sortie);
         $repoEtat = $this->getDoctrine()->getRepository(Etat::class);
@@ -298,7 +301,7 @@ class SortieController extends AbstractController
 
         $titre = "Sortir.com - " . $sortie->getNom() . " - Modification";
 
-        $tab = compact("titre", "sortie");
+        $tab = compact("titre", "sortie","villes");
         $tab["formSortie"] = $form->createView();
         return $this->render("sortie/modifierSortie.html.twig", $tab);
     }

@@ -34,7 +34,6 @@ class LieuController extends AbstractController
     public function azerty( Request $request,EntityManagerInterface $em,ValidatorInterface $validator,SerializerInterface $serializer) : Response
     {
 
-
         // Créer une instance de lieu
         $lieu = new Lieu();
         $lieuForm = $this->createForm(LieuType::class,$lieu);
@@ -73,7 +72,6 @@ class LieuController extends AbstractController
 
         $tabSorties =$lieu->getSorties();
 
-
         // Vérification des droits
         // Doit être un admin et ne doit pas avoir de sortie
         if ($user->getIsAdmin() && count($tabSorties) == 0 ) {
@@ -83,7 +81,6 @@ class LieuController extends AbstractController
             $em->flush();
         } else {
             $this->addFlash('danger', "Lieu : ".$lieu->getNomLieu()." ne peut pas être supprimé ! (Rattaché à des sorties)");
-
 
         }
 
