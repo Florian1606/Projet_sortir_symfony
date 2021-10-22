@@ -35,10 +35,14 @@
                     </div>
 
                 </div>
+
             </div>
 
         </div>
+
+
     </div>
+
     <div class="dance"></div>
 </header>
 
@@ -55,7 +59,6 @@
     {% else %}
     <form action="{{ path('app_search', {'id': 0}) }}" method="post">
         {% endif %}
-
 
 {#       SKELETON #}
         <style>
@@ -113,10 +116,13 @@
 
 
         <div class="container mt-5">
+
             <div class="row d-flex justify-content-center flex-wrap">
                 <div class="col ">
+
                     <div class="card p-3 py-4">
                         <h5>Filtre de recherche</h5>
+
                         <div class="row g-3 mt-2">
                             <div class="col-md-3">
 
@@ -205,12 +211,15 @@
     {# LISTE DES SORTIES #}
 
     <div class="row">
+
         {% if sorties | length == 0 %}
             <h3 class="text-center mt-5">
                 Aucun résultat trouvé !</h3>
         {% else %}
+
             <div class="row mt-5">
                 <div id="result" class="col-md-12 table-responsive">
+
                     <table id="tab_sorties" class="table table-striped">
                         <thead>
                         <tr>
