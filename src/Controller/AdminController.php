@@ -161,23 +161,16 @@ class AdminController extends AbstractController
      */
     public function registerFromFileCSV(ParticipantRepository $repoUser, SiteRepository $repoSite, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasherInterface, $data)
     {
-
-        //Check for errors
-        if (count($data) == 0 || count($data) == 1 || is_null($data)) {
+        // Cas d'erreur : aucun membre dans la liste
+        if (count($data) == 0 || is_null($data)) {
             $this->addFlash('danger', 'Aucun membre dans la liste à insérer');
             return $this->redirectToRoute('/admin/upload-users-csv/');
         }
-        //Remove header (ie first lign):
-      //  $newParticipants = array_slice($data, 1);
         $errors = array();
 
-        foreach ($data as $user) {
-            dump($user);
-        }
-
+        // On regarde par case du tableau les données (eq à une ligne du fichier csv)
         foreach ($data as $participant) {
-
-
+            // On affecte les données pour une meilleur lisibilité du code
             $pseudo = $participant[0];
             $email = $participant[1];
             $password = $participant[2];
@@ -185,16 +178,15 @@ class AdminController extends AbstractController
             $prenom = $participant[4];
             $tel = $participant[5];
             $idSite = $participant[6];
-            dump($pseudo);
 
-            //Check si le membre existe deja dans la base de données (email seulement car pas de pseudo encore)
+            //Cas d'erreurs : si le membre existe deja dans la base de données 
             if ($repoUser->findOneBy(['email' => $email])) {
                 //Existe déjà:
                 $errors[] = ['member' => $participant, 'msg' => $email. ': email existe déjà dans la base, il n\'a pas été inséré.'];
                 continue;
             }
 
-
+            // On crée un nouvel Participant auquel on affecte les données du fichier csv
             $user = new Participant();
             $user->setPseudo($pseudo);
             $user->setEmail($email);
@@ -211,8 +203,8 @@ class AdminController extends AbstractController
             $user->setIsAdmin(0);
             $user->setAvatarFilename('avatar-default.jpg');
             $user->setRoles(["ROLE_PARTICIPANT"]);
-
-            //Set site:
+           
+           // Pour le site on fait une vérification si le site exsite bien dans la bdd
             $siteUser = $repoSite->find($idSite);
             if( $siteUser != null ){
                 $user->setIdSite($siteUser);
@@ -221,19 +213,14 @@ class AdminController extends AbstractController
                 $errors[] = ['member' => $participant, 'msg' => $pseudo. ' : site renseigné inconnu, il n\'a pas été inséré.'];
                 continue;
             }
-
-            //Persist:
             $em->persist($user);
-            $this->addFlash('success', $pseudo . '<strong>' . ' : inscrit avec succès !' . '</strong>');
+            $this->addFlash('success', $pseudo . ' : inscrit avec succès !');
         }
-
         $em->flush();
-
-        //Display errors:
+        // On envoie les erreurs:
         foreach ($errors as $error){
-            $this->addFlash('danger', '<strong>' . $error['msg'] . '</strong>');
+            $this->addFlash('danger',  $error['msg'] );
         }
-
         return $this->redirectToRoute('/admin/upload-users-csv/');
     }
 
@@ -508,5 +495,29 @@ class AdminController extends AbstractController
 
         return $this->render('admin/ajouterlieu.html.twig',$tab);
 
+    }
+
+        /**
+     * @Route("/ville/delete/{id}",name="app_ville_delete")
+     */
+    public function deleteVille(VilleRepository $repo, EntityManagerInterface $em, $id)
+    {
+        // Récupère le current user.
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        // Récupère le lieu suivant l'id passé en paramètre.
+        $ville = $repo->find($id);
+
+        $tabLieus =$ville->getLieus();
+        // Vérification des droits
+        // Doit être un admin et ne doit pas avoir de sortie
+        if ($user->getIsAdmin() && count($tabLieus) == 0 ) {
+            $this->addFlash('success', "Ville: ".$ville->getNomVille()." supprimé !");
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($ville);
+            $em->flush();
+        } else {
+            $this->addFlash('danger', "Ville : ".$ville->getNomVille()." ne peut être supprimé ! (Rattaché à des lieux)");
+        }
+        return $this->redirectToRoute("app_admin_villes");
     }
 }
