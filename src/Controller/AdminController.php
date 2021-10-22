@@ -509,4 +509,5 @@ class AdminController extends AbstractController
         return $this->render('admin/ajouterlieu.html.twig',$tab);
 
     }
+    
 }
