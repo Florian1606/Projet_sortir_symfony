@@ -204,7 +204,7 @@ class AdminController extends AbstractController
             $user->setAvatarFilename('avatar-default.jpg');
             $user->setRoles(["ROLE_PARTICIPANT"]);
            
-           // Pour le site on fait une vérification si le site exsite bien dans la bdd
+           // Pour le site on fait une vérification si le site existe bien dans la bdd
             $siteUser = $repoSite->find($idSite);
             if( $siteUser != null ){
                 $user->setIdSite($siteUser);
@@ -247,7 +247,7 @@ class AdminController extends AbstractController
 
         // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
         $form->handleRequest($request);
-        // verifier si on a soumis le form et si les donnes valide
+        // verifier si on a soumis le form et si les données sont valides.
         if ($form->isSubmitted() && $form->isValid()) {
 
             // génerer sql insert into et ajouter dans queue
@@ -282,7 +282,7 @@ class AdminController extends AbstractController
         $form = $this->createForm(MonProfilType::class, $profil);
         // remplire l'objet wish (hydratation l'instance avec les données saisies dans le formulaire)
         $form->handleRequest($request);
-        // verifier si on a soumis le form et si les donnes valide
+        // verifier si on a soumis le formulaire et si les données sont valides.
         if ($form->isSubmitted() && $form->isValid()) {
             // génerer sql insert into et ajouter dans queue
             $profil->setAvatarFilename('avatar-default.jpg');
@@ -345,7 +345,6 @@ class AdminController extends AbstractController
                 $this->addFlash('success', 'Participant "'.$participant->getPseudo().'" devient admin "Un grand pouvoir implique de grandes responsabilités" !');
 
             }
-
 
         return $this->redirectToRoute("app_admin_participant");
     }
@@ -520,4 +519,5 @@ class AdminController extends AbstractController
         }
         return $this->redirectToRoute("app_admin_villes");
     }
+
 }
