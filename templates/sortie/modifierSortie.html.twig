@@ -63,52 +63,41 @@
 
                 {#             Col 2#}
                 <div class="col">
-
-
-                    <div class="mb-3">
-                        <label class="form-label">Lieu</label>
-                        {{ form_widget(formSortie.lieu, {'id': 'lieu-widget'}) }}
-                    </div>
                     <div class="mb-3">
                         <label class="form-label">Ville</label>
-                        <input type="text" id="ville" class="form-control" value="" name="" disabled="disabled">
+
+                        <select  class="form-select" id="villeform" name="ville">
+                            {% for item in villes %}
+                                <option {%  if sortie.lieu.ville.nomVille %}selected{% endif%} value="{{ item.id }}">{{ item.nomVille }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Rue</label>
-                        <input type="text" class="form-control" id="rue" value="" name="" disabled="disabled">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Code Postal</label>
-                        <input type="text" class="form-control" value="" id="cp" name="" disabled="disabled">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Latitude</label>
-                        <input type="text" class="form-control" value="" id="latitude" name="" disabled="disabled">
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Longitude</label>
-                        <input type="text" class="form-control" value="" id="longitude" name="" disabled="disabled">
+                        <div class="mb-3">
+                            <label class="form-label">Lieu</label>
+                            <input type="hidden" value="{{ sortie.lieu.nomLieu }}" id="valLieu">
+                            {{ form_widget(formSortie.lieu, {'id': 'lieu-widget'}) }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Rue</label>
+                            <input type="text" id="rue" class="form-control" value="" name="" disabled="disabled">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Code Postal</label>
+                            <input type="text" id="cp" class="form-control" value="" name="" disabled="disabled">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Latitude</label>
+                            <input type="text" id="latitude" class="form-control" value="" name="" disabled="disabled">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Longitude</label>
+                            <input type="text" id="longitude" class="form-control" value="" name="" disabled="disabled">
+                        </div>
                     </div>
 
-                    <script>
-                        $(document).ready(function () {
-                            console.log('test');
-                            $("#lieu-widget").change(function () {
-                                var id = $(this).val();
-                                jQuery.get("/sortie/getLieu/" + id, function (data, status) {
-
-                                    var res = JSON.parse(data);
-                                    $("#rue").val(res.rue);
-                                    $("#longitude").val(res.long);
-                                    $("#cp").val(res.cp);
-                                    $("#ville").val(res.ville);
-                                    $("#latitude").val(res.lat);
 
 
-                                });
-                            });
-                        });
-                    </script>
 
 
 
@@ -158,4 +147,48 @@
     </div>
     {{ form_rest(formSortie) }}
     {{ form_end(formSortie) }}
-{% endblock %}
+            {# JS INFO LIEU #}
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+            <script>
+
+                $(document).ready(function () {
+
+                    $("#villeform").change(function () {
+
+                        var id = $(this).val();
+                        $.get("/sortie/lieu/" + id, function (data, status) {
+                            var infosVilleLieu = JSON.parse(data);
+
+                            let html = "<option>choisir un lieu</option>";
+                            var valLieu = $("#valLieu").val();
+                            alert(valLieu);
+                            for (let i = 0; i < infosVilleLieu.length; i++) {
+
+                                if( infosVilleLieu[i].nom == valLieu ) {
+                                    html += '<option selected value="' + infosVilleLieu[i].id + '" >' + infosVilleLieu[i].nom + '</option>';
+                                    } else {
+
+                                html += '<option value="' + infosVilleLieu[i].id + '" >' + infosVilleLieu[i].nom + '</option>';}
+                            }
+                            $("#lieu-widget").html(html).change(function () {
+
+                                var id = $(this).val();
+                                $.get("/sortie/infosLieu/" + id, function (data, status) {
+                                    var infosLieu = JSON.parse(data);
+                                    $("#rue").val(infosLieu.rue);
+                                    $("#latitude").val(infosLieu.lat);
+                                    $("#longitude").val(infosLieu.long);
+                                });
+                            });
+                            $.get("/sortie/lieu/cp/" + id, function (data, status) {
+                                var infosVilleCP = JSON.parse(data);
+                                $("#cp").val(infosVilleCP.codePostal);
+
+                            });
+                        })
+                    })
+                });
+            </script>
+
+
+            {% endblock %}
