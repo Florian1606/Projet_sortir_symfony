@@ -22,18 +22,11 @@ class ImportCsvController extends AbstractController
         $formUploadCSV->handleRequest($request);
 
         if ($formUploadCSV->isSubmitted() && $formUploadCSV->isValid()) {
-
-
             $csvFile = $formUploadCSV->get('csvFile')->getData();
-
             if ($csvFile) {
-
                 $originalFileName = pathinfo($csvFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFileName);
                 $newFilename = $safeFilename . '-' . uniqid() . '.csv';
-
-                dump($newFilename);
-
                 // Move the file to the directory where data are stored
                 try {
                     $csvFile->move(
@@ -43,21 +36,16 @@ class ImportCsvController extends AbstractController
                 } catch (FileException $e) {
                     // ... handle exception if something happens during file upload
                 }
-
             }
-
             //Passer $newFilename a la fonction
             $this->importMembersFromCSV($entityManager, $newFilename);
         }
-
-
         return $this->render(
             'admin/upload_csv.html.twig',
             [
                 'formUploadCSV' => $formUploadCSV->createView(),
             ]
         );
-
     }
 
 
@@ -69,7 +57,7 @@ class ImportCsvController extends AbstractController
         dump($file_to_import);
         $pathToFile = $this->getParameter('data_csv_directory') . '/' . $file_to_import;
         dump( $pathToFile);
-        if (!$this->fileToImportExist($pathToFile)) {
+        if (!file_exists($pathToFile)) {
             $this->addFlash('error', 'Impossible de trouver le ficher à importer!');
             return $this->redirectToRoute('main');
         }
