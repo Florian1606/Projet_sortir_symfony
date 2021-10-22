@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use App\Entity\Sortie;
 use App\Entity\Etat;
+
 use App\Form\SortieType;
 use App\Repository\EtatRepository;
 use App\Repository\LieuRepository;
@@ -300,7 +301,6 @@ class AdminController extends AbstractController
             $profil->setAvatarFilename('avatar-default.jpg');
             $profil->setIsAdmin(false);
             $profil->setIsActif(false);
-            $profil->setRoles(["ROLE_PARTICIPANT"]);
             $profil->setPassword(
                 $userPasswordHasherInterface->hashPassword(
                     $profil,
@@ -369,7 +369,7 @@ class AdminController extends AbstractController
     public function deleteUser(EntityManagerInterface $em, $id): Response
     {
 
-
+// sorties et organisées ???
         $repo = $this->getDoctrine()->getRepository(Participant::class);
         $participant = $repo->find($id);
 
@@ -378,16 +378,13 @@ class AdminController extends AbstractController
             return $this->redirectToRoute("app_admin_participant");
         }
 
-        // sorties et organisées ???
-
-        if (empty($participant->getSorties()) && empty($participant->getSortiesOrganisees()) ){
-
-            $this->addFlash('warning', 'Le participant ne doit plus être inscrit à une sortie ou être organisateur ....');
+        if (count($participant->getSortiesOrganisees()) > 0 ){
+            $this->addFlash('warning', 'Le participant ne doit être organisateur ....');
             return $this->redirectToRoute("app_admin_participant");
         }
 
-//        $em->remove($participant);
-//        $em->flush();
+        $em->remove($participant);
+        $em->flush();
         $this->addFlash('success', 'Participant "'.$participant->getPseudo().'" est supprimé !');
 
 
@@ -425,7 +422,7 @@ class AdminController extends AbstractController
             $em->remove($site);
             $em->flush();
         } else {
-            $this->addFlash('danger', "site : ".$site->getNom()." ne peut être supprimé ! (Rattaché à des sorties)");
+            $this->addFlash('danger', "Lieu : ".$site->getNom()." ne peut être supprimé ! (Rattaché à des sorties)");
         }
         return $this->redirectToRoute("app_admin_site");
     }
@@ -511,28 +508,5 @@ class AdminController extends AbstractController
 
         return $this->render('admin/ajouterlieu.html.twig',$tab);
 
-    }
-    /**
-     * @Route("/ville/delete/{id}",name="app_ville_delete")
-     */
-    public function deleteVille(VilleRepository $repo, EntityManagerInterface $em, $id)
-    {
-        // Récupère le current user.
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        // Récupère le lieu suivant l'id passé en paramètre.
-        $ville = $repo->find($id);
-
-        $tabLieus =$ville->getLieus();
-        // Vérification des droits
-        // Doit être un admin et ne doit pas avoir de sortie
-        if ($user->getIsAdmin() && count($tabLieus) == 0 ) {
-            $this->addFlash('success', "Ville: ".$ville->getNomVille()." supprimé !");
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($ville);
-            $em->flush();
-        } else {
-            $this->addFlash('danger', "Ville : ".$ville->getNomVille()." ne peut être supprimé ! (Rattaché à des lieux)");
-        }
-        return $this->redirectToRoute("app_admin_villes");
     }
 }

@@ -55,6 +55,12 @@ class Sortie
 
     /**
      *
+     * @Assert\Length(
+     *      min = 1,
+     *      max = 50,
+     *      minMessage = "Minimum {{ limit }} participants",
+     *      maxMessage = "Maximum {{ limit }} partcipants, restons raisonnable !"
+     * )
      * @ORM\Column(type="integer")
      * @Assert\Positive(message="Le nombre d'inscription max doit être strictement positif")
      */
@@ -94,12 +100,16 @@ class Sortie
     private $etat;
 
     /**
+     *
+     * @Assert\NotBlank(message="Veuillez saisir un lieu")
      * @ORM\ManyToOne(targetEntity=Lieu::class, inversedBy="sorties")
      */
     private $lieu;
 
     /**
+     *
      * @ORM\Column(type="text", nullable=true)
+     *
      */
     private $MotifAnnulation;
 

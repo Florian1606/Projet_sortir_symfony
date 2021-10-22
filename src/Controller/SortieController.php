@@ -80,8 +80,6 @@ class SortieController extends AbstractController
         } else
             array_push($msg_error, "Veuillez saisir une date de limite d'inscription");
 
-
-
         // Contrôle si les données sont valides et si le formulaire est soumis.
         if ($form->isSubmitted() && $form->isValid() && isEmpty($msg_error)) {
             // app current user -> organisateur
@@ -191,9 +189,16 @@ class SortieController extends AbstractController
         $sortie = $repo->find($idSortie);
         $repoParticipant = $this->getDoctrine()->getRepository(Participant::class);
         $user = $repoParticipant->find($idUser);
-        $sortie->addParticipant($user);
-        $em->flush();
-        $this->addFlash('success', 'Vous avez était inscrit à la sortie !');
+
+        if ( $sortie->getNbIncriptionMax() > count($sortie->getParticipants())) {
+            $sortie->addParticipant($user);
+            $em->flush();
+            $this->addFlash('success', 'Vous avez était inscrit à la sortie !');
+        } else {
+            $this->addFlash('danger', 'La sortie est complète');
+        }
+
+
         return $this->redirectToRoute("main");
     }
 
