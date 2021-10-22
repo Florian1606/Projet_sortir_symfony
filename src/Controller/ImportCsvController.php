@@ -17,7 +17,6 @@ class ImportCsvController extends AbstractController
      * */
     public function uploadMembersFromCSV(EntityManagerInterface $entityManager, Request $request)
     {
-
         // Formulaire de l'upload
         $formUploadCSV = $this->createForm(UploadMembersFromCSVFileType::class);
         $formUploadCSV->handleRequest($request);
@@ -42,7 +41,7 @@ class ImportCsvController extends AbstractController
                 }
             }
             //On passe le nom du fichier dans une fonction qui importe les membres depuis le fichier csv
-            $this->importMembersFromCSV($entityManager, $newFilename);
+            $this->importMembersFromCSV($newFilename);
         }
         return $this->render(
             'admin/upload_csv.html.twig',
@@ -56,7 +55,7 @@ class ImportCsvController extends AbstractController
     /**
      * @Route("/admin/import-users-csv/{file_to_import}", name="import_user_csv_file");
      * */
-    public function importMembersFromCSV(EntityManagerInterface $entityManager, $file_to_import = 'listeMembres.csv')
+    public function importMembersFromCSV($file_to_import)
     {
         // On récupère le fichier
         $pathToFile = $this->getParameter('data_csv_directory') . '/' . $file_to_import;

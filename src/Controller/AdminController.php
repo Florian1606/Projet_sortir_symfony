@@ -156,7 +156,7 @@ class AdminController extends AbstractController
         return $this->render('lieu/ajouerLieux.html.twig');
     }
 
-        /**
+    /**
      * @Route("/admin/register-from-csv-file/", name="app_register_from_csv")
      */
     public function registerFromFileCSV(ParticipantRepository $repoUser, SiteRepository $repoSite, EntityManagerInterface $em, UserPasswordHasherInterface $userPasswordHasherInterface, $data)
